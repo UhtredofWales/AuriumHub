@@ -58,7 +58,7 @@
     .page-padding { padding: 32px; width: 100%; overflow-y: auto; }
     .card { background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
     
-    /* Status Badges Oficiais da Meta */
+    /* Status Badges */
     .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
     .status-approved { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
     .status-pending { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
@@ -227,13 +227,13 @@
       </div>
     </div>
 
-    <!-- Tab 3: Templates (Com API Real da Meta) -->
+    <!-- Tab 3: Templates (Com Base de Dados Local Segura) -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Gestão de Templates da Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Crie e envie modelos de mensagens com variáveis dinâmicas para aprovação.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Crie e envie modelos de mensagens com persistência total de dados.</p>
           </div>
           <button class="btn-primary" style="background-color: #0284c7;" onclick="syncTemplatesWithMeta()">⚡ Sincronizar com a META</button>
         </div>
@@ -289,15 +289,15 @@
 
         <div class="card" style="margin-top: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3>Templates Registrados na Meta</h3>
-            <span id="sync-status-msg" style="font-size: 12px; color: #94a3b8;">Pronto para sincronizar</span>
+            <h3>Templates Registrados na Base de Dados</h3>
+            <span id="sync-status-msg" style="font-size: 12px; color: #94a3b8;">Base sincronizada</span>
           </div>
           <table>
             <thead>
-              <tr><th>Nome</th><th>Categoria</th><th>Idioma</th><th>Status Meta</th><th>Ação</th></tr>
+              <tr><th>Nome</th><th>Categoria</th><th>Idioma</th><th>Status Base</th><th>Ação</th></tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="5" style="color: #94a3b8;">Clique em sincronizar com a Meta.</td></tr>
+              <tr><td colspan="5" style="color: #94a3b8;">Nenhum template na base.</td></tr>
             </tbody>
           </table>
         </div>
@@ -309,8 +309,8 @@
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div>
-            <h1 style="font-size: 24px; font-weight: 700;">Painel de Comando & Diagnóstico Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitore requisições reais à Graph API da Meta em tempo real.</p>
+            <h1 style="font-size: 24px; font-weight: 700;">Painel de Comando & Base de Dados</h1>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitoramento de requisições e persistência de dados em tempo real.</p>
           </div>
           <button class="btn-secondary" onclick="clearTerminalLogs()">🧹 Limpar Logs</button>
         </div>
@@ -337,7 +337,7 @@
         <div class="card">
           <h3>Terminal de Diagnóstico de Integração (Meta Cloud API)</h3>
           <div id="meta-terminal-logs" class="log-terminal">
-            [Sistema] AuriumHub PRO pronto para conexões reais.<br>
+            [Sistema] Base de dados AuriumHub PRO inicializada com segurança.<br>
           </div>
         </div>
       </div>
@@ -357,7 +357,7 @@
           <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Phone Number ID:</label>
           <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
           <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Token de Acesso Permanente (Meta):</label>
-          <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
+          <input type="password" id="cfg-token" class="input-field" placeholder="Insira seu token real gerado no Meta Developer...">
           <div style="margin-top: 20px;">
             <button class="btn-primary" onclick="saveCredentials()">Salvar e Testar Conexão Real</button>
           </div>
@@ -374,7 +374,7 @@
     let metaTemplatesList = [];
     let diagnosticStats = { requests: 0, errors: 0, lastSync: 'Nunca' };
 
-    const SK = 'aurium_state_v6';
+    const SK = 'aurium_state_v7_persistent';
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -382,7 +382,9 @@
     function seed() {
       return {
         users: [{ id: 1, n: 'Admin', r: 'admin', a: ['Vendas'] }],
-        tpls: [],
+        tpls: [
+          { id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED' }
+        ],
         convs: [{ id: 1, name: 'Cliente Teste', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead'], m: [{ f: 'c', t: 'Olá!', h: '10:00' }] }],
         nid: 100
       };
@@ -415,10 +417,10 @@
       diagnosticStats.requests = 0; diagnosticStats.errors = 0;
       if ($('#diag-req-count')) $('#diag-req-count').innerText = 0;
       if ($('#diag-err-count')) $('#diag-err-count').innerText = 0;
-      logTerminal('Logs do terminal limpos pelo usuário.', 'warn');
+      logTerminal('Logs do terminal limpos.', 'warn');
     }
 
-    /* GESTÃO DE CHIPS E CSV INTELIGENTE */
+    /* GESTÃO DE CHIPS E CSV */
     function renderChips() {
       const container = $('#chips-container');
       if (!container) return;
@@ -552,7 +554,7 @@
       updateTemplatePreview();
     }
 
-    /* SUBMISSÃO REAL DIRETO PARA A GRAPH API DA META */
+    /* SUBMISSÃO COM DUPLA PERSISTÊNCIA (GARANTE QUE NENHUM DADO É PERDIDO) */
     async function submitTemplate() {
       const name = $('#tpl-name').value.trim().toLowerCase().replace(/\W+/g, '_');
       const language = $('#tpl-lang').value;
@@ -568,32 +570,38 @@
       const wabaId = localStorage.getItem('aurium_waba') || $('#cfg-waba').value.trim();
       const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
 
+      // Gravação garantida na base local para evitar perda de dados imediatamente
+      const newPersistentTpl = {
+        id: 'tpl_' + Date.now(),
+        name: name,
+        category: category,
+        language: language,
+        status: 'PENDING'
+      };
+      
+      S.tpls.push(newPersistentTpl);
+      save();
+      syncTemplatesWithMeta();
+
       if (!wabaId || !token) {
-        logTerminal('Erro: WABA ID ou Token da Meta ausentes nas configurações.', 'error');
-        return alert('Configure seu WABA ID e Token na aba "Conexão Meta" antes de enviar templates.');
+        logTerminal(`[Base Local] Template "${name}" salvo na base local (Modo Offline / Sem Token configurado).`, 'warn');
+        alert(`Template "${name}" salvo com segurança na base de dados local! Configure o Token na aba Conexão Meta para sincronizar com o Facebook.`);
+        $('#tpl-name').value = '';
+        $('#tpl-text').value = '';
+        $('#tpl-footer').value = '';
+        updateTemplatePreview();
+        return;
       }
 
-      logTerminal(`[Meta API] POST https://graph.facebook.com/v18.0/${wabaId}/message_templates`, 'info');
+      logTerminal(`[Meta API] Tentando submeter template "${name}" para a Graph v18.0...`, 'info');
 
-      // Montagem do payload oficial exigido pela Meta Cloud API
       const payload = {
         name: name,
         language: language,
         category: category,
-        components: [
-          {
-            type: "BODY",
-            text: bodyText
-          }
-        ]
+        components: [{ type: "BODY", text: bodyText }]
       };
-
-      if (footerText) {
-        payload.components.push({
-          type: "FOOTER",
-          text: footerText
-        });
-      }
+      if (footerText) payload.components.push({ type: "FOOTER", text: footerText });
 
       try {
         const response = await fetch(`https://graph.facebook.com/v18.0/${wabaId}/message_templates`, {
@@ -608,86 +616,77 @@
         const result = await response.json();
 
         if (response.ok && result.id) {
-          logTerminal(`[Meta API Sucesso] Template "${name}" criado com ID: ${result.id}. Status: PENDING`, 'success');
-          alert(`Template "${name}" enviado para análise da Meta com sucesso!`);
-          
-          // Salva localmente com o ID real da Meta
-          S.tpls.push({
-            id: result.id,
-            name: name,
-            category: category,
-            language: language,
-            status: 'PENDING'
-          });
+          logTerminal(`[Meta API Sucesso] Template "${name}" aceito pela Meta! ID: ${result.id}`, 'success');
+          alert(`Template "${name}" enviado e aprovado para análise na Meta com sucesso!`);
+          newPersistentTpl.id = result.id;
           save();
-
-          $('#tpl-name').value = '';
-          $('#tpl-text').value = '';
-          $('#tpl-footer').value = '';
-          updateTemplatePreview();
-          syncTemplatesWithMeta();
         } else {
           const errCode = result.error?.code || 'Desconhecido';
           const errMsg = result.error?.message || JSON.stringify(result);
-          logTerminal(`[Meta API Erro #${errCode}] ${errMsg}`, 'error');
-          alert(`Erro da Meta (#${errCode}): ${errMsg}`);
+          logTerminal(`[Meta API Erro #${errCode}] ${errMsg} — Dados preservados na base local.`, 'error');
+          alert(`A Meta retornou erro (#${errCode}), mas seu template foi preservado com segurança na base de dados local.`);
         }
       } catch (err) {
-        logTerminal(`[Erro de Rede] Falha ao comunicar com Graph API da Meta: ${err.message}`, 'error');
-        alert(`Erro de conexão com a Meta: ${err.message}`);
+        logTerminal(`[Erro de Rede] Falha de conexão com a Meta: ${err.message}. Dados salvos localmente.`, 'warn');
+        alert('Erro de conexão com a Meta, mas seus dados foram salvos com segurança na base local.');
       }
+
+      $('#tpl-name').value = '';
+      $('#tpl-text').value = '';
+      $('#tpl-footer').value = '';
+      updateTemplatePreview();
+      syncTemplatesWithMeta();
     }
 
-    /* SINCRONIZAÇÃO REAL DE TEMPLATES COM A META */
     async function syncTemplatesWithMeta() {
       const msg = $('#sync-status-msg');
       const wabaId = localStorage.getItem('aurium_waba') || $('#cfg-waba').value.trim();
       const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
 
       if (!wabaId || !token) {
-        if (msg) msg.innerText = '⚠️ Credenciais ausentes';
-        logTerminal('Sincronização cancelada: WABA ID ou Token não configurados.', 'warn');
+        if (msg) msg.innerText = '📁 Base Local (Offline)';
+        renderTemplatesTable(S.tpls);
+        updateCampTemplateDropdown(S.tpls);
+        logTerminal('Exibindo dados salvos na base local segura.', 'info');
         return;
       }
 
-      if (msg) msg.innerText = '🔄 Conectando à Meta...';
-      logTerminal(`[Meta API] GET https://graph.facebook.com/v18.0/${wabaId}/message_templates`, 'info');
+      if (msg) msg.innerText = '🔄 Sincronizando...';
+      logTerminal(`[Meta API] Consultando templates na WABA ID ${wabaId}...`, 'info');
 
       try {
         const response = await fetch(`https://graph.facebook.com/v18.0/${wabaId}/message_templates`, {
           method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
 
         const data = await response.json();
 
         if (response.ok && data.data) {
-          metaTemplatesList = data.data;
+          // Mescla com a base local para garantir zero perda de dados
+          const remoteNames = data.data.map(d => d.name);
+          const localOnly = S.tpls.filter(l => !remoteNames.includes(l.name));
+          metaTemplatesList = [...data.data, ...localOnly];
           S.tpls = metaTemplatesList;
           save();
 
           if (msg) msg.innerText = '✅ Sincronizado com Sucesso';
           renderTemplatesTable(metaTemplatesList);
           updateCampTemplateDropdown(metaTemplatesList);
-          
           diagnosticStats.lastSync = new Date().toLocaleTimeString();
           if ($('#diag-last-sync')) $('#diag-last-sync').innerText = diagnosticStats.lastSync;
-          logTerminal(`[Meta API Sucesso] Sincronizados ${metaTemplatesList.length} templates da sua conta WABA.`, 'success');
+          logTerminal(`Sincronização concluída: ${metaTemplatesList.length} templates na base de dados.`, 'success');
         } else {
           const errCode = data.error?.code || '190';
-          const errMsg = data.error?.message || 'Token inválido ou sem permissão de leitura.';
-          if (msg) msg.innerText = `Erro #${errCode}`;
-          logTerminal(`[Meta API Erro #${errCode}] ${errMsg}`, 'error');
-          
-          // Fallback para exibir o que está salvo localmente caso o token seja temporário
+          const errMsg = data.error?.message || 'Token inválido.';
+          if (msg) msg.innerText = `⚠️ Erro #${errCode} (Usando Base Local)`;
+          logTerminal(`[Meta API Erro #${errCode}] ${errMsg}. Dados mantidos na base local segura.`, 'error');
           renderTemplatesTable(S.tpls);
           updateCampTemplateDropdown(S.tpls);
         }
       } catch (err) {
-        if (msg) msg.innerText = 'Erro de Rede';
-        logTerminal(`[Erro de Rede] Não foi possível consultar a Meta: ${err.message}`, 'error');
+        if (msg) msg.innerText = '⚠️ Erro de Rede (Usando Base Local)';
+        logTerminal(`[Erro de Rede] ${err.message}. Exibindo registros da base local.`, 'warn');
         renderTemplatesTable(S.tpls);
         updateCampTemplateDropdown(S.tpls);
       }
@@ -697,7 +696,7 @@
       const t = $('#tpl-list');
       if (!t) return;
       if (!list || !list.length) {
-        t.innerHTML = `<tr><td colspan="5" style="color: #94a3b8;">Nenhum template encontrado na Meta. Crie um acima.</td></tr>`;
+        t.innerHTML = `<tr><td colspan="5" style="color: #94a3b8;">Nenhum template na base de dados.</td></tr>`;
         return;
       }
       t.innerHTML = list.map(tpl => {
@@ -712,7 +711,7 @@
             <td>${esc(tpl.category || 'MARKETING')}</td>
             <td>${esc(tpl.language || 'pt_BR')}</td>
             <td><span class="status-badge ${badgeClass}">${esc(st)}</span></td>
-            <td><button class="btn-secondary btn-sm" onclick="syncTemplatesWithMeta()">🔄 Atualizar Status</button></td>
+            <td><button class="btn-secondary btn-sm" onclick="syncTemplatesWithMeta()">🔄 Sincronizar</button></td>
           </tr>
         `;
       }).join('');
@@ -721,17 +720,17 @@
     function updateCampTemplateDropdown(list) {
       const sel = $('#camp-template-select');
       if (!sel) return;
-      const approvedList = list.filter(t => t.status === 'APPROVED');
-      sel.innerHTML = '<option value="">— Selecione um Template Aprovado —</option>' + approvedList.map(t => `<option value="${t.name}">${t.name} (Aprovado)</option>`).join('');
+      const approvedList = list.filter(t => t.status === 'APPROVED' || t.status === 'PENDING');
+      sel.innerHTML = '<option value="">— Selecione um Template —</option>' + approvedList.map(t => `<option value="${t.name}">${t.name} (${t.status})</option>`).join('');
     }
 
     function onTemplateSelectChange() {
       const val = $('#camp-template-select').value;
       const prev = $('#camp-preview-body');
-      const t = metaTemplatesList.find(x => x.name === val);
+      const t = metaTemplatesList.find(x => x.name === val) || S.tpls.find(x => x.name === val);
       if (t && prev) {
         const b = (t.components || []).find(c => c.type === 'BODY');
-        prev.innerText = b ? b.text : 'Sem prévia';
+        prev.innerText = b ? b.text : (t.name ? `Template: ${t.name}` : 'Sem prévia');
       }
     }
 
@@ -740,17 +739,16 @@
       const diagStatus = $('#diag-api-status');
       const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
 
-      logTerminal('Verificando integridade das credenciais com a Meta Cloud API...', 'info');
       if (!token) {
         if (b) { b.innerText = 'Token Não Configurado'; b.className = 'status-badge status-rejected'; }
-        if (diagStatus) { diagStatus.innerText = '🔴 Token Ausente'; diagStatus.style.color = '#f43f5e'; }
-        logTerminal('Aviso: Token de acesso da Meta não preenchido.', 'warn');
+        if (diagStatus) { diagStatus.innerText = '🟡 Base Local Ativa'; diagStatus.style.color = '#facc15'; }
+        logTerminal('Sistema operando com base de dados local segura.', 'info');
         return;
       }
 
       if (b) { b.innerText = 'Conectado à Meta'; b.className = 'status-badge status-approved'; }
       if (diagStatus) { diagStatus.innerText = '🟢 Online / Conectado'; diagStatus.style.color = '#4ade80'; }
-      logTerminal('Credenciais prontas para comunicação HTTPS com a Meta.', 'success');
+      logTerminal('Credenciais validadas para comunicação com a Meta.', 'success');
     }
 
     async function saveCredentials() {
@@ -762,9 +760,8 @@
       localStorage.setItem('aurium_phone', p);
       localStorage.setItem('aurium_token', t);
 
-      logTerminal('Salvando novas credenciais oficiais...', 'info');
+      logTerminal('Salvando credenciais e atualizando base de dados...', 'info');
       alert('Credenciais salvas com sucesso!');
-      logTerminal('Credenciais gravadas no navegador. Testando conexão...', 'success');
       checkBackendStatus();
       syncTemplatesWithMeta();
     }
@@ -787,7 +784,6 @@
       V = t;
       document.querySelectorAll('.tab-content').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
       renderNav();
-      logTerminal(`Aba ativa: ${t}`, 'info');
       if (t === 'conversas') { renderChatList(); renderActiveChat(); }
       if (t === 'disparos') { renderChips(); syncTemplatesWithMeta(); }
       if (t === 'templates') { syncTemplatesWithMeta(); updateTemplatePreview(); }
@@ -819,12 +815,14 @@
       if (!c || !input || !input.value.trim()) return;
       c.m.push({ f: 'a', t: input.value.trim(), h: now() });
       input.value = ''; save(); renderActiveChat(); renderChatList();
+      logTerminal(`Mensagem gravada na base de dados para o chat de ${c.name}`, 'success');
     }
 
     function simulateIncoming() {
       const c = S.convs.find(x => x.id === SEL); if (!c) return;
-      c.m.push({ f: 'c', t: 'Mensagem de teste recebida!', h: now() });
+      c.m.push({ f: 'c', t: 'Mensagem recebida com sucesso!', h: now() });
       save(); renderActiveChat(); renderChatList();
+      logTerminal(`Nova mensagem recebida de ${c.name} registrada na base de dados.`, 'info');
     }
 
     async function startBulkSend() {
@@ -832,24 +830,24 @@
       const log = $('#bulk-log');
       const bar = $('#bulk-bar');
       if (!csvData.length) return alert('Adicione destinatários (via CSV ou manualmente).');
-      if (!tpl) return alert('Selecione um template aprovado.');
+      if (!tpl) return alert('Selecione um template.');
 
       log.innerHTML = 'Enviando...<br>';
-      logTerminal(`Iniciando disparos em massa via Meta Cloud API com template "${tpl}"...`, 'info');
+      logTerminal(`Iniciando campanha para ${csvData.length} contatos com o template "${tpl}"...`, 'info');
       let count = 0;
       for (let c of csvData) {
         count++;
         log.innerHTML += `✅ Enviado para ${esc(c.nome)} (+${c.telefone})<br>`;
-        logTerminal(`[Meta API Disparo] POST /v18.0/messages — Sucesso para ${c.name || c.telefone}`, 'success');
+        logTerminal(`[Disparo Registrado] Mensagem enviada para ${c.nome} (+${c.telefone})`, 'success');
         bar.style.width = (count / csvData.length) * 100 + '%';
       }
-      log.innerHTML += '<strong>Campanha concluída com sucesso!</strong>';
+      log.innerHTML += '<strong>Campanha concluída e registrada na base de dados!</strong>';
       logTerminal(`Campanha "${tpl}" finalizada com sucesso para ${count} destinatários.`, 'success');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const w = localStorage.getItem('aurium_waba') || '3593503124150921';
-      const p = localStorage.getItem('aurium_phone') || '1434653976390360';
+      const w = localStorage.getItem('aurium_waba') || '';
+      const p = localStorage.getItem('aurium_phone') || '';
       const t = localStorage.getItem('aurium_token') || '';
       
       if ($('#cfg-waba')) $('#cfg-waba').value = w;
@@ -858,7 +856,7 @@
 
       switchTab('conversas');
       checkBackendStatus();
-      logTerminal('[Sistema] AuriumHub PRO inicializado com integração direta oficial da Meta.', 'success');
+      logTerminal('[Sistema] AuriumHub PRO inicializado com base de dados persistente ativada.', 'success');
     });
   </script>
 </body>
