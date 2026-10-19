@@ -86,6 +86,34 @@
     table { width: 100%; border-collapse: collapse; margin-top: 16px; }
     th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #1e293b; font-size: 13.5px; }
     th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; }
+
+    /* ===== Recursos ZapHub ===== */
+    .mu { color: #94a3b8; font-size: 12px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .row .input-field { width: auto; margin-top: 0; flex: 1; min-width: 140px; }
+    .tag { margin-right: 4px; }
+    .av { object-fit: cover; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(135deg,#0369a1,#f43f5e); color: #fff; font-weight: 700; font-style: normal; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 99px; padding: 2px 10px 2px 3px; font-size: 11px; color: #e2e8f0; margin: 0 4px 4px 0; }
+    .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: rgba(56,189,248,.15); color: #38bdf8; cursor: pointer; border: 1px solid transparent; margin: 0 4px 4px 0; }
+    .pill.off { background: transparent; border-color: #334155; color: #94a3b8; }
+    .pill.ok { background: rgba(34,197,94,.15); color: #4ade80; cursor: default; }
+    .pill.warn { background: rgba(234,179,8,.15); color: #facc15; cursor: default; }
+    .pill.bad { background: rgba(244,63,94,.15); color: #fb7185; cursor: default; }
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid #1e293b; margin: 18px 0; }
+    .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: #94a3b8; font-weight: 600; padding: 9px 14px; cursor: pointer; font-size: 14px; }
+    .tabs button.on { color: #38bdf8; border-color: #38bdf8; }
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 16px; }
+    .mt3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 12px 0; }
+    .mt3 > div { background: #182232; border-radius: 10px; padding: 8px 10px; }
+    .mt3 b { display: block; font-size: 17px; }
+    .bar { height: 8px; background: #1e293b; border-radius: 9px; overflow: hidden; }
+    .bar i { display: block; height: 100%; background: #38bdf8; }
+    .sys { align-self: center; font-size: 11px; background: #1e293b; color: #94a3b8; padding: 3px 12px; border-radius: 99px; }
+    .alert { background: rgba(234,179,8,.12); color: #facc15; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-danger { background: transparent; border: 1px solid #7f1d3a; color: #fb7185; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .chat-item-name .row { flex-wrap: nowrap; }
+    .user-footer select { margin: 6px 0 0; }
   </style>
 </head>
 <body>
@@ -94,86 +122,42 @@
   <div class="sidebar">
     <div>
       <div class="logo">AuriumHub <span>PRO</span></div>
-      <ul class="nav-menu">
-        <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas & Filas</li>
-        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Campanhas / Disparos</li>
-        <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates Meta</li>
-        <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão & Saúde</li>
-      </ul>
+      <ul class="nav-menu" id="nav-menu"></ul>
     </div>
-    <div class="user-footer">
-      <div>AuriumHub Online • v2.6</div>
-    </div>
+    <div class="user-footer" id="user-box"></div>
   </div>
 
   <div class="main-container">
 
-    <!-- Tab 1: Conversas com Filas e Tags do ZapHub -->
+    <!-- Tab 1: Conversas, filas, tags, transferência -->
     <div id="tab-conversas" class="tab-content active">
       <div class="chat-list-panel">
         <div class="chat-list-header">
           <select id="filter-status" class="filter-select" onchange="renderChatList()">
             <option value="aberta">Abertas</option>
-            <option value="fechada">Fechadas</option>
+            <option value="fechada">Finalizadas</option>
           </select>
-          <select id="filter-tag" class="filter-select" onchange="renderChatList()">
-            <option value="">Todas as tags</option>
-            <option value="Lead quente">Lead quente</option>
-            <option value="Dúvida">Dúvida</option>
-            <option value="Pagamento">Pagamento</option>
-            <option value="VIP">VIP</option>
-          </select>
+          <select id="filter-tag" class="filter-select" onchange="renderChatList()"></select>
+          <select id="filter-area" class="filter-select" onchange="renderChatList()"></select>
+          <label class="mu"><input type="checkbox" id="filter-mine" onchange="renderChatList()"> Só minhas</label>
         </div>
-        <div id="chat-list-container" style="overflow-y: auto; flex: 1;">
-          <!-- Renderizado via JS -->
-        </div>
+        <div id="chat-list-container" style="overflow-y: auto; flex: 1;"></div>
+        <div style="padding: 12px; border-top: 1px solid #1e293b;"><button class="btn-secondary" style="width: 100%;" onclick="simulateIncoming()">+ Simular mensagem recebida</button></div>
       </div>
-
       <div class="chat-box">
-        <div class="chat-header">
-          <span id="active-chat-name">Selecione uma conversa</span> 
-          <span id="active-chat-phone" style="font-weight: normal; font-size: 13px; color: #94a3b8;"></span>
-        </div>
-        <div class="messages-area" id="msg-area">
-          <div style="color: #94a3b8; text-align: center; margin-top: 40px;">Selecione um chat ao lado para iniciar o atendimento.</div>
-        </div>
+        <div class="chat-header" id="chat-head"></div>
+        <div class="messages-area" id="msg-area"></div>
+        <div id="quick-replies" style="padding: 10px 18px 0; background-color: #0b1120;"></div>
         <div class="chat-input-area">
           <input type="text" id="input-message" class="chat-input" placeholder="Digite uma mensagem..." onkeydown="if(event.key==='Enter') sendMessage()">
           <button class="btn-primary" onclick="sendMessage()">Enviar</button>
         </div>
       </div>
-
-      <div class="details-panel">
-        <div>
-          <div class="panel-title">Fila / Setor (ZapHub)</div>
-          <select id="chat-queue-select" class="input-field" onchange="updateCurrentChatProperty('queue', this.value)">
-            <option value="Vendas">Vendas</option>
-            <option value="Suporte">Suporte</option>
-            <option value="Financeiro">Financeiro</option>
-          </select>
-        </div>
-        <div>
-          <div class="panel-title">Atendente Responsável</div>
-          <input type="text" id="chat-agent-input" class="input-field" value="Ana" onchange="updateCurrentChatProperty('agent', this.value)">
-        </div>
-        <div>
-          <div class="panel-title">Etiqueta / Tag</div>
-          <select id="chat-tag-select" class="input-field" onchange="updateCurrentChatProperty('tag', this.value)">
-            <option value="Lead quente">Lead quente</option>
-            <option value="Dúvida">Dúvida</option>
-            <option value="Pagamento">Pagamento</option>
-            <option value="VIP">VIP</option>
-          </select>
-        </div>
-        <div style="border-top: 1px solid #1e293b; padding-top: 14px;">
-          <div class="panel-title">Destinatário Real (Cloud API)</div>
-          <label style="font-size: 11px; color: #94a3b8;">Número com DDI e DDD:</label>
-          <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999">
-        </div>
-      </div>
+      <div class="details-panel" id="details-panel"></div>
     </div>
 
-    <!-- Tab 2: Disparos e Campanhas -->
+    
+<!-- Tab 2: Disparos e Campanhas -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -231,12 +215,16 @@
               </div>
 
               <div id="csv-import-status" style="font-size: 13px; color: #4ade80; margin-top: 10px; font-weight: 500;"></div>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block; margin-top: 16px;">INCLUIR CONTATOS DAS CONVERSAS COM A TAG (OPCIONAL)</label>
+              <select id="camp-tag" class="input-field"></select>
             </div>
 
             <div class="card">
               <h3>Progresso e Log de Disparos</h3>
+              <div class="bar" style="margin-top: 12px;"><i id="bulk-bar" style="width: 0;"></i></div>
               <div id="bulk-log" style="font-size: 13px; color: #94a3b8; margin-top: 12px; max-height: 180px; overflow-y: auto;">Aguardando envio...</div>
             </div>
+            <div class="card"><h3>Histórico de campanhas</h3><div id="camp-history" style="margin-top: 12px;"></div></div>
           </div>
 
           <!-- Prévia -->
@@ -324,6 +312,7 @@
                 <th>Categoria</th>
                 <th>Idioma</th>
                 <th>Status na Meta</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="tpl-list">
@@ -347,15 +336,15 @@
           </div>
           <div class="kpi-card">
             <span>Taxa de Entrega</span>
-            <h2>99.4%</h2>
+            <h2 id="kpi-delivery">—</h2>
           </div>
           <div class="kpi-card">
             <span>Limite Diário WABA</span>
-            <h2>1,000 msgs</h2>
+            <h2 id="kpi-limit" style="font-size: 20px;">—</h2>
           </div>
           <div class="kpi-card">
             <span>Risco de Bloqueio</span>
-            <h2 style="color: #4ade80; font-size: 18px;">Baixo (Chip Seguro)</h2>
+            <h2 id="kpi-risk" style="font-size: 18px;">—</h2>
           </div>
         </div>
 
@@ -373,7 +362,7 @@
           <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
 
           <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Token de Acesso da Meta:</label>
-          <input type="text" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
+          <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
 
           <div style="margin-top: 20px;">
             <button class="btn-primary" onclick="saveCredentials()">Salvar / Atualizar Credenciais</button>
@@ -381,6 +370,9 @@
         </div>
       </div>
     </div>
+
+    <div id="tab-numeros" class="tab-content"><div class="page-padding" id="numeros-root"></div></div>
+    <div id="tab-equipe" class="tab-content"><div class="page-padding" id="equipe-root"></div></div>
 
   </div>
 
@@ -390,148 +382,21 @@
     let csvData = [];
     let metaTemplatesList = [];
 
-    // Sistema de conversas avançado inspirado no ZapHub
-    let conversationsState = [
-      { id: 1, name: 'Marina Souza', phone: '+5518988881111', queue: 'Vendas', agent: 'Ana', status: 'aberta', tag: 'Lead quente', messages: [{ sender: 'received', text: 'Oi! Vi a promoção de vocês, ainda está valendo?', time: '09:12' }] },
-      { id: 2, name: 'Carlos Alberto', phone: '+5511977772222', queue: 'Suporte', agent: 'Carlos', status: 'aberta', tag: 'Dúvida', messages: [{ sender: 'received', text: 'Como faço para redefinir minha senha?', time: '10:45' }] }
-    ];
-    let activeConversationId = 1;
+    
+    
 
-    function switchTab(tabName, element) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-      
-      document.getElementById('tab-' + tabName).classList.add('active');
-      element.classList.add('active');
-
-      if (tabName === 'templates' || tabName === 'disparos') {
-        syncTemplatesWithMeta();
-        fetchWabaPhoneNumbers();
-      }
-      if (tabName === 'conversas') {
-        renderChatList();
-        renderActiveChat();
-      }
-    }
-
-    async function initApp() {
-      const storedWaba = localStorage.getItem('aurium_waba') || '';
-      const storedPhone = localStorage.getItem('aurium_phone') || '';
-      const storedToken = localStorage.getItem('aurium_token') || '';
-
-      if (storedWaba) document.getElementById('cfg-waba').value = storedWaba;
-      if (storedPhone) document.getElementById('cfg-phoneid').value = storedPhone;
-      if (storedToken) document.getElementById('cfg-token').value = storedToken;
-
-      if (storedWaba || storedPhone || storedToken) {
-        await syncBackendCredentials(storedWaba, storedPhone, storedToken);
-      } else {
-        await checkBackendStatus();
-      }
-
-      renderCachedTemplates();
-      syncTemplatesWithMeta();
-      fetchWabaPhoneNumbers();
-      renderChatList();
-      renderActiveChat();
-    }
+    
 
     // Funções do Inbox ZapHub
-    function renderChatList() {
-      const container = document.getElementById('chat-list-container');
-      const filterStatus = document.getElementById('filter-status').value;
-      const filterTag = document.getElementById('filter-tag').value;
+    
 
-      if (!container) return;
-      container.innerHTML = '';
+    
 
-      const filtered = conversationsState.filter(c => {
-        if (c.status !== filterStatus) return false;
-        if (filterTag && c.tag !== filterTag) return false;
-        return true;
-      });
+    
 
-      if (filtered.length === 0) {
-        container.innerHTML = '<div style="padding: 20px; color: #94a3b8; font-size: 13px;">Nenhuma conversa encontrada.</div>';
-        return;
-      }
+    
 
-      filtered.forEach(c => {
-        const lastMsg = c.messages[c.messages.length - 1]?.text || '';
-        const isActive = c.id === activeConversationId ? 'active' : '';
-        container.innerHTML += `
-          <div class="chat-item ${isActive}" onclick="selectConversation(${c.id})">
-            <div class="chat-item-name">
-              <span>${c.name}</span>
-              <span style="font-size: 11px; color: #94a3b8;">${c.queue}</span>
-            </div>
-            <div class="chat-item-sub">${lastMsg.substring(0, 30)}...</div>
-            <span class="tag">${c.tag}</span>
-          </div>
-        `;
-      });
-    }
-
-    function selectConversation(id) {
-      activeConversationId = id;
-      renderChatList();
-      renderActiveChat();
-    }
-
-    function renderActiveChat() {
-      const c = conversationsState.find(item => item.id === activeConversationId);
-      if (!c) return;
-
-      document.getElementById('active-chat-name').innerText = c.name;
-      document.getElementById('active-chat-phone').innerText = c.phone;
-      document.getElementById('chat-queue-select').value = c.queue;
-      document.getElementById('chat-agent-input').value = c.agent;
-      document.getElementById('chat-tag-select').value = c.tag;
-      document.getElementById('target-phone').value = c.phone.replace(/\D/g, '');
-
-      const msgArea = document.getElementById('msg-area');
-      msgArea.innerHTML = '';
-      c.messages.forEach(m => {
-        msgArea.innerHTML += `
-          <div class="msg ${m.sender === 'sent' ? 'sent' : 'received'}">
-            ${m.text}
-            <small>${m.time}</small>
-          </div>
-        `;
-      });
-      msgArea.scrollTop = msgArea.scrollHeight;
-    }
-
-    function updateCurrentChatProperty(prop, val) {
-      const c = conversationsState.find(item => item.id === activeConversationId);
-      if (c) {
-        c[prop] = val;
-        renderChatList();
-      }
-    }
-
-    async function fetchWabaPhoneNumbers() {
-      const senderSelect = document.getElementById('camp-sender-select');
-      if (!senderSelect) return;
-
-      try {
-        const res = await fetch('/api/status');
-        const statusData = await res.json();
-
-        if (statusData.phoneId) {
-          const displayNumber = statusData.display_phone_number || statusData.displayPhoneNumber || 'Número configurado';
-          const verifiedName = statusData.verified_name ? ` — ${statusData.verified_name}` : '';
-
-          senderSelect.innerHTML = `
-            <option value="${statusData.phoneId}">
-              ${displayNumber}${verifiedName} (${statusData.phoneId})
-            </option>
-          `;
-        }
-      } catch (err) {
-        console.error('Erro ao buscar número remetente.');
-      }
-    }
+    
 
     async function syncBackendCredentials(wabaId, phoneId, token) {
       try {
@@ -544,51 +409,9 @@
       } catch (err) {}
     }
 
-    async function checkBackendStatus() {
-      const statusBadge = document.getElementById('meta-status');
-      const kpiApiStatus = document.getElementById('kpi-api-status');
-      try {
-        const res = await fetch('/api/status');
-        const data = await res.json();
+    
 
-        if (data.connected) {
-          statusBadge.innerText = 'Conectado à Meta';
-          statusBadge.className = 'status-badge status-connected';
-          if (kpiApiStatus) { kpiApiStatus.innerText = 'Online / Conectado'; kpiApiStatus.style.color = '#4ade80'; }
-        } else {
-          statusBadge.innerText = 'Credenciais Incompletas';
-          statusBadge.className = 'status-badge status-disconnected';
-          if (kpiApiStatus) { kpiApiStatus.innerText = 'Desconectado'; kpiApiStatus.style.color = '#f43f5e'; }
-        }
-      } catch (err) {
-        statusBadge.innerText = 'Erro Backend';
-        statusBadge.className = 'status-badge status-disconnected';
-      }
-    }
-
-    async function saveCredentials() {
-      const wabaId = document.getElementById('cfg-waba').value.trim();
-      const phoneId = document.getElementById('cfg-phoneid').value.trim();
-      const token = document.getElementById('cfg-token').value.trim();
-
-      localStorage.setItem('aurium_waba', wabaId);
-      localStorage.setItem('aurium_phone', phoneId);
-      localStorage.setItem('aurium_token', token);
-
-      try {
-        await fetch('/api/credentials', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ wabaId, phoneId, token })
-        });
-        alert('Credenciais salvas permanentemente!');
-        checkBackendStatus();
-        syncTemplatesWithMeta();
-        fetchWabaPhoneNumbers();
-      } catch (err) {
-        alert('Erro ao salvar no servidor.');
-      }
-    }
+    
 
     function handleCSVUpload(event) {
       const file = event.target.files[0];
@@ -663,63 +486,11 @@
       document.getElementById('csv-mapping-panel').style.display = 'none';
     }
 
-    async function syncTemplatesWithMeta() {
-      const msgEl = document.getElementById('sync-status-msg');
-      if (msgEl) msgEl.innerText = '🔄 Requisitando dados à Meta...';
+    
 
-      try {
-        const res = await fetch('/api/templates');
-        const data = await res.json();
+    
 
-        if (data.success && data.templates) {
-          metaTemplatesList = data.templates;
-          localStorage.setItem('aurium_templates', JSON.stringify(data.templates));
-          renderTemplatesTable(data.templates);
-          updateCampTemplateDropdown(data.templates);
-          if (msgEl) msgEl.innerText = '✅ Sincronizado com sucesso com a Meta';
-        } else {
-          if (msgEl) msgEl.innerText = '❌ Erro ao consultar Meta: ' + (data.error || '');
-        }
-      } catch (err) {
-        if (msgEl) msgEl.innerText = '❌ Falha de conexão com o servidor';
-      }
-    }
-
-    function renderCachedTemplates() {
-      const cached = localStorage.getItem('aurium_templates');
-      if (cached) {
-        try {
-          metaTemplatesList = JSON.parse(cached);
-          renderTemplatesTable(metaTemplatesList);
-          updateCampTemplateDropdown(metaTemplatesList);
-        } catch (e) {}
-      }
-    }
-
-    function renderTemplatesTable(templates) {
-      const listEl = document.getElementById('tpl-list');
-      if (!listEl) return;
-      if (!templates || templates.length === 0) {
-        listEl.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;">Nenhum template encontrado.</td></tr>';
-        return;
-      }
-
-      listEl.innerHTML = '';
-      templates.forEach(tpl => {
-        const isApproved = tpl.status === 'APPROVED';
-        const statusClass = isApproved ? 'status-connected' : 'status-disconnected';
-        const badgeLabel = isApproved ? 'APPROVED' : `${tpl.status} (Em análise)`;
-
-        listEl.innerHTML += `
-          <tr>
-            <td><strong>${tpl.name}</strong></td>
-            <td>${tpl.category}</td>
-            <td>${tpl.language}</td>
-            <td><span class="status-badge ${statusClass}">${badgeLabel}</span></td>
-          </tr>
-        `;
-      });
-    }
+    
 
     function updateCampTemplateDropdown(templates) {
       const select = document.getElementById('camp-template-select');
@@ -756,93 +527,9 @@
       }
     }
 
-    async function sendMessage() {
-      const inputMsg = document.getElementById('input-message');
-      const targetPhone = document.getElementById('target-phone').value;
+    
 
-      if (!inputMsg.value.trim()) return;
-
-      const messageText = inputMsg.value.trim();
-      const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      const c = conversationsState.find(item => item.id === activeConversationId);
-      if (c) {
-        c.messages.push({ sender: 'sent', text: messageText, time: timeNow });
-        renderActiveChat();
-        renderChatList();
-      }
-      inputMsg.value = '';
-
-      try {
-        const response = await fetch('/send-message', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: targetPhone, message: messageText })
-        });
-        const result = await response.json();
-        if (!result.success) alert('Erro ao enviar: ' + result.error);
-      } catch (error) {
-        alert('Erro de conexão ao servidor.');
-      }
-    }
-
-    async function startBulkSend() {
-      const selectedTemplate = document.getElementById('camp-template-select').value;
-      const logDiv = document.getElementById('bulk-log');
-
-      if (csvData.length === 0) {
-        alert('Importe e confirme uma planilha CSV primeiro.');
-        return;
-      }
-
-      if (!selectedTemplate) {
-        alert('Selecione um template APROVADO para o disparo.');
-        return;
-      }
-
-      logDiv.innerHTML = 'Iniciando disparos em massa via Meta Cloud API...<br>';
-
-      for (let i = 0; i < csvData.length; i++) {
-        const contact = csvData[i];
-        const selectedTpl = metaTemplatesList.find(tpl => tpl.name === selectedTemplate);
-        const templateLanguage = selectedTpl?.language || 'pt_BR';
-
-        const bodyComponent = selectedTpl?.components?.find(component => component.type === 'BODY');
-        const variableMatches = bodyComponent?.text?.match(/\{\{\d+\}\}/g) || [];
-        const variableCount = variableMatches.length;
-
-        let templateParams = [];
-        if (variableCount >= 1 && contact.nome) {
-          templateParams = [contact.nome];
-        }
-
-        try {
-          const res = await fetch('/send-message', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: contact.telefone,
-              templateName: selectedTemplate,
-              language: templateLanguage,
-              templateParams
-            })
-          });
-          const result = await res.json();
-
-          if (result.success) {
-            logDiv.innerHTML += `✅ Enviado com sucesso para ${contact.nome} (${contact.telefone})<br>`;
-          } else {
-            let errText = result.error;
-            if (errText.includes('131030')) {
-              errText = 'Número não autorizado na lista de testes da Meta (Sandbox).';
-            }
-            logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${errText}<br>`;
-          }
-        } catch (err) {
-          logDiv.innerHTML += `❌ Erro de conexão para ${contact.nome}<br>`;
-        }
-      }
-    }
+    
 
     function updateTemplatePreview() {
       const text = document.getElementById('tpl-text').value;
@@ -885,61 +572,351 @@
       updateTemplatePreview();
     }
 
+    
+
+    /* ===================================================================
+       AuriumHub PRO v3 — recursos do ZapHub + modo demonstração
+       Se o servidor (/api/*, /send-message) não responder, o app continua
+       funcionando localmente com dados salvos no navegador.
+       =================================================================== */
+    const SK = 'aurium_state_v3', KEYS = ['convs', 'users', 'nums'];
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const fm = n => Number(n).toLocaleString('pt-BR');
+    const seed = () => ({
+      areas: ['Vendas', 'Suporte', 'Financeiro'],
+      tags: ['Lead quente', 'Dúvida', 'Pagamento', 'VIP', 'Reclamação'],
+      users: [
+        { id: 1, n: 'Você (Admin)', r: 'admin', a: ['Vendas', 'Suporte', 'Financeiro'] },
+        { id: 2, n: 'Ana', r: 'agente', a: ['Vendas'] },
+        { id: 3, n: 'Carlos', r: 'agente', a: ['Suporte'] },
+        { id: 4, n: 'Carla', r: 'supervisor', a: ['Vendas', 'Financeiro'] }
+      ],
+      nums: [
+        { id: 1, n: 'Loja Principal', p: '+55 18 99999-0001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 3420, dl: 97.8, bl: 0.4, rp: 31, tr: [96, 97, 97, 98, 97, 98, 98] },
+        { id: 2, n: 'Suporte Oficial', p: '+55 18 99999-0002', a: 'Suporte', q: 'Média', lim: 1000, st: 'Conectado', sent: 640, dl: 94.1, bl: 1.8, rp: 58, tr: [97, 96, 95, 95, 94, 94, 94] },
+        { id: 3, n: 'Cobrança', p: '+55 18 99999-0003', a: 'Financeiro', q: 'Baixa', lim: 1000, st: 'Sinalizado', sent: 880, dl: 88.2, bl: 4.6, rp: 12, tr: [95, 93, 91, 90, 89, 88, 88] }
+      ],
+      tpls: [
+        { id: 't1', name: 'promo_outubro', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}! Nossa promoção chegou com 20% OFF. Quer aproveitar?' }, { type: 'FOOTER', text: 'AuriumHub' }] },
+        { id: 't2', name: 'aviso_boleto', category: 'UTILITY', language: 'pt_BR', status: 'PENDING', local: true, components: [{ type: 'BODY', text: 'Oi {{1}}, seu boleto vence amanhã. Precisa de ajuda?' }] }
+      ],
+      quick: ['Olá! Como posso ajudar?', 'Já vou verificar para você.', 'Posso ajudar com mais alguma coisa?'],
+      camps: [],
+      convs: [
+        { id: 1, name: 'Marina Souza', phone: '+5518988881111', area: 'Vendas', as: 2, num: 1, st: 'aberta', tg: ['Lead quente'], m: [{ f: 'c', t: 'Oi! Vi a promoção de vocês, ainda está valendo?', h: '09:12' }] },
+        { id: 2, name: 'Carlos Alberto', phone: '+5511977772222', area: 'Suporte', as: 3, num: 2, st: 'aberta', tg: ['Dúvida'], m: [{ f: 'c', t: 'Como faço para redefinir minha senha?', h: '10:45' }] },
+        { id: 3, name: 'Studio Lume', phone: '+5518988883333', area: 'Financeiro', as: null, num: 3, st: 'aberta', tg: ['Pagamento'], m: [{ f: 'c', t: 'Podem reenviar o boleto?', h: '10:05' }] },
+        { id: 4, name: 'Rafa Lima', phone: '+5518988884444', area: 'Vendas', as: 2, num: 1, st: 'fechada', tg: ['VIP'], m: [{ f: 'c', t: 'Obrigado pelo atendimento!', h: '08:01' }] }
+      ],
+      nid: 100
+    });
+    let S; try { S = JSON.parse(localStorage.getItem(SK)); } catch (e) {} S = S || seed();
+    const save = () => { try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} };
+    let V = 'conversas', ME = 1, SEL = 1, SRV = null, DEMO = false, ST = { nums: 0, team: 0 };
+
+    async function api(url, opt) {
+      try { const r = await fetch(url, opt), d = await r.json(); DEMO = false; return d; }
+      catch (e) { DEMO = true; return null; }
+    }
+    const JSONH = { 'Content-Type': 'application/json' };
+    const me = () => S.users.find(u => u.id === ME) || S.users[0];
+    const vis = () => S.convs.filter(c => me().r === 'admin' || me().a.includes(c.area));
+    const cur = () => S.convs.find(x => x.id === SEL && vis().includes(x));
+    const uname = id => (S.users.find(u => u.id === id) || { n: 'Fila' }).n;
+    const numName = id => (S.nums.find(n => n.id == id) || { n: '—' }).n;
+    const sys = (c, t) => c.m.push({ f: 's', t, h: now() });
+    const av = (o, s = 22) => o.ph
+      ? `<img class="av" src="${o.ph}" style="width:${s}px;height:${s}px">`
+      : `<i class="av" style="width:${s}px;height:${s}px;font-size:${s * .45 | 0}px">${esc((o.n || o.name || '?')[0])}</i>`;
+    const chipU = id => { const u = S.users.find(x => x.id == id); return u ? `<span class="chip">${av(u, 18)}${esc(u.n)}</span>` : '<span class="chip" style="padding-left:10px">Fila da área</span>'; };
+    const agOpts = (a, sel) => '<option value="">Fila da área</option>' + S.users.filter(u => u.a.includes(a)).map(u => `<option value="${u.id}" ${u.id == sel ? 'selected' : ''}>${esc(u.n)}</option>`).join('');
+    const pg = (t, s) => `<h1 style="font-size:24px;font-weight:700">${t}</h1><p style="color:#94a3b8;font-size:13px;margin-top:4px">${s}</p>`;
+    const sub = (v, l) => `<div class="tabs">${l.map((t, i) => `<button class="${ST[v] == i ? 'on' : ''}" onclick="ST.${v}=${i};switchTab(V)">${t}</button>`).join('')}</div>`;
+
+    /* ---------- Navegação e perfis de acesso ---------- */
+    const NAV = [
+      ['conversas', '💬 Conversas & Filas', 'admin supervisor agente'],
+      ['disparos', '📣 Campanhas / Disparos', 'admin supervisor'],
+      ['templates', '📄 Templates Meta', 'admin supervisor'],
+      ['numeros', '☎️ Números & Saúde', 'admin supervisor'],
+      ['equipe', '👥 Equipe & Áreas', 'admin'],
+      ['meta', '🔗 Conexão & Saúde', 'admin']
+    ];
+    function renderNav() {
+      $('#nav-menu').innerHTML = NAV.filter(n => n[2].includes(me().r)).map(n => `<li class="nav-item ${V == n[0] ? 'active' : ''}" onclick="switchTab('${n[0]}')">${n[1]}</li>`).join('');
+      $('#user-box').innerHTML = `${chipU(ME)}<div style="margin-top:8px">Entrar como</div>
+        <select class="input-field" onchange="ME=+this.value;SEL=null;switchTab('conversas')">${S.users.map(u => `<option value="${u.id}" ${u.id === ME ? 'selected' : ''}>${esc(u.n)} · ${u.r}</option>`).join('')}</select>
+        <div style="margin-top:10px">${DEMO ? '🧪 Modo demonstração' : '🟢 Servidor online'} • v3.0</div>
+        <button class="btn-secondary btn-sm" style="margin-top:8px" onclick="S=seed();save();SEL=1;switchTab('conversas')">Resetar demo</button>`;
+    }
+    function switchTab(t) {
+      if (!NAV.find(n => n[0] === t && n[2].includes(me().r))) t = 'conversas';
+      V = t;
+      document.querySelectorAll('.tab-content').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
+      renderNav();
+      ({
+        conversas: () => { renderFilters(); renderChatList(); renderActiveChat(); },
+        disparos: () => { fetchWabaPhoneNumbers(); syncTemplatesWithMeta(); renderCamps(); },
+        templates: () => syncTemplatesWithMeta(),
+        numeros: () => renderNums(),
+        equipe: () => renderTeam(),
+        meta: () => renderMetaKpis()
+      })[t]();
+    }
+    async function initApp() {
+      [['aurium_waba', 'cfg-waba'], ['aurium_phone', 'cfg-phoneid'], ['aurium_token', 'cfg-token']].forEach(([k, i]) => { const v = localStorage.getItem(k); if (v) $('#' + i).value = v; });
+      const w = localStorage.getItem('aurium_waba') || '', p = localStorage.getItem('aurium_phone') || '', t = localStorage.getItem('aurium_token') || '';
+      if (w || p || t) await syncBackendCredentials(w, p, t);
+      await checkBackendStatus();
+      switchTab('conversas');
+    }
+
+    /* ---------- Conversas ---------- */
+    function renderFilters() {
+      const fill = (id, first, list) => { const el = $(id), v = el.value; el.innerHTML = `<option value="">${first}</option>` + list.map(x => `<option>${esc(x)}</option>`).join(''); el.value = v; };
+      fill('#filter-tag', 'Todas as tags', S.tags);
+      fill('#filter-area', 'Todas as áreas', S.areas);
+    }
+    function renderChatList() {
+      const st = $('#filter-status').value, tg = $('#filter-tag').value, ar = $('#filter-area').value, mine = $('#filter-mine').checked;
+      const l = vis().filter(c => c.st === st && (!tg || c.tg.includes(tg)) && (!ar || c.area === ar) && (!mine || c.as === ME));
+      const last = c => ((c.m.filter(m => m.f !== 's').slice(-1)[0] || {}).t || '').slice(0, 44);
+      $('#chat-list-container').innerHTML = l.map(c => `
+        <div class="chat-item ${c.id === SEL ? 'active' : ''}" onclick="selectConversation(${c.id})">
+          <div class="chat-item-name"><span class="row">${av(c, 30)}${esc(c.name)}</span><span style="font-size:11px;color:#94a3b8">${esc(c.area)}</span></div>
+          <div class="chat-item-sub">${esc(last(c))}</div>
+          <div style="margin-top:6px">${chipU(c.as)}${c.tg.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+        </div>`).join('') || '<div style="padding:20px;color:#94a3b8;font-size:13px">Nenhuma conversa encontrada.</div>';
+    }
+    function selectConversation(id) { SEL = id; renderChatList(); renderActiveChat(); }
+    function renderActiveChat() {
+      const c = cur();
+      if (!c) {
+        $('#chat-head').innerHTML = '<span style="color:#94a3b8;font-weight:400">Selecione uma conversa</span>';
+        $('#msg-area').innerHTML = '<div style="color:#94a3b8;text-align:center;margin-top:40px">Selecione um chat ao lado para iniciar o atendimento.</div>';
+        $('#details-panel').innerHTML = ''; $('#quick-replies').innerHTML = ''; return;
+      }
+      $('#chat-head').innerHTML = `<span class="row" style="flex-wrap:nowrap;gap:10px">${av(c, 38)}<span>${esc(c.name)}<br><small style="font-weight:400;color:#94a3b8;font-size:12px">${esc(c.phone)} · via ${esc(numName(c.num))}</small></span></span>
+        ${c.st === 'aberta' ? '<button class="btn-primary" onclick="finishChat()">✔ Finalizar</button>' : '<button class="btn-secondary" onclick="reopenChat()">Reabrir conversa</button>'}`;
+      const area = $('#msg-area');
+      area.innerHTML = c.m.map(m => m.f === 's'
+        ? `<div class="sys">${esc(m.t)} · ${m.h}</div>`
+        : `<div class="msg ${m.f === 'a' ? 'sent' : 'received'}">${esc(m.t)}<small>${m.by ? esc(m.by) + ' · ' : ''}${m.h}</small></div>`).join('');
+      area.scrollTop = area.scrollHeight;
+      $('#quick-replies').innerHTML = c.st === 'aberta' ? S.quick.map((q, i) => `<span class="pill off" onclick="useQuick(${i})">${esc(q)}</span>`).join('') : '';
+      $('#details-panel').innerHTML = `
+        <div><div class="panel-title">Contato</div>
+          <div class="row" style="flex-wrap:nowrap">${av(c, 46)}<div><input class="input-field" style="margin-top:0" value="${esc(c.name)}" onchange="ren(0,${c.id},this.value)"><button class="btn-secondary btn-sm" style="margin-top:6px" onclick="pick(0,${c.id})">Alterar foto</button></div></div></div>
+        <div><div class="panel-title">Número de origem</div>
+          <select class="input-field" onchange="setConv('num',+this.value)">${S.nums.map(n => `<option value="${n.id}" ${n.id == c.num ? 'selected' : ''}>${esc(n.n)} · ${esc(n.a)}</option>`).join('')}</select></div>
+        <div><div class="panel-title">Etiquetas / Tags</div>
+          ${S.tags.map((t, i) => `<span class="pill ${c.tg.includes(t) ? '' : 'off'}" onclick="tagT(${i})">${esc(t)}</span>`).join('')}</div>
+        <div><div class="panel-title">Transferir internamente</div>
+          <select id="ta" class="input-field" onchange="$('#tu').innerHTML=agOpts(this.value)">${S.areas.map(a => `<option ${a == c.area ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
+          <select id="tu" class="input-field">${agOpts(c.area, c.as)}</select>
+          <button class="btn-secondary" style="margin-top:8px;width:100%" onclick="transfer()">Transferir</button>
+          <div class="mu" style="margin-top:8px">Responsável atual</div>${chipU(c.as)}</div>
+        <div style="border-top:1px solid #1e293b;padding-top:14px">
+          <div class="panel-title">Destinatário Real (Cloud API)</div>
+          <label style="font-size:11px;color:#94a3b8">Número com DDI e DDD:</label>
+          <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999" value="${c.phone.replace(/\D/g, '')}"></div>`;
+    }
+    function useQuick(i) { const el = $('#input-message'); el.value = S.quick[i]; el.focus(); }
+    function setConv(p, v) { const c = cur(); c[p] = v; save(); renderActiveChat(); renderChatList(); }
+    function tagT(i) { const c = cur(), t = S.tags[i]; c.tg = c.tg.includes(t) ? c.tg.filter(x => x !== t) : [...c.tg, t]; save(); renderActiveChat(); renderChatList(); }
+    function finishChat() { const c = cur(); c.st = 'fechada'; sys(c, 'Finalizada por ' + me().n); save(); renderActiveChat(); renderChatList(); }
+    function reopenChat() { const c = cur(); c.st = 'aberta'; sys(c, 'Reaberta por ' + me().n); $('#filter-status').value = 'aberta'; save(); renderActiveChat(); renderChatList(); }
+    function transfer() {
+      const c = cur(), a = $('#ta').value, u = +$('#tu').value || null, n = S.nums.find(x => x.a === a);
+      sys(c, `Transferida de ${c.area}/${uname(c.as)} para ${a}/${uname(u)} por ${me().n}`);
+      c.area = a; c.as = u; if (n) c.num = n.id; save(); renderChatList(); renderActiveChat();
+    }
+    function simulateIncoming() {
+      const c = vis().find(x => x.st === 'aberta') || vis()[0]; if (!c) return;
+      c.m.push({ f: 'c', t: ['Pode me passar mais detalhes?', 'Qual o prazo de entrega?', 'Tem desconto à vista?'][Math.random() * 3 | 0], h: now() });
+      c.st = 'aberta'; save(); renderChatList(); renderActiveChat();
+    }
+    async function sendMessage() {
+      const c = cur(), input = $('#input-message'), t = input.value.trim();
+      if (!c || !t) return;
+      if (c.st !== 'aberta') return alert('Reabra a conversa para responder.');
+      const n = S.nums.find(x => x.id == c.num);
+      if (n && n.pz) return alert('Este número está com os disparos pausados.');
+      c.m.push({ f: 'a', t, h: now(), by: me().n }); if (!c.as) c.as = ME;
+      input.value = ''; save(); renderActiveChat(); renderChatList();
+      const r = await api('/send-message', { method: 'POST', headers: JSONH, body: JSON.stringify({ to: $('#target-phone').value, message: t }) });
+      if (r && !r.success) alert('Erro ao enviar: ' + r.error);
+    }
+    function ren(k, id, v) { v = v.trim(); const o = S[KEYS[k]].find(x => x.id == id); if (v && o) { o[k === 0 ? 'name' : 'n'] = v; save(); } switchTab(V); }
+    function pick(k, id) {
+      const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*';
+      i.onchange = () => {
+        const f = i.files[0]; if (!f) return; const r = new FileReader();
+        r.onload = () => { const im = new Image(); im.onload = () => {
+          const c = document.createElement('canvas'), s = Math.min(im.width, im.height); c.width = c.height = 128;
+          c.getContext('2d').drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, 0, 0, 128, 128);
+          S[KEYS[k]].find(x => x.id == id).ph = c.toDataURL('image/jpeg', .82); save(); switchTab(V);
+        }; im.src = r.result; };
+        r.readAsDataURL(f);
+      };
+      i.click();
+    }
+
+    /* ---------- Números & saúde ---------- */
+    const HC = { Alta: ['ok', '#4ade80', 'Saudável'], 'Média': ['warn', '#facc15', 'Atenção'], Baixa: ['bad', '#fb7185', 'Em risco'] };
+    const spark = (a, c) => { const mn = Math.min(...a), mx = Math.max(...a), r = mx - mn || 1; return `<svg viewBox="0 0 120 30" width="120" height="30"><polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" points="${a.map((v, i) => `${i * 20},${27 - (v - mn) / r * 24}`).join(' ')}"/></svg>`; };
+    const tips = n => { const t = []; if (n.bl > 3) t.push('Bloqueios acima de 3%: pause os disparos de marketing e revise público e frequência.'); if (n.dl < 92) t.push('Entrega abaixo de 92%: limpe a lista e remova números inválidos.'); if (n.sent / n.lim > .8) t.push('Mais de 80% do limite diário já foi usado.'); return t; };
+    const nCard = n => { const h = HC[n.q] || HC.Alta, u = Math.min(100, n.sent / n.lim * 100); return `<div class="card" style="margin:0">
+      <div class="row" style="justify-content:space-between"><div class="row" style="flex-wrap:nowrap">${av(n, 38)}<div><strong>${esc(n.n)}</strong><div class="mu">${esc(n.p)}</div></div></div><span class="pill ${h[0]}">${h[2]}</span></div>
+      <div class="row" style="margin-top:12px"><span class="mu">Área</span><select class="input-field" onchange="setArea(${n.id},this.value)">${S.areas.map(a => `<option ${a == n.a ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select></div>
+      <div class="mu" style="margin-top:6px">Qualidade ${n.q} · ${n.pz ? 'Pausado' : n.st}</div>
+      <div class="mt3"><div><span class="mu">Entrega</span><b>${n.dl}%</b></div><div><span class="mu">Bloqueios</span><b>${n.bl}%</b></div><div><span class="mu">Respostas</span><b>${n.rp}%</b></div></div>
+      <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="mu">Limite diário: ${fm(n.sent)} / ${fm(n.lim)}</span>${spark(n.tr, h[1])}</div>
+      <div class="bar"><i style="width:${u}%;background:${u > 80 ? '#facc15' : '#38bdf8'}"></i></div>
+      ${tips(n).map(x => `<div class="alert">⚠ ${x}</div>`).join('')}
+      <div class="row" style="margin-top:12px"><button class="btn-secondary btn-sm" onclick="togglePz(${n.id})">${n.pz ? 'Retomar disparos' : 'Pausar disparos'}</button><button class="btn-secondary btn-sm" onclick="pick(2,${n.id})">Foto</button></div></div>`; };
+    const setArea = (id, v) => { S.nums.find(x => x.id == id).a = v; save(); renderNums(); };
+    const togglePz = id => { const x = S.nums.find(x => x.id == id); x.pz = !x.pz; save(); renderNums(); };
+    function renderNums() {
+      const ns = S.nums, bad = ns.filter(n => n.q != 'Alta').length;
+      const H = pg('Números & Saúde', 'Qualidade, limites e área responsável por cada número') + sub('nums', ['Saúde', 'Cadastro']);
+      const kp = (l, v) => `<div class="kpi-card"><span>${l}</span><h2>${v}</h2></div>`;
+      $('#numeros-root').innerHTML = H + (ST.nums == 0
+        ? `<div class="kpi-grid">${kp('Números', ns.length)}${kp('Saudáveis', ns.length - bad)}${kp('Exigem atenção', bad)}${kp('Enviadas em 24h', fm(ns.reduce((s, n) => s + n.sent, 0)))}</div>` +
+          S.areas.map(a => { const l = ns.filter(n => n.a == a); return `<div class="row" style="margin:18px 0 10px"><strong>${esc(a)}</strong><span class="mu">${l.length} número(s)</span></div><div class="grid2">${l.map(nCard).join('') || '<div class="mu">Nenhum número nesta área.</div>'}</div>`; }).join('')
+        : `<div class="card"><h3>Novo número</h3><div class="row" style="margin-top:12px"><input id="nn" class="input-field" placeholder="Nome de exibição"><input id="np" class="input-field" placeholder="+55 11 90000-0000"><select id="na" class="input-field">${S.areas.map(a => `<option>${esc(a)}</option>`).join('')}</select><button class="btn-primary" onclick="addNum()">Adicionar</button></div></div>
+           <div class="card"><table><thead><tr><th>Número</th><th>Telefone</th><th>Área</th><th></th></tr></thead><tbody>${ns.map(n => `<tr><td><div class="row" style="flex-wrap:nowrap">${av(n, 34)}<input class="input-field" value="${esc(n.n)}" onchange="ren(2,${n.id},this.value)"></div></td><td>${esc(n.p)}</td><td>${esc(n.a)}</td><td><button class="btn-secondary btn-sm" onclick="pick(2,${n.id})">Foto</button></td></tr>`).join('')}</tbody></table></div>`);
+    }
+    function addNum() {
+      const n = $('#nn').value.trim(), p = $('#np').value.trim(); if (!n || !p) return alert('Informe nome e telefone.');
+      S.nums.push({ id: S.nid++, n, p, a: $('#na').value, q: 'Alta', lim: 250, st: 'Em verificação', sent: 0, dl: 100, bl: 0, rp: 0, tr: [100, 100, 100, 100, 100, 100, 100] });
+      ST.nums = 0; save(); renderNums();
+    }
+
+    /* ---------- Equipe, áreas e tags ---------- */
+    function renderTeam() {
+      const H = pg('Equipe & Áreas', 'Acessos, áreas de atendimento e tags das conversas') + sub('team', ['Pessoas', 'Áreas', 'Tags']);
+      let b;
+      if (ST.team == 0) b = `<div class="card"><h3>Novo acesso</h3><div class="row" style="margin-top:12px"><input id="un" class="input-field" placeholder="Nome"><select id="ur" class="input-field"><option>agente</option><option>supervisor</option><option>admin</option></select></div>
+        <div class="row" style="margin:12px 0">${S.areas.map(a => `<label class="mu"><input type="checkbox" class="ua" value="${esc(a)}"> ${esc(a)}</label>`).join('')}</div><button class="btn-primary" onclick="addUser()">Criar acesso</button></div>
+        <div class="card"><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Áreas</th><th></th></tr></thead><tbody>${S.users.map(u => `<tr><td><div class="row" style="flex-wrap:nowrap">${av(u, 34)}<input class="input-field" value="${esc(u.n)}" onchange="ren(1,${u.id},this.value)"></div></td><td>${u.r}</td><td>${u.a.map(a => `<span class="pill off" style="cursor:default">${esc(a)}</span>`).join('')}</td><td><button class="btn-secondary btn-sm" onclick="pick(1,${u.id})">Foto</button></td></tr>`).join('')}</tbody></table>
+        <p class="mu" style="margin-top:12px">Agente vê só as áreas dele. Supervisor também gerencia disparos, templates e números. Admin vê tudo.</p></div>`;
+      else if (ST.team == 1) b = `<div class="grid2">${S.areas.map(a => { const us = S.users.filter(u => u.a.includes(a)); return `<div class="card" style="margin:0"><h3>${esc(a)}</h3><div class="mu">${us.length} pessoas · ${S.nums.filter(n => n.a == a).length} números · ${S.convs.filter(c => c.area == a && c.st == 'aberta').length} conversas abertas</div><div style="margin-top:10px">${us.map(u => chipU(u.id)).join('')}</div></div>`; }).join('')}</div>
+        <div class="card" style="margin-top:16px"><h3>Nova área</h3><div class="row" style="margin-top:12px"><input id="ar" class="input-field" placeholder="Ex.: Pós-venda"><button class="btn-primary" onclick="addItem('areas','ar')">Adicionar</button></div></div>`;
+      else b = `<div class="card"><h3>Tags das conversas</h3>${S.tags.map((x, i) => `<div class="row" style="margin-top:10px"><span class="pill" style="cursor:default;min-width:110px;text-align:center">${esc(x)}</span><input class="input-field" value="${esc(x)}" onchange="renTag(${i},this.value)"><button class="btn-danger" onclick="delTag(${i})">Remover</button></div>`).join('')}
+        <div class="row" style="margin-top:16px"><input id="tg" class="input-field" placeholder="Nova tag"><button class="btn-secondary" onclick="addItem('tags','tg')">Adicionar</button></div></div>`;
+      $('#equipe-root').innerHTML = H + b;
+    }
+    function addItem(k, id) { const v = $('#' + id).value.trim(); if (v && !S[k].includes(v)) { S[k].push(v); save(); renderTeam(); } }
+    function addUser() { const n = $('#un').value.trim(); if (!n) return alert('Informe o nome.'); S.users.push({ id: S.nid++, n, r: $('#ur').value, a: [...document.querySelectorAll('.ua:checked')].map(x => x.value) }); save(); renderTeam(); }
+    function renTag(i, v) { v = v.trim(); if (!v || S.tags.includes(v)) return renderTeam(); const o = S.tags[i]; S.tags[i] = v; S.convs.forEach(c => c.tg = c.tg.map(x => x === o ? v : x)); save(); renderTeam(); }
+    function delTag(i) { const o = S.tags[i]; S.tags.splice(i, 1); S.convs.forEach(c => c.tg = c.tg.filter(x => x !== o)); save(); renderTeam(); }
+
+    /* ---------- Conexão Meta e KPIs de saúde ---------- */
+    async function checkBackendStatus() {
+      const d = await api('/api/status'); SRV = d;
+      const b = $('#meta-status');
+      if (d && d.connected) { b.innerText = 'Conectado à Meta'; b.className = 'status-badge status-connected'; }
+      else { b.innerText = d ? 'Credenciais Incompletas' : 'Servidor indisponível — modo demonstração'; b.className = 'status-badge status-disconnected'; }
+      renderMetaKpis(); renderNav();
+    }
+    function renderMetaKpis() {
+      const ns = S.nums, k = $('#kpi-api-status'); if (!k) return;
+      if (SRV && SRV.connected) { k.innerText = 'Online / Conectado'; k.style.color = '#4ade80'; }
+      else if (DEMO) { k.innerText = 'Modo demonstração'; k.style.color = '#facc15'; }
+      else { k.innerText = 'Desconectado'; k.style.color = '#fb7185'; }
+      $('#kpi-delivery').innerText = (ns.reduce((s, n) => s + n.dl, 0) / (ns.length || 1)).toFixed(1) + '%';
+      $('#kpi-limit').innerText = `${fm(ns.reduce((s, n) => s + n.sent, 0))} / ${fm(ns.reduce((s, n) => s + n.lim, 0))} msgs`;
+      const r = $('#kpi-risk'), w = ns.some(n => n.q == 'Baixa') ? 2 : ns.some(n => n.q == 'Média') ? 1 : 0;
+      r.innerText = ['Baixo (Chips Seguros)', 'Médio (Atenção)', 'Alto (Revisar números)'][w]; r.style.color = ['#4ade80', '#facc15', '#fb7185'][w];
+    }
+    async function saveCredentials() {
+      const wabaId = $('#cfg-waba').value.trim(), phoneId = $('#cfg-phoneid').value.trim(), token = $('#cfg-token').value.trim();
+      localStorage.setItem('aurium_waba', wabaId); localStorage.setItem('aurium_phone', phoneId); localStorage.setItem('aurium_token', token);
+      const d = await api('/api/credentials', { method: 'POST', headers: JSONH, body: JSON.stringify({ wabaId, phoneId, token }) });
+      alert(d ? 'Credenciais salvas permanentemente!' : 'Credenciais salvas neste navegador. Servidor não encontrado: o app segue em modo demonstração.');
+      checkBackendStatus(); syncTemplatesWithMeta(); fetchWabaPhoneNumbers();
+    }
+
+    /* ---------- Templates ---------- */
+    async function syncTemplatesWithMeta() {
+      const m = $('#sync-status-msg'); if (m) m.innerText = '🔄 Requisitando dados à Meta...';
+      const d = await api('/api/templates');
+      if (d && d.success && d.templates) { metaTemplatesList = d.templates; if (m) m.innerText = '✅ Sincronizado com sucesso com a Meta'; }
+      else { metaTemplatesList = S.tpls; if (m) m.innerText = d ? '❌ Erro ao consultar Meta: ' + (d.error || '') + ' — exibindo templates locais' : '🧪 Modo demonstração: servidor não encontrado, exibindo templates locais'; }
+      renderTemplatesTable(metaTemplatesList); updateCampTemplateDropdown(metaTemplatesList);
+    }
+    function renderTemplatesTable(list) {
+      const el = $('#tpl-list'); if (!el) return;
+      if (!list || !list.length) { el.innerHTML = '<tr><td colspan="5" style="color:#94a3b8">Nenhum template encontrado.</td></tr>'; return; }
+      el.innerHTML = list.map(t => { const ok = t.status === 'APPROVED';
+        return `<tr><td><strong>${esc(t.name)}</strong></td><td>${esc(t.category)}</td><td>${esc(t.language)}</td>
+        <td><span class="status-badge ${ok ? 'status-connected' : 'status-disconnected'}">${ok ? 'APPROVED' : esc(t.status) + ' (Em análise)'}</span></td>
+        <td>${t.local && !ok ? `<button class="btn-secondary btn-sm" onclick="approveTpl('${t.id}')">Simular aprovação</button>` : ''}</td></tr>`; }).join('');
+    }
+    function approveTpl(id) { S.tpls.find(t => t.id === id).status = 'APPROVED'; save(); syncTemplatesWithMeta(); }
     async function submitTemplate() {
-      const name = document.getElementById('tpl-name').value.trim();
-      const language = document.getElementById('tpl-lang').value;
-      const category = document.getElementById('tpl-category').value;
-      const bodyText = document.getElementById('tpl-text').value.trim();
-      const footerText = document.getElementById('tpl-footer').value.trim();
+      const name = $('#tpl-name').value.trim().toLowerCase().replace(/\W+/g, '_'), language = $('#tpl-lang').value, category = $('#tpl-category').value;
+      const bodyText = $('#tpl-text').value.trim(), footerText = $('#tpl-footer').value.trim();
+      if (!name || !bodyText) return alert('Preencha o Nome Interno e o Corpo da Mensagem.');
+      const samples = [...document.querySelectorAll('.sample-field')].map(i => i.value.trim());
+      if (samples.some(s => !s)) return alert('Por favor, informe uma amostra para cada variável!');
+      const btn = document.querySelector('button[onclick="submitTemplate()"]'); btn.disabled = true; btn.innerText = 'Enviando para a Meta...';
+      const d = await api('/api/templates/create', { method: 'POST', headers: JSONH, body: JSON.stringify({ name, language, category, bodyText, samples, footerText }) });
+      btn.disabled = false; btn.innerText = 'Enviar para Aprovação na Meta';
+      if (d && !d.success) return alert('Erro ao enviar o template:\n\n' + (d.error || 'Não foi possível enviar o template para a Meta.'));
+      if (!d) {
+        S.tpls.push({ id: 't' + S.nid++, name, category, language, status: 'PENDING', local: true, components: [{ type: 'BODY', text: bodyText }].concat(footerText ? [{ type: 'FOOTER', text: footerText }] : []) });
+        save(); alert('Template salvo localmente (modo demonstração). Use "Simular aprovação" para testar o fluxo.');
+      } else alert('Template enviado para a Meta com sucesso!');
+      ['tpl-name', 'tpl-text', 'tpl-footer'].forEach(i => $('#' + i).value = ''); updateTemplatePreview(); syncTemplatesWithMeta();
+    }
 
-      if (!name || !bodyText) {
-        alert('Preencha o Nome Interno e o Corpo da Mensagem.');
-        return;
-      }
-
-      const sampleInputs = document.querySelectorAll('.sample-field');
-      const samples = [];
-      let missingSample = false;
-
-      sampleInputs.forEach(input => {
-        const value = input.value.trim();
-        if (!value) missingSample = true;
-        samples.push(value);
-      });
-
-      if (missingSample) {
-        alert('Por favor, informe uma amostra para cada variável!');
-        return;
-      }
-
-      const button = document.querySelector('button[onclick="submitTemplate()"]');
-      if (button) {
-        button.disabled = true;
-        button.innerText = 'Enviando para a Meta...';
-      }
-
-      try {
-        const res = await fetch('/api/templates/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, language, category, bodyText, samples, footerText })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-          throw new Error(data.error || 'Não foi possível enviar o template para a Meta.');
+    /* ---------- Campanhas ---------- */
+    async function fetchWabaPhoneNumbers() {
+      const sel = $('#camp-sender-select'); if (!sel) return;
+      const v = sel.value, api_ = SRV && SRV.phoneId ? `<option value="api">${esc(SRV.display_phone_number || SRV.displayPhoneNumber || 'Número da Meta')} (${esc(SRV.phoneId)})</option>` : '';
+      sel.innerHTML = api_ + S.nums.filter(n => !n.pz).map(n => `<option value="${n.id}">${esc(n.n)} · ${esc(n.p)} · ${esc(n.a)} · ${n.q}</option>`).join('');
+      if (v) sel.value = v;
+    }
+    function renderCamps() {
+      const t = $('#camp-tag'); if (t && t.options.length !== S.tags.length + 1) { const v = t.value; t.innerHTML = '<option value="">— Nenhuma —</option>' + S.tags.map(x => `<option>${esc(x)}</option>`).join(''); t.value = v; }
+      $('#camp-history').innerHTML = S.camps.length ? `<table><thead><tr><th>Campanha</th><th>Template</th><th>Número</th><th>Progresso</th></tr></thead><tbody>${S.camps.map(c => `<tr><td><strong>${esc(c.title)}</strong><div class="mu">${c.h}</div></td><td>${esc(c.tpl)}</td><td>${esc(c.sender)}</td><td style="min-width:150px"><div class="bar"><i style="width:${(c.sent + c.fail) / c.total * 100}%"></i></div><span class="mu">${c.sent}/${c.total} · ${c.fail ? c.fail + ' falhas · ' : ''}${c.st}</span></td></tr>`).join('')}</tbody></table>` : '<div class="mu">Nenhuma campanha ainda.</div>';
+    }
+    async function startBulkSend() {
+      const title = $('#camp-title').value.trim(), tpl = $('#camp-template-select').value, sid = $('#camp-sender-select').value, tg = $('#camp-tag').value, log = $('#bulk-log'), bar = $('#bulk-bar');
+      let rc = [...csvData];
+      if (tg) S.convs.filter(c => c.tg.includes(tg)).forEach(c => rc.push({ nome: c.name.split(' ')[0], telefone: c.phone.replace(/\D/g, '') }));
+      rc = rc.filter((r, i, a) => a.findIndex(x => x.telefone === r.telefone) === i);
+      if (!title) return alert('Informe o título da campanha.');
+      if (!tpl) return alert('Selecione um template APROVADO para o disparo.');
+      if (!rc.length) return alert('Importe uma planilha CSV ou escolha uma tag de contatos.');
+      const n = S.nums.find(x => x.id == sid);
+      if (n && n.pz) return alert('Este número está pausado.');
+      if (n && n.sent + rc.length > n.lim) return alert(`A lista (${rc.length}) excede o limite diário restante deste número (${n.lim - n.sent}). Divida a campanha.`);
+      const t = metaTemplatesList.find(x => x.name === tpl), body = ((t && t.components || []).find(c => c.type === 'BODY') || {}).text || '', nv = (body.match(/\{\{\d+\}\}/g) || []).length;
+      const camp = { id: S.nid++, title, tpl, sender: n ? n.n : 'Meta API', total: rc.length, sent: 0, fail: 0, st: 'Enviando', h: now() };
+      S.camps.unshift(camp);
+      const L = h => { log.insertAdjacentHTML('beforeend', h + '<br>'); log.scrollTop = log.scrollHeight; };
+      log.innerHTML = 'Iniciando disparos em massa via Meta Cloud API...<br>';
+      for (const r of rc) {
+        const res = await api('/send-message', { method: 'POST', headers: JSONH, body: JSON.stringify({ to: r.telefone, templateName: tpl, language: (t && t.language) || 'pt_BR', templateParams: nv >= 1 && r.nome ? [r.nome] : [] }) });
+        if (!res) await new Promise(z => setTimeout(z, 250));
+        if (!res || res.success) {
+          camp.sent++; if (n) n.sent++;
+          L(`✅ ${res ? '' : '(simulado) '}Enviado com sucesso para ${esc(r.nome)} (${r.telefone})`);
+          const cv = S.convs.find(x => x.phone.replace(/\D/g, '') === r.telefone);
+          if (cv) cv.m.push({ f: 'a', t: body.replace(/\{\{\d+\}\}/g, r.nome), h: now(), by: 'Campanha ' + title });
+        } else {
+          camp.fail++; let e = String(res.error || '');
+          if (e.includes('131030')) e = 'Número não autorizado na lista de testes da Meta (Sandbox).';
+          L(`❌ Falha para ${esc(r.nome)}: ${esc(e)}`);
         }
-
-        alert('Template enviado para a Meta com sucesso! A página será atualizada.');
-        window.location.reload();
-      } catch (err) {
-        alert('Erro ao enviar o template:\n\n' + err.message);
-        if (button) {
-          button.disabled = false;
-          button.innerText = 'Enviar para Aprovação na Meta';
-        }
+        bar.style.width = (camp.sent + camp.fail) / camp.total * 100 + '%'; save(); renderCamps();
       }
+      camp.st = 'Concluída'; save(); renderCamps(); renderMetaKpis();
     }
 
     initApp();
