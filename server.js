@@ -31,14 +31,54 @@ function getCredentials() {
   };
 }
 
-// Check de Conexão e Credenciais Ativas
-app.get('/api/status', (req, res) => {
+// Verificar conexão e consultar o número exibido na Meta
+app.get('/api/status', async (req, res) => {
   const creds = getCredentials();
-  res.json({
-    connected: Boolean(creds.token && creds.phoneId),
-    phoneId: creds.phoneId || null,
-    wabaId: creds.wabaId || null
-  });
+
+  if (!creds.token || !creds.phoneId) {
+    return res.json({
+      connected: false,
+      phoneId: creds.phoneId || null,
+      wabaId: creds.wabaId || null,
+      displayPhoneNumber: null,
+      verifiedName: null,
+      error: 'Credenciais incompletas.'
+    });
+  }
+
+  try {
+    const url =
+      `https://graph.facebook.com/${META_GRAPH_VERSION}` +
+      `/${creds.phoneId}`;
+
+    const response = await axios.get(url, {
+      params: {
+        fields: 'display_phone_number,verified_name'
+      },
+      headers: {
+        Authorization: `Bearer ${creds.token}`
+      }
+    });
+
+    return res.json({
+      connected: true,
+      phoneId: creds.phoneId,
+      wabaId: creds.wabaId || null,
+      displayPhoneNumber: response.data.display_phone_number || null,
+      verifiedName: response.data.verified_name || null
+    });
+  } catch (error) {
+    const metaError = error.response?.data?.error;
+
+    return res.status(200).json({
+      connected: false,
+      phoneId: creds.phoneId,
+      wabaId: creds.wabaId || null,
+      displayPhoneNumber: null,
+      verifiedName: null,
+      error: metaError?.message || 'Não foi possível consultar o número na Meta.'
+    });
+  }
 });
 
 // Salvar/Atualizar Credenciais em Tempo de Execução

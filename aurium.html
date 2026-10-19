@@ -373,8 +373,15 @@
         const statusData = await res.json();
 
         if (statusData.phoneId) {
+          const displayNumber = statusData.displayPhoneNumber || 'Número configurado';
+          const verifiedName = statusData.verifiedName
+            ? ` — ${statusData.verifiedName}`
+            : '';
+
           senderSelect.innerHTML = `
-            <option value="${statusData.phoneId}">Número Ativo Meta (${statusData.phoneId})</option>
+            <option value="${statusData.phoneId}">
+              ${displayNumber}${verifiedName}
+            </option>
           `;
         }
       } catch (err) {
@@ -787,9 +794,18 @@
           );
         }
 
+        const templateId = data.data?.id
+          ? `\nID: ${data.data.id}`
+          : '';
+        const templateStatus = data.data?.status
+          ? `\nStatus: ${data.data.status}`
+          : '\nStatus: enviado para análise da Meta';
+
         alert(
-          'Template enviado para a Meta com sucesso!\n\n' +
-          'A página será atualizada agora.'
+          'Template enviado para a Meta com sucesso!' +
+          templateStatus +
+          templateId +
+          '\n\nA página será atualizada agora.'
         );
 
         window.location.reload();
