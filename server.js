@@ -4,7 +4,7 @@ const axios = require('axios');
 
 // Versão configurável da Graph API da Meta.
 // Pode ser alterada com META_GRAPH_VERSION no ambiente de produção.
-const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || 'v26.0';
+const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || 'v25.0';
 
 const app = express();
 

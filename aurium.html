@@ -661,9 +661,25 @@
         );
         const templateLanguage = selectedTpl?.language || 'pt_BR';
 
-        // O CSV atual possui nome e telefone. Para templates com {{1}},
-        // o nome será enviado como primeiro parâmetro.
-        const templateParams = contact.nome ? [contact.nome] : [];
+        // Só enviar parâmetros quando o template realmente possuir variáveis.
+        // O template hello_world, por exemplo, não possui nenhuma variável.
+        const bodyComponent = selectedTpl?.components?.find(
+          component => component.type === 'BODY'
+        );
+        const variableMatches = bodyComponent?.text?.match(/\{\{\d+\}\}/g) || [];
+        const variableCount = variableMatches.length;
+
+        let templateParams = [];
+        if (variableCount >= 1 && contact.nome) {
+          templateParams = [contact.nome];
+        }
+
+        if (variableCount > 1) {
+          logDiv.innerHTML +=
+            `⚠️ ${contact.nome}: o template exige ${variableCount} ` +
+            `parâmetros, mas o CSV atual fornece apenas o nome.<br>`;
+          continue;
+        }
 
         try {
           const res = await fetch('/send-message', {
