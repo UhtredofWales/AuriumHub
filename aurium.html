@@ -135,49 +135,44 @@
       </div>
     </div>
 
-    <!-- Tab 2: Disparos e Campanhas (Layout PRO) -->
+    <!-- Tab 2: Disparos e Campanhas -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Nova campanha</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Envie mensagens em massa selecionando templates aprovados ou inserindo lista CSV.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Envie campanhas em massa usando apenas os templates aprovados pela Meta.</p>
           </div>
           <div>
-            <button class="btn-secondary">Salvar rascunho</button>
-            <button class="btn-primary" style="margin-left: 8px;" onclick="startBulkSend()">Enviar Campanha</button>
+            <button class="btn-primary" onclick="startBulkSend()">🚀 Enviar Campanha</button>
           </div>
         </div>
 
         <div style="display: flex; gap: 28px;">
-          <!-- Formulário da Campanha -->
           <div style="flex: 1.2;">
             <div class="card">
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TÍTULO DA CAMPANHA *</label>
-              <input type="text" id="camp-title" class="input-field" placeholder="Ex: Black Friday 2026" style="margin-bottom: 16px;">
+              <input type="text" id="camp-title" class="input-field" placeholder="Ex: Campanha Março" style="margin-bottom: 16px;">
 
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">NÚMERO REMETENTE (WABA DE CAMPANHAS) *</label>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">NÚMERO REMETENTE (WABA) *</label>
               <select id="camp-sender-select" class="input-field" style="margin-bottom: 16px;">
-                <option value="">Carregando números da WABA Meta...</option>
+                <option value="">Carregando número ativo...</option>
               </select>
 
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TEMPLATE (WABA DE CAMPANHAS) *</label>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TEMPLATE APROVADO NA META *</label>
               <select id="camp-template-select" class="input-field" style="margin-bottom: 16px;" onchange="onTemplateSelectChange()">
-                <option value="">Carregando templates da Meta...</option>
+                <option value="">Sincronize ou aguarde carregar os templates...</option>
               </select>
-              <p style="font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 16px;">Número WABA dispara template aprovado diretamente pela Cloud API da Meta.</p>
 
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
-              
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP (CSV) *</label>
               <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
-                <input type="text" id="manual-numbers" class="input-field" placeholder='+55 11 99999-9999 ou "Nome <+5511...>"' style="margin-top: 0;">
-                <label class="btn-secondary" style="cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                  <span>⬆ Importar CSV</span>
+                <label class="btn-secondary" style="cursor: pointer; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center;">
+                  <span>⬆ Importar Planilha CSV</span>
                   <input type="file" id="csv-file" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
                 </label>
               </div>
 
-              <!-- Painel Inteligente de Mapeamento de Colunas CSV -->
+              <!-- Painel de Mapeamento CSV -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -192,7 +187,7 @@
                 </div>
 
                 <div style="display: flex; gap: 10px;">
-                  <button class="btn-primary" onclick="confirmCSVImport()">Importar</button>
+                  <button class="btn-primary" onclick="confirmCSVImport()">Confirmar Mapeamento</button>
                   <button class="btn-secondary" onclick="cancelCSVImport()">Cancelar</button>
                 </div>
               </div>
@@ -206,11 +201,11 @@
             </div>
           </div>
 
-          <!-- Painel da Prévia do Template Selecionado -->
+          <!-- Prévia -->
           <div style="flex: 0.8;" class="card">
-            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">💭 TEMPLATE WHATSAPP</h3>
+            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">💭 PRÉVIA DO TEMPLATE</h3>
             <div class="whatsapp-preview-card" style="margin-top: 16px;">
-              <div id="camp-preview-body" style="white-space: pre-wrap;">Selecione um template aprovado da Meta para visualizar a prévia aqui...</div>
+              <div id="camp-preview-body" style="white-space: pre-wrap;">Selecione um template aprovado para visualizar...</div>
               <div id="camp-preview-footer" style="font-size: 11px; color: #94a3b8; margin-top: 10px;"></div>
             </div>
           </div>
@@ -218,13 +213,13 @@
       </div>
     </div>
 
-    <!-- Tab 3: Gestor de Templates com Sincronização Meta -->
+    <!-- Tab 3: Gestor de Templates com Sincronização Direta -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Gestão de Templates da Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Crie novos modelos para aprovação ou sincronize os status atuais em tempo real.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Clique em sincronizar para consultar o estado atual diretamente na Meta.</p>
           </div>
           <button class="btn-primary" style="background-color: #0284c7;" onclick="syncTemplatesWithMeta()">⚡ Sincronizar com a META</button>
         </div>
@@ -282,7 +277,7 @@
         <div class="card" style="margin-top: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3>Templates Registrados na Meta</h3>
-            <span id="sync-status-msg" style="font-size: 12px; color: #94a3b8;">Sincronizado automaticamente</span>
+            <span id="sync-status-msg" style="font-size: 12px; color: #94a3b8;">Pronto para sincronizar</span>
           </div>
           <table>
             <thead>
@@ -294,7 +289,7 @@
               </tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="4" style="color: #94a3b8;">Carregando templates da Meta...</td></tr>
+              <tr><td colspan="4" style="color: #94a3b8;">Clique em "Sincronizar com a META" acima.</td></tr>
             </tbody>
           </table>
         </div>
@@ -379,11 +374,11 @@
 
         if (statusData.phoneId) {
           senderSelect.innerHTML = `
-            <option value="${statusData.phoneId}">Número Ativo Meta (${statusData.phoneId}) • WABA (template)</option>
+            <option value="${statusData.phoneId}">Número Ativo Meta (${statusData.phoneId})</option>
           `;
         }
       } catch (err) {
-        console.error('Erro ao buscar números da WABA.');
+        console.error('Erro ao buscar número remetente.');
       }
     }
 
@@ -395,9 +390,7 @@
           body: JSON.stringify({ wabaId, phoneId, token })
         });
         checkBackendStatus();
-      } catch (err) {
-        console.error('Erro ao sincronizar credenciais.');
-      }
+      } catch (err) {}
     }
 
     async function checkBackendStatus() {
@@ -516,9 +509,10 @@
       document.getElementById('csv-mapping-panel').style.display = 'none';
     }
 
+    // Sincronização direta enviando requisição GET para a META via Backend
     async function syncTemplatesWithMeta() {
       const msgEl = document.getElementById('sync-status-msg');
-      if (msgEl) msgEl.innerText = 'Sincronizando com a Meta...';
+      if (msgEl) msgEl.innerText = '🔄 Requisitando dados à Meta...';
 
       try {
         const res = await fetch('/api/templates');
@@ -529,12 +523,12 @@
           localStorage.setItem('aurium_templates', JSON.stringify(data.templates));
           renderTemplatesTable(data.templates);
           updateCampTemplateDropdown(data.templates);
-          if (msgEl) msgEl.innerText = 'Sincronizado agora com a Meta';
+          if (msgEl) msgEl.innerText = '✅ Sincronizado com sucesso com a Meta';
         } else {
-          if (msgEl) msgEl.innerText = 'Aguardando atualização da Meta';
+          if (msgEl) msgEl.innerText = '❌ Erro ao consultar Meta: ' + (data.error || '');
         }
       } catch (err) {
-        if (msgEl) msgEl.innerText = 'Falha ao conectar com a API Meta';
+        if (msgEl) msgEl.innerText = '❌ Falha de conexão com o servidor';
       }
     }
 
@@ -552,7 +546,7 @@
     function renderTemplatesTable(templates) {
       const listEl = document.getElementById('tpl-list');
       if (!templates || templates.length === 0) {
-        listEl.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;">Nenhum template encontrado na conta Meta.</td></tr>';
+        listEl.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;">Nenhum template encontrado.</td></tr>';
         return;
       }
 
@@ -560,7 +554,7 @@
       templates.forEach(tpl => {
         const isApproved = tpl.status === 'APPROVED';
         const statusClass = isApproved ? 'status-connected' : 'status-disconnected';
-        const badgeLabel = isApproved ? 'APPROVED' : 'PENDING (Em análise Meta)';
+        const badgeLabel = isApproved ? 'APPROVED' : `${tpl.status} (Em análise)`;
 
         listEl.innerHTML += `
           <tr>
@@ -573,14 +567,22 @@
       });
     }
 
+    // Filtra e exibe APENAS OS TEMPLATES APROVADOS (APPROVED) para a campanha
     function updateCampTemplateDropdown(templates) {
       const select = document.getElementById('camp-template-select');
       if (!select) return;
 
-      select.innerHTML = '<option value="">— Selecione um template da Meta —</option>';
-      templates.forEach(tpl => {
-        const tagStatus = tpl.status === 'APPROVED' ? '✅ APPROVED' : '⏳ PENDING';
-        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language}) — ${tagStatus}</option>`;
+      select.innerHTML = '<option value="">— Selecione um template APROVADO —</option>';
+      
+      const approvedTemplates = templates.filter(t => t.status === 'APPROVED');
+
+      if (approvedTemplates.length === 0) {
+        select.innerHTML = '<option value="">Nenhum template APROVADO disponível no momento</option>';
+        return;
+      }
+
+      approvedTemplates.forEach(tpl => {
+        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language})</option>`;
       });
     }
 
@@ -597,7 +599,7 @@
         previewBody.innerText = bodyComp ? bodyComp.text : 'Sem texto disponível';
         previewFooter.innerText = footerComp ? footerComp.text : '';
       } else {
-        previewBody.innerText = 'Selecione um template para visualizar a prévia aqui...';
+        previewBody.innerText = 'Selecione um template aprovado para visualizar a prévia aqui...';
         previewFooter.innerText = '';
       }
     }
@@ -634,7 +636,12 @@
       const logDiv = document.getElementById('bulk-log');
 
       if (csvData.length === 0) {
-        alert('Carregue e confirme a importação de uma planilha CSV primeiro.');
+        alert('Importe e confirme uma planilha CSV primeiro.');
+        return;
+      }
+
+      if (!selectedTemplate) {
+        alert('Selecione um template APROVADO para o disparo.');
         return;
       }
 
@@ -648,8 +655,8 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               to: contact.telefone,
-              templateName: selectedTemplate || null,
-              message: `Olá ${contact.nome}, mensagem via AuriumHub.`
+              templateName: selectedTemplate,
+              message: `Olá ${contact.nome}`
             })
           });
           const result = await res.json();
@@ -657,7 +664,12 @@
           if (result.success) {
             logDiv.innerHTML += `✅ Enviado com sucesso para ${contact.nome} (${contact.telefone})<br>`;
           } else {
-            logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${result.error}<br>`;
+            // Explicação detalhada caso seja erro de número sandbox não autorizado
+            let errText = result.error;
+            if (errText.includes('131030')) {
+              errText = 'Número não autorizado na lista de testes da Meta (Sandbox). Adicione este número no painel do desenvolvedor Meta.';
+            }
+            logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${errText}<br>`;
           }
         } catch (err) {
           logDiv.innerHTML += `❌ Erro de conexão para ${contact.nome}<br>`;
