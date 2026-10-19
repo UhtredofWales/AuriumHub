@@ -2,6 +2,10 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 
+// Versão configurável da Graph API da Meta.
+// Pode ser alterada com META_GRAPH_VERSION no ambiente de produção.
+const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || 'v26.0';
+
 const app = express();
 
 app.use(express.json());
@@ -44,16 +48,21 @@ app.post('/api/credentials', (req, res) => {
   if (phoneId !== undefined) activeCredentials.phoneId = String(phoneId).trim();
   if (wabaId !== undefined) activeCredentials.wabaId = String(wabaId).trim();
 
+  const current = getCredentials();
   res.json({
     success: true,
     message: 'Credenciais salvas com sucesso!',
-    credentials: getCredentials()
+    credentials: {
+      phoneId: current.phoneId || null,
+      wabaId: current.wabaId || null,
+      configured: Boolean(current.token && current.phoneId)
+    }
   });
 });
 
 // Envio de Mensagem Individual ou Template Aprovado (Disparos / Campanhas)
 app.post('/send-message', async (req, res) => {
-  const { to, message, templateName, language } = req.body;
+  const { to, message, templateName, language, templateParams = [] } = req.body;
   const creds = getCredentials();
 
   if (!to) {
@@ -68,26 +77,47 @@ app.post('/send-message', async (req, res) => {
   }
 
   const formattedPhone = String(to).replace(/\D/g, '');
-  const url = `https://graph.facebook.com/v18.0/${creds.phoneId}/messages`;
+  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.phoneId}/messages`;
 
   // Monta o payload dependendo se foi selecionado um template aprovado ou texto simples
   let payload = {};
   if (templateName) {
+    const template = {
+      name: String(templateName).trim(),
+      language: { code: language || 'pt_BR' }
+    };
+
+    // Templates com {{1}}, {{2}}, etc. precisam receber os parâmetros
+    // na mesma ordem em que aparecem no corpo do template.
+    if (Array.isArray(templateParams) && templateParams.length > 0) {
+      template.components = [
+        {
+          type: 'body',
+          parameters: templateParams.map(value => ({
+            type: 'text',
+            text: String(value ?? '')
+          }))
+        }
+      ];
+    }
+
     payload = {
       messaging_product: 'whatsapp',
+      recipient_type: 'individual',
       to: formattedPhone,
       type: 'template',
-      template: {
-        name: templateName,
-        language: { code: language || 'en_US' }
-      }
+      template
     };
   } else {
     payload = {
       messaging_product: 'whatsapp',
+      recipient_type: 'individual',
       to: formattedPhone,
       type: 'text',
-      text: { body: message || 'Mensagem via AuriumHub' }
+      text: {
+        preview_url: true,
+        body: message || 'Mensagem via AuriumHub'
+      }
     };
   }
 
@@ -148,7 +178,7 @@ app.post('/api/templates/create', async (req, res) => {
     });
   }
 
-  const url = `https://graph.facebook.com/v18.0/${creds.wabaId}/message_templates`;
+  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.wabaId}/message_templates`;
 
   try {
     const response = await axios.post(
@@ -190,7 +220,7 @@ app.get('/api/templates', async (req, res) => {
     });
   }
 
-  const url = `https://graph.facebook.com/v18.0/${creds.wabaId}/message_templates`;
+  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.wabaId}/message_templates`;
 
   try {
     const response = await axios.get(url, {

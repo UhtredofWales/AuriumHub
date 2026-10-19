@@ -649,6 +649,15 @@
 
       for (let i = 0; i < csvData.length; i++) {
         const contact = csvData[i];
+        const selectedTpl = metaTemplatesList.find(
+          tpl => tpl.name === selectedTemplate
+        );
+        const templateLanguage = selectedTpl?.language || 'pt_BR';
+
+        // O CSV atual possui nome e telefone. Para templates com {{1}},
+        // o nome será enviado como primeiro parâmetro.
+        const templateParams = contact.nome ? [contact.nome] : [];
+
         try {
           const res = await fetch('/send-message', {
             method: 'POST',
@@ -656,7 +665,8 @@
             body: JSON.stringify({
               to: contact.telefone,
               templateName: selectedTemplate,
-              message: `Olá ${contact.nome}`
+              language: templateLanguage,
+              templateParams
             })
           });
           const result = await res.json();
@@ -720,11 +730,11 @@
     }
 
     async function submitTemplate() {
-      const name = document.getElementById('tpl-name').value;
+      const name = document.getElementById('tpl-name').value.trim();
       const language = document.getElementById('tpl-lang').value;
       const category = document.getElementById('tpl-category').value;
-      const bodyText = document.getElementById('tpl-text').value;
-      const footerText = document.getElementById('tpl-footer').value;
+      const bodyText = document.getElementById('tpl-text').value.trim();
+      const footerText = document.getElementById('tpl-footer').value.trim();
 
       if (!name || !bodyText) {
         alert('Preencha o Nome Interno e o Corpo da Mensagem.');
@@ -736,8 +746,9 @@
       let missingSample = false;
 
       sampleInputs.forEach(input => {
-        if (!input.value.trim()) missingSample = true;
-        samples.push(input.value.trim());
+        const value = input.value.trim();
+        if (!value) missingSample = true;
+        samples.push(value);
       });
 
       if (missingSample) {
@@ -745,22 +756,50 @@
         return;
       }
 
+      const button = document.querySelector(
+        'button[onclick="submitTemplate()"]'
+      );
+
+      if (button) {
+        button.disabled = true;
+        button.innerText = 'Enviando para a Meta...';
+      }
+
       try {
         const res = await fetch('/api/templates/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, language, category, bodyText, samples, footerText })
+          body: JSON.stringify({
+            name,
+            language,
+            category,
+            bodyText,
+            samples,
+            footerText
+          })
         });
+
         const data = await res.json();
 
-        if (data.success) {
-          alert('Template enviado para aprovação na Meta!');
-          syncTemplatesWithMeta();
-        } else {
-          alert('Erro ao criar template: ' + data.error);
+        if (!res.ok || !data.success) {
+          throw new Error(
+            data.error || 'Não foi possível enviar o template para a Meta.'
+          );
         }
+
+        alert(
+          'Template enviado para a Meta com sucesso!\n\n' +
+          'A página será atualizada agora.'
+        );
+
+        window.location.reload();
       } catch (err) {
-        alert('Erro ao conectar ao servidor.');
+        alert('Erro ao enviar o template:\n\n' + err.message);
+
+        if (button) {
+          button.disabled = false;
+          button.innerText = 'Enviar para Aprovação na Meta';
+        }
       }
     }
 
