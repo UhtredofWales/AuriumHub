@@ -2,10 +2,6 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 
-// Versão configurável da Graph API da Meta.
-// Pode ser alterada com META_GRAPH_VERSION no ambiente de produção.
-const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || 'v25.0';
-
 const app = express();
 
 app.use(express.json());
@@ -31,52 +27,37 @@ function getCredentials() {
   };
 }
 
-// Verificar conexão e consultar o número exibido na Meta
+// Check de Conexão e Credenciais Ativas
 app.get('/api/status', async (req, res) => {
   const creds = getCredentials();
-
+  
   if (!creds.token || !creds.phoneId) {
     return res.json({
       connected: false,
-      phoneId: creds.phoneId || null,
-      wabaId: creds.wabaId || null,
-      displayPhoneNumber: null,
-      verifiedName: null,
-      error: 'Credenciais incompletas.'
+      phoneId: null,
+      wabaId: creds.wabaId || null
     });
   }
 
+  // Tenta buscar informações detalhadas do número na Meta
   try {
-    const url =
-      `https://graph.facebook.com/${META_GRAPH_VERSION}` +
-      `/${creds.phoneId}`;
-
+    const url = `https://graph.facebook.com/v18.0/${creds.phoneId}`;
     const response = await axios.get(url, {
-      params: {
-        fields: 'display_phone_number,verified_name'
-      },
-      headers: {
-        Authorization: `Bearer ${creds.token}`
-      }
+      headers: { 'Authorization': `Bearer ${creds.token}` }
     });
 
-    return res.json({
+    res.json({
       connected: true,
       phoneId: creds.phoneId,
       wabaId: creds.wabaId || null,
-      displayPhoneNumber: response.data.display_phone_number || null,
-      verifiedName: response.data.verified_name || null
+      displayPhoneNumber: response.data.display_phone_number,
+      verifiedName: response.data.verified_name
     });
-  } catch (error) {
-    const metaError = error.response?.data?.error;
-
-    return res.status(200).json({
-      connected: false,
+  } catch (err) {
+    res.json({
+      connected: true,
       phoneId: creds.phoneId,
-      wabaId: creds.wabaId || null,
-      displayPhoneNumber: null,
-      verifiedName: null,
-      error: metaError?.message || 'Não foi possível consultar o número na Meta.'
+      wabaId: creds.wabaId || null
     });
   }
 });
@@ -88,21 +69,16 @@ app.post('/api/credentials', (req, res) => {
   if (phoneId !== undefined) activeCredentials.phoneId = String(phoneId).trim();
   if (wabaId !== undefined) activeCredentials.wabaId = String(wabaId).trim();
 
-  const current = getCredentials();
   res.json({
     success: true,
     message: 'Credenciais salvas com sucesso!',
-    credentials: {
-      phoneId: current.phoneId || null,
-      wabaId: current.wabaId || null,
-      configured: Boolean(current.token && current.phoneId)
-    }
+    credentials: getCredentials()
   });
 });
 
-// Envio de Mensagem Individual ou Template Aprovado (Disparos / Campanhas)
+// Envio de Mensagem Individual ou Template Aprovado com Parâmetros Dinâmicos
 app.post('/send-message', async (req, res) => {
-  const { to, message, templateName, language, templateParams = [] } = req.body;
+  const { to, message, templateName, language, templateParams } = req.body;
   const creds = getCredentials();
 
   if (!to) {
@@ -117,47 +93,39 @@ app.post('/send-message', async (req, res) => {
   }
 
   const formattedPhone = String(to).replace(/\D/g, '');
-  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.phoneId}/messages`;
+  const url = `https://graph.facebook.com/v18.0/${creds.phoneId}/messages`;
 
-  // Monta o payload dependendo se foi selecionado um template aprovado ou texto simples
   let payload = {};
   if (templateName) {
-    const template = {
-      name: String(templateName).trim(),
-      language: { code: language || 'pt_BR' }
-    };
-
-    // Templates com {{1}}, {{2}}, etc. precisam receber os parâmetros
-    // na mesma ordem em que aparecem no corpo do template.
-    if (Array.isArray(templateParams) && templateParams.length > 0) {
-      template.components = [
-        {
-          type: 'body',
-          parameters: templateParams.map(value => ({
-            type: 'text',
-            text: String(value ?? '')
-          }))
-        }
-      ];
+    const components = [];
+    
+    // Se houver parâmetros informados (ex: nome do cliente para {{1}}), monta a estrutura exigida pela Meta
+    if (templateParams && Array.isArray(templateParams) && templateParams.length > 0) {
+      components.push({
+        type: 'body',
+        parameters: templateParams.map(param => ({
+          type: 'text',
+          text: String(param)
+        }))
+      });
     }
 
     payload = {
       messaging_product: 'whatsapp',
-      recipient_type: 'individual',
       to: formattedPhone,
       type: 'template',
-      template
+      template: {
+        name: templateName,
+        language: { code: language || 'pt_BR' },
+        ...(components.length > 0 ? { components } : {})
+      }
     };
   } else {
     payload = {
       messaging_product: 'whatsapp',
-      recipient_type: 'individual',
       to: formattedPhone,
       type: 'text',
-      text: {
-        preview_url: true,
-        body: message || 'Mensagem via AuriumHub'
-      }
+      text: { body: message || 'Mensagem via AuriumHub' }
     };
   }
 
@@ -201,7 +169,6 @@ app.post('/api/templates/create', async (req, res) => {
     text: bodyText
   };
 
-  // Se houver amostras passadas para variáveis {{1}}, {{2}}...
   if (samples && Array.isArray(samples) && samples.length > 0) {
     const cleanSamples = samples.map(s => String(s || 'Exemplo'));
     bodyComponent.example = {
@@ -218,7 +185,7 @@ app.post('/api/templates/create', async (req, res) => {
     });
   }
 
-  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.wabaId}/message_templates`;
+  const url = `https://graph.facebook.com/v18.0/${creds.wabaId}/message_templates`;
 
   try {
     const response = await axios.post(
@@ -260,7 +227,7 @@ app.get('/api/templates', async (req, res) => {
     });
   }
 
-  const url = `https://graph.facebook.com/${META_GRAPH_VERSION}/${creds.wabaId}/message_templates`;
+  const url = `https://graph.facebook.com/v18.0/${creds.wabaId}/message_templates`;
 
   try {
     const response = await axios.get(url, {
