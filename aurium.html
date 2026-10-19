@@ -80,6 +80,15 @@
     .sample-item { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
     .sample-item label { background: #38bdf8; color: #0f172a; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
 
+    /* Componente de Destinatários com Chips (Estilo ZapHub) */
+    .recipient-container { background: #0b1120; border: 1px solid #1e293b; border-radius: 10px; padding: 16px; margin-top: 6px; }
+    .recipient-input-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px; }
+    .recipient-input { flex: 1; background: transparent; border: none; outline: none; color: #f8fafc; font-size: 14px; }
+    .recipient-chips-area { display: flex; flex-wrap: wrap; gap: 8px; min-height: 38px; align-items: center; }
+    .contact-chip { background: #172554; border: 1px solid #1e40af; color: #60a5fa; font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 8px; }
+    .contact-chip-remove { cursor: pointer; color: #93c5fd; font-weight: bold; margin-left: 4px; font-size: 14px; }
+    .contact-chip-remove:hover { color: #f43f5e; }
+
     /* Import CSV Box PRO */
     .csv-import-box { background: #182232; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin-top: 16px; }
     
@@ -106,7 +115,7 @@
     .mt3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 12px 0; }
     .mt3 > div { background: #182232; border-radius: 10px; padding: 8px 10px; }
     .mt3 b { display: block; font-size: 17px; }
-    .bar { height: 8px; background: #1e293b; border-radius: 9px; overflow: hidden; }
+    .bar { height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; }
     .bar i { display: block; height: 100%; background: #38bdf8; }
     .sys { align-self: center; font-size: 11px; background: #1e293b; color: #94a3b8; padding: 3px 12px; border-radius: 99px; }
     .alert { background: rgba(234,179,8,.12); color: #facc15; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
@@ -156,8 +165,7 @@
       <div class="details-panel" id="details-panel"></div>
     </div>
 
-    
-<!-- Tab 2: Disparos e Campanhas -->
+    <!-- Tab 2: Disparos e Campanhas -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -186,15 +194,22 @@
                 <option value="">Sincronize ou aguarde carregar os templates...</option>
               </select>
 
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP (CSV) *</label>
-              <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
-                <label class="btn-secondary" style="cursor: pointer; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center;">
-                  <span>⬆ Importar Planilha CSV</span>
-                  <input type="file" id="csv-file" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
-                </label>
+              <!-- DESTINATÁRIOS ESTILO ZAPHUB COM BALÕES/CHIPS DE CONTATOS -->
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
+              <div class="recipient-container">
+                <div class="recipient-input-wrapper">
+                  <input type="text" id="manual-recipient-input" class="recipient-input" placeholder='+55 11 99999-9999 ou "Nome <+5511...>"' onkeydown="if(event.key==='Enter'){addManualContact();}">
+                  <label class="btn-secondary btn-sm" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <span>⬆ Importar CSV</span>
+                    <input type="file" id="csv-file" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+                  </label>
+                </div>
+                <div id="chips-container" class="recipient-chips-area">
+                  <span style="font-size: 12px; color: #64748b;">Nenhum contato adicionado ainda.</span>
+                </div>
               </div>
 
-              <!-- Painel de Mapeamento CSV -->
+              <!-- Painel Mapeamento CSV (caso precise trocar coluna) -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -215,8 +230,9 @@
               </div>
 
               <div id="csv-import-status" style="font-size: 13px; color: #4ade80; margin-top: 10px; font-weight: 500;"></div>
+
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block; margin-top: 16px;">INCLUIR CONTATOS DAS CONVERSAS COM A TAG (OPCIONAL)</label>
-              <select id="camp-tag" class="input-field"></select>
+              <select id="camp-tag" class="input-field" onchange="includeTagContacts(this.value)"></select>
             </div>
 
             <div class="card">
@@ -323,7 +339,7 @@
       </div>
     </div>
 
-    <!-- Tab 4: Conexão e Saúde de Chips (ZapHub Feature) -->
+    <!-- Tab 4: Conexão e Saúde de Chips -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
         <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Saúde de Chip</h1>
@@ -382,22 +398,6 @@
     let csvData = [];
     let metaTemplatesList = [];
 
-    
-    
-
-    
-
-    // Funções do Inbox ZapHub
-    
-
-    
-
-    
-
-    
-
-    
-
     async function syncBackendCredentials(wabaId, phoneId, token) {
       try {
         await fetch('/api/credentials', {
@@ -409,9 +409,56 @@
       } catch (err) {}
     }
 
-    
+    /* GESTOR DE BALÕES / CHIPS DE CONTATOS (ESTILO ZAPHUB) */
+    function renderChips() {
+      const container = document.getElementById('chips-container');
+      if (!container) return;
 
-    
+      if (csvData.length === 0) {
+        container.innerHTML = '<span style="font-size: 12px; color: #64748b;">Nenhum contato adicionado ainda.</span>';
+        return;
+      }
+
+      container.innerHTML = csvData.map((c, index) => `
+        <div class="contact-chip">
+          <span>${esc(c.nome)} &lt;+${c.telefone}&gt;</span>
+          <span class="contact-chip-remove" onclick="removeChip(${index})">✕</span>
+        </div>
+      `).join('');
+    }
+
+    function removeChip(index) {
+      csvData.splice(index, 1);
+      renderChips();
+      const statusEl = document.getElementById('csv-import-status');
+      if (statusEl) statusEl.innerText = csvData.length > 0 ? `✅ ${csvData.length} contatos mapeados.` : '';
+    }
+
+    function addManualContact() {
+      const input = document.getElementById('manual-recipient-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      // Suporta formato "Nome <+55...>" ou apenas número
+      let name = 'Contato';
+      let phone = val;
+
+      if (val.includes('<') && val.includes('>')) {
+        const parts = val.split('<');
+        name = parts[0].trim();
+        phone = parts[1].replace('>', '').trim();
+      }
+
+      phone = phone.replace(/\D/g, '');
+      if (phone.length >= 8) {
+        csvData.push({ nome: name, telefone: phone });
+        renderChips();
+        input.value = '';
+        document.getElementById('csv-import-status').innerText = `✅ ${csvData.length} contatos no disparo.`;
+      } else {
+        alert('Número inválido. Informe o código do país e DDD (ex: 5518991879642)');
+      }
+    }
 
     function handleCSVUpload(event) {
       const file = event.target.files[0];
@@ -457,8 +504,7 @@
 
         phoneSelect.value = detectedPhoneIndex;
 
-        document.getElementById('csv-detected-summary').innerText = `Planilha carregada com ${parsedCsvRows.length} linhas. Confirme as colunas abaixo:`;
-        document.getElementById('csv-mapping-panel').style.display = 'block';
+        confirmCSVImport(); // Importação direta estilo ZapHub
       };
 
       reader.readAsText(file, 'UTF-8');
@@ -468,17 +514,18 @@
       const phoneIdx = parseInt(document.getElementById('csv-phone-col').value);
       const nameIdx = parseInt(document.getElementById('csv-name-col').value);
 
-      csvData = [];
       parsedCsvRows.forEach(row => {
         const phoneRaw = row[phoneIdx] ? row[phoneIdx].replace(/\D/g, '') : '';
         const nameRaw = nameIdx !== -1 && row[nameIdx] ? row[nameIdx] : 'Cliente';
 
         if (phoneRaw.length >= 8) {
-          csvData.push({ nome: nameRaw, telefone: phoneRaw });
+          if (!csvData.some(c => c.telefone === phoneRaw)) {
+            csvData.push({ nome: nameRaw, telefone: phoneRaw });
+          }
         }
       });
 
-      document.getElementById('csv-mapping-panel').style.display = 'none';
+      renderChips();
       document.getElementById('csv-import-status').innerText = `✅ Importação concluída! ${csvData.length} contatos válidos mapeados.`;
     }
 
@@ -486,11 +533,17 @@
       document.getElementById('csv-mapping-panel').style.display = 'none';
     }
 
-    
-
-    
-
-    
+    function includeTagContacts(tag) {
+      if (!tag) return;
+      S.convs.filter(c => c.tg.includes(tag)).forEach(c => {
+        const cleanPhone = c.phone.replace(/\D/g, '');
+        if (!csvData.some(item => item.telefone === cleanPhone)) {
+          csvData.push({ nome: c.name.split(' ')[0], telefone: cleanPhone });
+        }
+      });
+      renderChips();
+      document.getElementById('csv-import-status').innerText = `✅ Contatos da tag "${tag}" adicionados! Total: ${csvData.length}`;
+    }
 
     function updateCampTemplateDropdown(templates) {
       const select = document.getElementById('camp-template-select');
@@ -526,10 +579,6 @@
         previewFooter.innerText = '';
       }
     }
-
-    
-
-    
 
     function updateTemplatePreview() {
       const text = document.getElementById('tpl-text').value;
@@ -572,12 +621,8 @@
       updateTemplatePreview();
     }
 
-    
-
     /* ===================================================================
        AuriumHub PRO v3 — recursos do ZapHub + modo demonstração
-       Se o servidor (/api/*, /send-message) não responder, o app continua
-       funcionando localmente com dados salvos no navegador.
        =================================================================== */
     const SK = 'aurium_state_v3', KEYS = ['convs', 'users', 'nums'];
     const $ = s => document.querySelector(s);
@@ -658,7 +703,7 @@
       renderNav();
       ({
         conversas: () => { renderFilters(); renderChatList(); renderActiveChat(); },
-        disparos: () => { fetchWabaPhoneNumbers(); syncTemplatesWithMeta(); renderCamps(); },
+        disparos: () => { fetchWabaPhoneNumbers(); syncTemplatesWithMeta(); renderCamps(); renderChips(); },
         templates: () => syncTemplatesWithMeta(),
         numeros: () => renderNums(),
         equipe: () => renderTeam(),
@@ -836,7 +881,7 @@
       const wabaId = $('#cfg-waba').value.trim(), phoneId = $('#cfg-phoneid').value.trim(), token = $('#cfg-token').value.trim();
       localStorage.setItem('aurium_waba', wabaId); localStorage.setItem('aurium_phone', phoneId); localStorage.setItem('aurium_token', token);
       const d = await api('/api/credentials', { method: 'POST', headers: JSONH, body: JSON.stringify({ wabaId, phoneId, token }) });
-      alert(d ? 'Credenciais salvas permanentemente!' : 'Credenciais salvas neste navegador. Servidor não encontrado: o app segue em modo demonstração.');
+      alert(d ? 'Credenciais salvas permanentemente!' : 'Credenciais salvas neste navegador. Servidor não encontrado.');
       checkBackendStatus(); syncTemplatesWithMeta(); fetchWabaPhoneNumbers();
     }
 
@@ -845,7 +890,7 @@
       const m = $('#sync-status-msg'); if (m) m.innerText = '🔄 Requisitando dados à Meta...';
       const d = await api('/api/templates');
       if (d && d.success && d.templates) { metaTemplatesList = d.templates; if (m) m.innerText = '✅ Sincronizado com sucesso com a Meta'; }
-      else { metaTemplatesList = S.tpls; if (m) m.innerText = d ? '❌ Erro ao consultar Meta: ' + (d.error || '') + ' — exibindo templates locais' : '🧪 Modo demonstração: servidor não encontrado, exibindo templates locais'; }
+      else { metaTemplatesList = S.tpls; if (m) m.innerText = d ? '❌ Erro ao consultar Meta: ' + (d.error || '') : '🧪 Modo demonstração'; }
       renderTemplatesTable(metaTemplatesList); updateCampTemplateDropdown(metaTemplatesList);
     }
     function renderTemplatesTable(list) {
@@ -869,7 +914,7 @@
       if (d && !d.success) return alert('Erro ao enviar o template:\n\n' + (d.error || 'Não foi possível enviar o template para a Meta.'));
       if (!d) {
         S.tpls.push({ id: 't' + S.nid++, name, category, language, status: 'PENDING', local: true, components: [{ type: 'BODY', text: bodyText }].concat(footerText ? [{ type: 'FOOTER', text: footerText }] : []) });
-        save(); alert('Template salvo localmente (modo demonstração). Use "Simular aprovação" para testar o fluxo.');
+        save(); alert('Template salvo localmente (modo demonstração). Use "Simular aprovação" para testar.');
       } else alert('Template enviado para a Meta com sucesso!');
       ['tpl-name', 'tpl-text', 'tpl-footer'].forEach(i => $('#' + i).value = ''); updateTemplatePreview(); syncTemplatesWithMeta();
     }
@@ -886,31 +931,30 @@
       $('#camp-history').innerHTML = S.camps.length ? `<table><thead><tr><th>Campanha</th><th>Template</th><th>Número</th><th>Progresso</th></tr></thead><tbody>${S.camps.map(c => `<tr><td><strong>${esc(c.title)}</strong><div class="mu">${c.h}</div></td><td>${esc(c.tpl)}</td><td>${esc(c.sender)}</td><td style="min-width:150px"><div class="bar"><i style="width:${(c.sent + c.fail) / c.total * 100}%"></i></div><span class="mu">${c.sent}/${c.total} · ${c.fail ? c.fail + ' falhas · ' : ''}${c.st}</span></td></tr>`).join('')}</tbody></table>` : '<div class="mu">Nenhuma campanha ainda.</div>';
     }
     async function startBulkSend() {
-      const title = $('#camp-title').value.trim(), tpl = $('#camp-template-select').value, sid = $('#camp-sender-select').value, tg = $('#camp-tag').value, log = $('#bulk-log'), bar = $('#bulk-bar');
+      const title = $('#camp-title').value.trim(), tpl = $('#camp-template-select').value, sid = $('#camp-sender-select').value, log = $('#bulk-log'), bar = $('#bulk-bar');
       let rc = [...csvData];
-      if (tg) S.convs.filter(c => c.tg.includes(tg)).forEach(c => rc.push({ nome: c.name.split(' ')[0], telefone: c.phone.replace(/\D/g, '') }));
-      rc = rc.filter((r, i, a) => a.findIndex(x => x.telefone === r.telefone) === i);
+      
       if (!title) return alert('Informe o título da campanha.');
       if (!tpl) return alert('Selecione um template APROVADO para o disparo.');
-      if (!rc.length) return alert('Importe uma planilha CSV ou escolha uma tag de contatos.');
+      if (!rc.length) return alert('Importe uma planilha CSV ou digite ao menos um destinatário.');
+
       const n = S.nums.find(x => x.id == sid);
       if (n && n.pz) return alert('Este número está pausado.');
-      if (n && n.sent + rc.length > n.lim) return alert(`A lista (${rc.length}) excede o limite diário restante deste número (${n.lim - n.sent}). Divida a campanha.`);
+      
       const t = metaTemplatesList.find(x => x.name === tpl), body = ((t && t.components || []).find(c => c.type === 'BODY') || {}).text || '', nv = (body.match(/\{\{\d+\}\}/g) || []).length;
       const camp = { id: S.nid++, title, tpl, sender: n ? n.n : 'Meta API', total: rc.length, sent: 0, fail: 0, st: 'Enviando', h: now() };
       S.camps.unshift(camp);
       const L = h => { log.insertAdjacentHTML('beforeend', h + '<br>'); log.scrollTop = log.scrollHeight; };
       log.innerHTML = 'Iniciando disparos em massa via Meta Cloud API...<br>';
+
       for (const r of rc) {
         const res = await api('/send-message', { method: 'POST', headers: JSONH, body: JSON.stringify({ to: r.telefone, templateName: tpl, language: (t && t.language) || 'pt_BR', templateParams: nv >= 1 && r.nome ? [r.nome] : [] }) });
         if (!res) await new Promise(z => setTimeout(z, 250));
-        if (!res || res.success) {
+        if (res && res.success) {
           camp.sent++; if (n) n.sent++;
-          L(`✅ ${res ? '' : '(simulado) '}Enviado com sucesso para ${esc(r.nome)} (${r.telefone})`);
-          const cv = S.convs.find(x => x.phone.replace(/\D/g, '') === r.telefone);
-          if (cv) cv.m.push({ f: 'a', t: body.replace(/\{\{\d+\}\}/g, r.nome), h: now(), by: 'Campanha ' + title });
+          L(`✅ Enviado com sucesso para ${esc(r.nome)} (${r.telefone})`);
         } else {
-          camp.fail++; let e = String(res.error || '');
+          camp.fail++; let e = String(res ? res.error : 'Erro de autenticação ou backend indisponível');
           if (e.includes('131030')) e = 'Número não autorizado na lista de testes da Meta (Sandbox).';
           L(`❌ Falha para ${esc(r.nome)}: ${esc(e)}`);
         }
