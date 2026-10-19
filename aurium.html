@@ -1,101 +1,262 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AuriumHub</title>
-<style>
-:root{--bg:#f3f6f5;--pn:#fff;--tx:#1b2420;--mu:#6b7873;--bd:#e1e7e4;--ac:#0f8a6f;--acs:#e0f3ee;--out:#d9f5dc;--wa:#ece6dd;--dn:#d64545;--in:#fff;color-scheme:light;box-sizing:border-box}
-body{background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;height:100vh;display:flex}
-.app{display:flex;width:100%;height:100%}
-nav{width:210px;background:var(--pn);border-right:1px solid var(--bd);padding:14px 10px;display:flex;flex-direction:column;gap:4px}
-nav h1{font-size:17px;margin:0 6px 10px;color:var(--ac)}
-nav button{all:unset;cursor:pointer;padding:9px 10px;border-radius:8px;display:flex;gap:8px;align-items:center;font-weight:600;color:var(--ac);background:var(--acs)}
-main{flex:1;padding:16px;overflow:auto}
-.ib{display:grid;grid-template-columns:270px 1fr 230px;gap:12px;height:calc(100vh - 34px)}
-.col{background:var(--pn);border:1px solid var(--bd);border-radius:12px;overflow:auto;display:flex;flex-direction:column}
-.it{padding:10px 12px;border-bottom:1px solid var(--bd);cursor:pointer;background:var(--acs)}
-.chat{background:var(--wa);padding:12px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px}
-.bb{max-width:75%;padding:7px 10px;border-radius:10px;background:var(--in);align-self:flex-start;white-space:pre-wrap}
-.bb.a{background:var(--out);align-self:flex-end}
-.bb small{display:block;text-align:right;color:var(--mu);font-size:10px}
-.cmp{display:flex;gap:6px;padding:8px;border-top:1px solid var(--bd)}
-.cmp input{flex:1;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;background:var(--pn);color:var(--tx)}
-.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 13px;cursor:pointer;font-weight:600}
-.hd{padding:10px 12px;border-bottom:1px solid var(--bd);font-weight:bold}
-.mu{color:var(--mu);font-size:12px}
-</style></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuriumHub PRO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0b1412; color: #e9edef; display: flex; height: 100vh; overflow: hidden; }
+    
+    /* Sidebar Navigation */
+    .sidebar { width: 220px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 10px; }
+    .logo { font-size: 20px; font-weight: bold; color: #00a884; margin-bottom: 25px; padding-left: 10px; }
+    .logo span { color: #25d366; font-size: 12px; background: rgba(37,211,102,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+    .nav-menu { list-style: none; }
+    .nav-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: #aebac1; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+    .nav-item:hover, .nav-item.active { background-color: #1f2c28; color: #00a884; font-weight: 600; }
+    
+    .user-footer { border-top: 1px solid #1f2c28; padding-top: 15px; font-size: 12px; color: #8696a0; }
+    .btn-reset { margin-top: 10px; width: 100%; background: transparent; border: 1px solid #ea8686; color: #ea8686; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+
+    /* Main Container */
+    .main-container { flex: 1; display: flex; background-color: #0b1412; }
+    .tab-content { display: none; width: 100%; height: 100%; }
+    .tab-content.active { display: flex; }
+
+    /* Chat Layout */
+    .chat-list-panel { width: 320px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; }
+    .chat-list-header { padding: 15px; border-bottom: 1px solid #1f2c28; }
+    .filter-select { background: #1f2c28; color: #e9edef; border: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; margin-right: 5px; }
+    
+    .chat-item { padding: 15px; border-bottom: 1px solid #1a2522; cursor: pointer; }
+    .chat-item:hover, .chat-item.active { background-color: #1a2522; }
+    .chat-item-name { font-weight: 600; font-size: 15px; color: #e9edef; }
+    .chat-item-sub { font-size: 12px; color: #8696a0; margin-top: 3px; }
+    .tag { display: inline-block; background: #00a88422; color: #00a884; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 5px; }
+
+    /* Chat Conversation */
+    .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0b1412; }
+    .chat-header { padding: 15px 20px; background-color: #111b18; border-bottom: 1px solid #1f2c28; font-weight: 600; }
+    .messages-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .msg { max-width: 65%; padding: 10px 14px; border-radius: 8px; font-size: 14px; line-height: 1.4; }
+    .msg.sent { background-color: #005c4b; align-self: flex-end; color: #e9edef; }
+    .msg.received { background-color: #202c33; align-self: flex-start; color: #e9edef; }
+
+    .chat-input-area { padding: 15px; background-color: #111b18; border-top: 1px solid #1f2c28; display: flex; gap: 10px; }
+    .chat-input { flex: 1; background: #222e2a; border: 1px solid #2a3934; border-radius: 8px; padding: 10px 15px; color: #e9edef; outline: none; }
+    .btn-send { background-color: #00a884; border: none; color: #111b18; font-weight: bold; padding: 0 20px; border-radius: 8px; cursor: pointer; }
+
+    /* Right Panel (Details) */
+    .details-panel { width: 280px; background-color: #111b18; border-left: 1px solid #1f2c28; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+    .panel-title { font-size: 14px; font-weight: 600; color: #aebac1; margin-bottom: 10px; }
+    .input-field { width: 100%; background: #222e2a; border: 1px solid #2a3934; border-radius: 6px; padding: 8px 12px; color: #e9edef; margin-top: 5px; }
+
+    /* Generic Page Styling */
+    .page-padding { padding: 30px; width: 100%; overflow-y: auto; }
+    .card { background-color: #111b18; border: 1px solid #1f2c28; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+    .status-connected { background: rgba(0, 168, 132, 0.2); color: #00a884; }
+    .status-disconnected { background: rgba(234, 134, 134, 0.2); color: #ea8686; }
+  </style>
+</head>
 <body>
-<div class="app" id="app">
-  <nav>
-    <h1>AuriumHub <span class="mu" style="color:var(--ac)">PRO</span></h1>
-    <button>💬 Conversas Reais</button>
-  </nav>
-  <main>
-    <div class="ib">
-      <div class="col">
-        <div class="hd">Fila de Atendimento</div>
-        <div class="it">
-          <b>Cliente Teste</b>
-          <span class="mu">+55 11 99999-9999</span>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <div class="logo">AuriumHub <span>v1</span></div>
+      <ul class="nav-menu">
+        <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas</li>
+        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Disparos</li>
+        <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates</li>
+        <li class="nav-item" onclick="switchTab('numeros', this)">📱 Números</li>
+        <li class="nav-item" onclick="switchTab('equipe', this)">👥 Equipe e áreas</li>
+        <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão Meta</li>
+      </ul>
+    </div>
+    <div class="user-footer">
+      <div>Entrar como</div>
+      <select class="input-field" style="margin-top: 5px;">
+        <option>Você (Admin) • admin</option>
+      </select>
+      <button class="btn-reset">Resetar demo</button>
+    </div>
+  </div>
+
+  <!-- Main Content Areas -->
+  <div class="main-container">
+
+    <!-- Tab 1: Conversas -->
+    <div id="tab-conversas" class="tab-content active">
+      <div class="chat-list-panel">
+        <div class="chat-list-header">
+          <select class="filter-select"><option>Abertas</option></select>
+          <select class="filter-select"><option>Todas as tags</option></select>
+        </div>
+        <div class="chat-item active">
+          <div class="chat-item-name">Marina Souza</div>
+          <div class="chat-item-sub">Vendas • Ana</div>
+          <div class="chat-item-sub">Oi! Vi a promoção de vocês...</div>
+          <span class="tag">Lead quente</span>
+        </div>
+        <div class="chat-item">
+          <div class="chat-item-name">João Pedro</div>
+          <div class="chat-item-sub">Suporte • Bruno</div>
+          <div class="chat-item-sub">Meu pedido não chegou ainda.</div>
+          <span class="tag" style="color:#e2a03f; background:#e2a03f22;">Dúvida</span>
         </div>
       </div>
-      <div class="col">
-        <div class="hd">Cliente Teste</div>
-        <div class="chat" id="chat-box">
-          <div class="bb">Envie uma mensagem abaixo para testar a API real da Meta.<small>Sistema</small></div>
+
+      <div class="chat-box">
+        <div class="chat-header" id="current-chat-header">Marina Souza <span style="font-weight: normal; font-size: 12px; color: #8696a0;">+55 18 98888-1111</span></div>
+        <div class="messages-area" id="msg-area">
+          <div class="msg received">Oi! Vi a promoção de vocês, ainda está valendo?</div>
         </div>
-        <div class="cmp">
-          <input id="msg" placeholder="Digite sua mensagem..." onkeydown="if(event.key=='Enter')sendRealMsg()">
-          <button class="btn" onclick="sendRealMsg()">Enviar</button>
+        <div class="chat-input-area">
+          <input type="text" id="input-message" class="chat-input" placeholder="Digite uma mensagem...">
+          <button class="btn-send" onclick="sendMessage()">Enviar</button>
         </div>
       </div>
-      <div class="col" style="padding:12px">
-        <b>Configurar Destinatário</b><br><br>
-        <label class="mu">Telefone (com DDI e DDD):</label><br>
-        <input id="dest-phone" value="+5511999999999" style="width:100%;margin-top:6px;padding:6px;border:1px solid var(--bd);border-radius:6px">
+
+      <div class="details-panel">
+        <div>
+          <div class="panel-title">Configurar Destinatário Real</div>
+          <label style="font-size: 12px; color: #8696a0;">Número com DDI e DDD:</label>
+          <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999">
+        </div>
+        <div>
+          <div class="panel-title">Tags</div>
+          <span class="tag">Lead quente</span>
+          <span class="tag" style="color: #8696a0;">VIP</span>
+        </div>
       </div>
     </div>
-  </main>
-</div>
-<script>
-const hm=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
-async function sendRealMsg() {
-    const inputMsg = document.getElementById('msg');
-    const phoneInput = document.getElementById('dest-phone');
-    const chatBox = document.getElementById('chat-box');
+    <!-- Tab 2: Disparos -->
+    <div id="tab-disparos" class="tab-content">
+      <div class="page-padding">
+        <h2>Disparos em Massa</h2>
+        <p style="color: #8696a0; margin-top: 5px;">Envie campanhas para listas de clientes em poucos cliques.</p>
+        <div class="card" style="margin-top: 20px;">
+          <h3>Nova Campanha</h3>
+          <input type="text" class="input-field" placeholder="Nome da campanha" style="margin-top: 10px;">
+          <button class="btn-send" style="margin-top: 15px; padding: 10px;">Criar Campanha</button>
+        </div>
+      </div>
+    </div>
 
-    const text = inputMsg.value.trim();
-    const phone = phoneInput.value.trim();
+    <!-- Tab 3: Templates -->
+    <div id="tab-templates" class="tab-content">
+      <div class="page-padding">
+        <h2>Templates da Meta</h2>
+        <div class="card" style="margin-top: 20px;">
+          <h3>Novo template</h3>
+          <input type="text" class="input-field" placeholder="nome_do_template" style="margin-top: 10px;">
+          <textarea class="input-field" rows="4" placeholder="Texto da mensagem..." style="margin-top: 10px;"></textarea>
+          <button class="btn-send" style="margin-top: 15px; padding: 10px;">Enviar para aprovação</button>
+        </div>
+      </div>
+    </div>
 
-    if(!text) return;
-    if(!phone) {
-        alert('Por favor, informe o telefone do destinatário.');
-        return;
+    <!-- Tab 4: Números -->
+    <div id="tab-numeros" class="tab-content">
+      <div class="page-padding">
+        <h2>Números Conectados</h2>
+        <div class="card" style="margin-top: 20px;">
+          <p>Número de Teste Ativo na Vercel: <strong>+1 (555) 658-6869</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Equipe -->
+    <div id="tab-equipe" class="tab-content">
+      <div class="page-padding">
+        <h2>Equipe e Áreas</h2>
+        <div class="card" style="margin-top: 20px;">
+          <p>Membros da Equipe: Admin (Você), Ana (Vendas), Bruno (Suporte).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 6: Conexão Meta -->
+    <div id="tab-meta" class="tab-content">
+      <div class="page-padding">
+        <h2>WhatsApp Business Platform (Cloud API)</h2>
+        <div class="card" style="margin-top: 20px;">
+          <div style="margin-bottom: 15px;">
+            Status: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
+          </div>
+          <p style="font-size: 13px; color: #8696a0; margin-bottom: 15px;">As credenciais ativas estão configuradas diretamente no painel da Vercel.</p>
+          <button class="btn-send" onclick="checkBackendStatus()">Recarregar Conexão</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(tabName, element) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabName).classList.add('active');
+      element.classList.add('active');
     }
 
-    chatBox.innerHTML += `<div class="bb a">${text}<small>${hm()}</small></div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
-    inputMsg.value = '';
+    async function checkBackendStatus() {
+      const statusBadge = document.getElementById('meta-status');
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data.connected) {
+          statusBadge.innerText = 'Conectado via Vercel';
+          statusBadge.className = 'status-badge status-connected';
+        } else {
+          statusBadge.innerText = 'Credenciais ausentes na Vercel';
+          statusBadge.className = 'status-badge status-disconnected';
+        }
+      } catch (err) {
+        statusBadge.innerText = 'Erro ao ligar ao servidor';
+        statusBadge.className = 'status-badge status-disconnected';
+      }
+    }
 
-    try {
-        const response = await fetch('/api/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ to: phone, message: text })
+    async function sendMessage() {
+      const inputMsg = document.getElementById('input-message');
+      const targetPhone = document.getElementById('target-phone').value;
+      const msgArea = document.getElementById('msg-area');
+
+      if (!inputMsg.value.trim()) return;
+
+      const messageText = inputMsg.value;
+
+      // Adiciona mensagem enviada no chat
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'msg sent';
+      msgDiv.innerText = messageText;
+      msgArea.appendChild(msgDiv);
+      inputMsg.value = '';
+
+      try {
+        const response = await fetch('/send-message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: targetPhone, message: messageText })
         });
 
         const result = await response.json();
 
         if (!result.success) {
-            alert('Erro retornado pela Meta: ' + (result.error?.message || JSON.stringify(result.error)));
-        } else {
-            console.log('Mensagem enviada com sucesso!', result.data);
+          alert('Erro ao enviar mensagem: ' + (result.error.message || result.error));
         }
-    } catch (err) {
-        console.error('Erro de conexão:', err);
+      } catch (error) {
         alert('Erro ao conectar ao servidor backend.');
+      }
     }
-}
-</script>
+
+    // Inicialização
+    checkBackendStatus();
+  </script>
 </body>
 </html>
