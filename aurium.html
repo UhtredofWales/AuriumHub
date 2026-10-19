@@ -8,7 +8,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #0b1412; color: #e9edef; display: flex; height: 100vh; overflow: hidden; }
     
-    /* Sidebar Navigation */
     .sidebar { width: 220px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 10px; }
     .logo { font-size: 20px; font-weight: bold; color: #00a884; margin-bottom: 25px; padding-left: 10px; }
     .logo span { color: #25d366; font-size: 12px; background: rgba(37,211,102,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
@@ -17,9 +16,7 @@
     .nav-item:hover, .nav-item.active { background-color: #1f2c28; color: #00a884; font-weight: 600; }
     
     .user-footer { border-top: 1px solid #1f2c28; padding-top: 15px; font-size: 12px; color: #8696a0; }
-    .btn-reset { margin-top: 10px; width: 100%; background: transparent; border: 1px solid #ea8686; color: #ea8686; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 12px; }
 
-    /* Main Container */
     .main-container { flex: 1; display: flex; background-color: #0b1412; }
     .tab-content { display: none; width: 100%; height: 100%; }
     .tab-content.active { display: flex; }
@@ -35,7 +32,6 @@
     .chat-item-sub { font-size: 12px; color: #8696a0; margin-top: 3px; }
     .tag { display: inline-block; background: #00a88422; color: #00a884; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 5px; }
 
-    /* Chat Conversation */
     .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0b1412; }
     .chat-header { padding: 15px 20px; background-color: #111b18; border-bottom: 1px solid #1f2c28; font-weight: 600; }
     .messages-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -45,19 +41,21 @@
 
     .chat-input-area { padding: 15px; background-color: #111b18; border-top: 1px solid #1f2c28; display: flex; gap: 10px; }
     .chat-input { flex: 1; background: #222e2a; border: 1px solid #2a3934; border-radius: 8px; padding: 10px 15px; color: #e9edef; outline: none; }
-    .btn-send { background-color: #00a884; border: none; color: #111b18; font-weight: bold; padding: 0 20px; border-radius: 8px; cursor: pointer; }
+    .btn-send { background-color: #00a884; border: none; color: #111b18; font-weight: bold; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
 
-    /* Right Panel (Details) */
     .details-panel { width: 280px; background-color: #111b18; border-left: 1px solid #1f2c28; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
     .panel-title { font-size: 14px; font-weight: 600; color: #aebac1; margin-bottom: 10px; }
     .input-field { width: 100%; background: #222e2a; border: 1px solid #2a3934; border-radius: 6px; padding: 8px 12px; color: #e9edef; margin-top: 5px; }
 
-    /* Generic Page Styling */
     .page-padding { padding: 30px; width: 100%; overflow-y: auto; }
     .card { background-color: #111b18; border: 1px solid #1f2c28; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
     .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
     .status-connected { background: rgba(0, 168, 132, 0.2); color: #00a884; }
     .status-disconnected { background: rgba(234, 134, 134, 0.2); color: #ea8686; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #1f2c28; font-size: 13px; }
+    th { color: #8696a0; }
   </style>
 </head>
 <body>
@@ -68,23 +66,16 @@
       <div class="logo">AuriumHub <span>v1</span></div>
       <ul class="nav-menu">
         <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas</li>
-        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Disparos</li>
-        <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates</li>
-        <li class="nav-item" onclick="switchTab('numeros', this)">📱 Números</li>
-        <li class="nav-item" onclick="switchTab('equipe', this)">👥 Equipe e áreas</li>
+        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Disparos em Massa</li>
+        <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates Meta</li>
         <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão Meta</li>
       </ul>
     </div>
     <div class="user-footer">
-      <div>Entrar como</div>
-      <select class="input-field" style="margin-top: 5px;">
-        <option>Você (Admin) • admin</option>
-      </select>
-      <button class="btn-reset">Resetar demo</button>
+      <div>AuriumHub Online</div>
     </div>
   </div>
 
-  <!-- Main Content Areas -->
   <div class="main-container">
 
     <!-- Tab 1: Conversas -->
@@ -100,16 +91,10 @@
           <div class="chat-item-sub">Oi! Vi a promoção de vocês...</div>
           <span class="tag">Lead quente</span>
         </div>
-        <div class="chat-item">
-          <div class="chat-item-name">João Pedro</div>
-          <div class="chat-item-sub">Suporte • Bruno</div>
-          <div class="chat-item-sub">Meu pedido não chegou ainda.</div>
-          <span class="tag" style="color:#e2a03f; background:#e2a03f22;">Dúvida</span>
-        </div>
       </div>
 
       <div class="chat-box">
-        <div class="chat-header" id="current-chat-header">Marina Souza <span style="font-weight: normal; font-size: 12px; color: #8696a0;">+55 18 98888-1111</span></div>
+        <div class="chat-header">Marina Souza <span style="font-weight: normal; font-size: 12px; color: #8696a0;">+55 18 98888-1111</span></div>
         <div class="messages-area" id="msg-area">
           <div class="msg received">Oi! Vi a promoção de vocês, ainda está valendo?</div>
         </div>
@@ -125,61 +110,74 @@
           <label style="font-size: 12px; color: #8696a0;">Número com DDI e DDD:</label>
           <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999">
         </div>
-        <div>
-          <div class="panel-title">Tags</div>
-          <span class="tag">Lead quente</span>
-          <span class="tag" style="color: #8696a0;">VIP</span>
-        </div>
       </div>
     </div>
 
-    <!-- Tab 2: Disparos -->
+    <!-- Tab 2: Disparos em Massa com Planilha e {{1}} -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
-        <h2>Disparos em Massa</h2>
-        <p style="color: #8696a0; margin-top: 5px;">Envie campanhas para listas de clientes em poucos cliques.</p>
+        <h2>Disparos em Massa (Planilha CSV + Variáveis)</h2>
+        <p style="color: #8696a0; margin-top: 5px;">Carregue um ficheiro CSV contendo as colunas "Nome" e "Telefone".</p>
+        
         <div class="card" style="margin-top: 20px;">
-          <h3>Nova Campanha</h3>
-          <input type="text" class="input-field" placeholder="Nome da campanha" style="margin-top: 10px;">
-          <button class="btn-send" style="margin-top: 15px; padding: 10px;">Criar Campanha</button>
+          <h3>1. Carregar Planilha CSV</h3>
+          <input type="file" id="csv-file" accept=".csv" class="input-field" style="margin-top: 10px;" onchange="handleCSVUpload(event)">
+          <div id="csv-preview" style="margin-top: 15px; color: #00a884; font-size: 13px;"></div>
+        </div>
+
+        <div class="card">
+          <h3>2. Escrever Mensagem da Campanha</h3>
+          <p style="font-size: 12px; color: #8696a0; margin-top: 5px;">Use <strong>{{1}}</strong> no texto para ser substituído automaticamente pelo <strong>Nome</strong> do cliente.</p>
+          <textarea id="bulk-message" class="input-field" rows="4" placeholder="Olá {{1}}, temos uma condição especial para si hoje!" style="margin-top: 10px;"></textarea>
+          <button class="btn-send" style="margin-top: 15px;" onclick="startBulkSend()">Iniciar Disparos em Massa</button>
+        </div>
+
+        <div class="card">
+          <h3>Progresso do Envio</h3>
+          <div id="bulk-log" style="font-size: 13px; color: #8696a0; margin-top: 10px; max-height: 150px; overflow-y: auto;">Aguardando envio...</div>
         </div>
       </div>
     </div>
 
-    <!-- Tab 3: Templates -->
+    <!-- Tab 3: Templates da Meta -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
-        <h2>Templates da Meta</h2>
+        <h2>Gestão de Templates da Meta</h2>
+        
         <div class="card" style="margin-top: 20px;">
-          <h3>Novo template</h3>
-          <input type="text" class="input-field" placeholder="nome_do_template" style="margin-top: 10px;">
-          <textarea class="input-field" rows="4" placeholder="Texto da mensagem..." style="margin-top: 10px;"></textarea>
-          <button class="btn-send" style="margin-top: 15px; padding: 10px;">Enviar para aprovação</button>
+          <h3>Criar e Enviar Novo Template para Aprovação</h3>
+          <input type="text" id="tpl-name" class="input-field" placeholder="nome_do_template (ex: promo_outubro)" style="margin-top: 10px;">
+          <select id="tpl-category" class="input-field" style="margin-top: 10px;">
+            <option value="MARKETING">Marketing</option>
+            <option value="UTILITY">Utilidade</option>
+          </select>
+          <textarea id="tpl-text" class="input-field" rows="3" placeholder="Olá {{1}}, o seu pedido foi enviado!" style="margin-top: 10px;"></textarea>
+          <button class="btn-send" style="margin-top: 15px;" onclick="submitTemplate()">Enviar para Aprovação na Meta</button>
+        </div>
+
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Status dos Templates na Meta</h3>
+            <button class="btn-send" style="padding: 5px 12px; font-size: 12px;" onclick="fetchTemplates()">Atualizar Lista</button>
+          </div>
+          <table id="tpl-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Idioma</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tpl-list">
+              <tr><td colspan="4" style="color: #8696a0;">Clique em "Atualizar Lista" para carregar os templates diretamente da Meta.</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- Tab 4: Números -->
-    <div id="tab-numeros" class="tab-content">
-      <div class="page-padding">
-        <h2>Números Conectados</h2>
-        <div class="card" style="margin-top: 20px;">
-          <p>Número de Teste Ativo na Vercel: <strong>+1 (555) 658-6869</strong></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab 5: Equipe -->
-    <div id="tab-equipe" class="tab-content">
-      <div class="page-padding">
-        <h2>Equipe e Áreas</h2>
-        <div class="card" style="margin-top: 20px;">
-          <p>Membros da Equipe: Admin (Você), Ana (Vendas), Bruno (Suporte).</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab 6: Conexão Meta -->
+    <!-- Tab 4: Conexão Meta -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
         <h2>WhatsApp Business Platform (Cloud API)</h2>
@@ -187,8 +185,18 @@
           <div style="margin-bottom: 15px;">
             Status: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
-          <p style="font-size: 13px; color: #8696a0; margin-bottom: 15px;">As credenciais ativas estão configuradas diretamente no painel da Vercel.</p>
-          <button class="btn-send" onclick="checkBackendStatus()">Recarregar Conexão</button>
+          
+          <h3>Vincular / Atualizar Credenciais de Teste da Meta</h3>
+          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">WABA ID (ID da Conta do WhatsApp Business):</label>
+          <input type="text" id="cfg-waba" class="input-field" placeholder="Ex: 3593503124150921">
+
+          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">Phone Number ID:</label>
+          <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
+
+          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">Token de Acesso Temporário / Permanente da Meta:</label>
+          <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
+
+          <button class="btn-send" style="margin-top: 15px;" onclick="saveCredentials()">Vincular Credenciais</button>
         </div>
       </div>
     </div>
@@ -196,6 +204,8 @@
   </div>
 
   <script>
+    let csvData = [];
+
     function switchTab(tabName, element) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -210,15 +220,34 @@
         const res = await fetch('/api/status');
         const data = await res.json();
         if (data.connected) {
-          statusBadge.innerText = 'Conectado via Vercel';
+          statusBadge.innerText = 'Conectado à Meta';
           statusBadge.className = 'status-badge status-connected';
         } else {
-          statusBadge.innerText = 'Credenciais ausentes na Vercel';
+          statusBadge.innerText = 'Credenciais ausentes';
           statusBadge.className = 'status-badge status-disconnected';
         }
       } catch (err) {
-        statusBadge.innerText = 'Erro ao ligar ao servidor';
+        statusBadge.innerText = 'Erro de conexão com o servidor';
         statusBadge.className = 'status-badge status-disconnected';
+      }
+    }
+
+    async function saveCredentials() {
+      const wabaId = document.getElementById('cfg-waba').value;
+      const phoneId = document.getElementById('cfg-phoneid').value;
+      const token = document.getElementById('cfg-token').value;
+
+      try {
+        const res = await fetch('/api/credentials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wabaId, phoneId, token })
+        });
+        const data = await res.json();
+        alert(data.message);
+        checkBackendStatus();
+      } catch (err) {
+        alert('Erro ao salvar credenciais.');
       }
     }
 
@@ -230,8 +259,6 @@
       if (!inputMsg.value.trim()) return;
 
       const messageText = inputMsg.value;
-
-      // Adiciona mensagem enviada no chat
       const msgDiv = document.createElement('div');
       msgDiv.className = 'msg sent';
       msgDiv.innerText = messageText;
@@ -246,16 +273,139 @@
         });
 
         const result = await response.json();
-
         if (!result.success) {
-          alert('Erro ao enviar mensagem: ' + (result.error.message || result.error));
+          alert('Erro ao enviar mensagem: ' + result.error);
         }
       } catch (error) {
-        alert('Erro ao conectar ao servidor backend.');
+        alert('Erro de conexão ao servidor backend.');
       }
     }
 
-    // Inicialização
+    // Leitura simples de ficheiro CSV
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        csvData = [];
+
+        lines.forEach((line, index) => {
+          const cols = line.split(',');
+          if (cols.length >= 2 && index > 0) {
+            const nome = cols[0].trim();
+            const telefone = cols[1].trim();
+            if (nome && telefone) {
+              csvData.push({ nome, telefone });
+            }
+          }
+        });
+
+        document.getElementById('csv-preview').innerText = `Planilha carregada com sucesso! ${csvData.length} contactos prontos para envio.`;
+      };
+      reader.readAsText(file);
+    }
+
+    // Disparos em Massa substituindo {{1}} pelo Nome
+    async function startBulkSend() {
+      const templateText = document.getElementById('bulk-message').value;
+      const logDiv = document.getElementById('bulk-log');
+
+      if (csvData.length === 0) {
+        alert('Por favor, carregue primeiro um ficheiro CSV com Nome e Telefone.');
+        return;
+      }
+
+      if (!templateText) {
+        alert('Por favor, digite o texto da mensagem.');
+        return;
+      }
+
+      logDiv.innerHTML = 'Iniciando disparos...<br>';
+
+      for (let i = 0; i < csvData.length; i++) {
+        const contact = csvData[i];
+        // Substitui {{1}} pelo nome do contacto
+        const personalizedMsg = templateText.replace(/\{\{1\}\}/g, contact.nome);
+
+        try {
+          const res = await fetch('/send-message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to: contact.telefone, message: personalizedMsg })
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            logDiv.innerHTML += `✅ Enviado para ${contact.nome} (${contact.telefone})<br>`;
+          } else {
+            logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${result.error}<br>`;
+          }
+        } catch (err) {
+          logDiv.innerHTML += `❌ Erro de conexão ao enviar para ${contact.nome}<br>`;
+        }
+      }
+    }
+
+    // Submeter Template para Aprovação
+    async function submitTemplate() {
+      const name = document.getElementById('tpl-name').value;
+      const category = document.getElementById('tpl-category').value;
+      const bodyText = document.getElementById('tpl-text').value;
+
+      try {
+        const res = await fetch('/api/templates/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, category, bodyText })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Template enviado para aprovação na Meta com sucesso!');
+          fetchTemplates();
+        } else {
+          alert('Erro ao criar template: ' + data.error);
+        }
+      } catch (err) {
+        alert('Erro ao conectar ao servidor.');
+      }
+    }
+
+    // Buscar Status dos Templates
+    async function fetchTemplates() {
+      const listEl = document.getElementById('tpl-list');
+      listEl.innerHTML = '<tr><td colspan="4">Carregando templates da Meta...</td></tr>';
+
+      try {
+        const res = await fetch('/api/templates');
+        const data = await res.json();
+
+        if (data.success) {
+          listEl.innerHTML = '';
+          if (data.templates.length === 0) {
+            listEl.innerHTML = '<tr><td colspan="4">Nenhum template encontrado nesta conta WABA.</td></tr>';
+            return;
+          }
+          data.templates.forEach(tpl => {
+            listEl.innerHTML += `
+              <tr>
+                <td><strong>${tpl.name}</strong></td>
+                <td>${tpl.category}</td>
+                <td>${tpl.language}</td>
+                <td><span class="status-badge ${tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected'}">${tpl.status}</span></td>
+              </tr>
+            `;
+          });
+        } else {
+          listEl.innerHTML = `<tr><td colspan="4" style="color:#ea8686;">Erro: ${data.error}</td></tr>`;
+        }
+      } catch (err) {
+        listEl.innerHTML = '<tr><td colspan="4" style="color:#ea8686;">Erro ao conectar com a API.</td></tr>';
+      }
+    }
+
     checkBackendStatus();
   </script>
 </body>
