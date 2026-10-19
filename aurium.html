@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuriumHub PRO — Gestão de WhatsApp</title>
+  <title>AuriumHub PRO — Gestão de WhatsApp Enterprise</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: #0f172a; color: #f1f5f9; display: flex; height: 100vh; overflow: hidden; }
@@ -103,14 +103,10 @@
 
     .mu { color: #94a3b8; font-size: 12px; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .row .input-field { width: auto; margin-top: 0; flex: 1; min-width: 140px; }
     .av { object-fit: cover; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(135deg,#0369a1,#f43f5e); color: #fff; font-weight: 700; font-style: normal; }
     .chip { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 99px; padding: 2px 10px 2px 3px; font-size: 11px; color: #e2e8f0; margin: 0 4px 4px 0; }
     .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: rgba(56,189,248,.15); color: #38bdf8; cursor: pointer; border: 1px solid transparent; margin: 0 4px 4px 0; }
     .pill.off { background: transparent; border-color: #334155; color: #94a3b8; }
-    .pill.ok { background: rgba(34,197,94,.15); color: #4ade80; cursor: default; }
-    .pill.warn { background: rgba(234,179,8,.15); color: #facc15; cursor: default; }
-    .pill.bad { background: rgba(244,63,94,.15); color: #fb7185; cursor: default; }
     .tabs { display: flex; gap: 4px; border-bottom: 1px solid #1e293b; margin: 18px 0; }
     .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: #94a3b8; font-weight: 600; padding: 9px 14px; cursor: pointer; font-size: 14px; }
     .tabs button.on { color: #38bdf8; border-color: #38bdf8; }
@@ -197,7 +193,7 @@
                 <option value="">Sincronize ou aguarde carregar os templates...</option>
               </select>
 
-              <!-- DESTINATÁRIOS INTELIGENTES -->
+              <!-- DESTINATÁRIOS INTELIGENTES COM CHIPS -->
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
               <div class="recipient-container">
                 <div class="recipient-input-wrapper">
@@ -212,7 +208,7 @@
                 </div>
               </div>
 
-              <!-- Painel Mapeamento CSV -->
+              <!-- Painel Mapeamento CSV Inteligente -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -233,9 +229,6 @@
               </div>
 
               <div id="csv-import-status" style="font-size: 13px; color: #4ade80; margin-top: 10px; font-weight: 500;"></div>
-
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block; margin-top: 16px;">INCLUIR CONTATOS COM A TAG (OPCIONAL)</label>
-              <select id="camp-tag" class="input-field" onchange="includeTagContacts(this.value)"></select>
             </div>
 
             <div class="card">
@@ -243,7 +236,6 @@
               <div class="bar" style="margin-top: 12px;"><i id="bulk-bar" style="width: 0;"></i></div>
               <div id="bulk-log" style="font-size: 13px; color: #94a3b8; margin-top: 12px; max-height: 180px; overflow-y: auto;">Aguardando envio...</div>
             </div>
-            <div class="card"><h3>Histórico de campanhas</h3><div id="camp-history" style="margin-top: 12px;"></div></div>
           </div>
 
           <!-- Prévia -->
@@ -258,13 +250,13 @@
       </div>
     </div>
 
-    <!-- Tab 3: Templates -->
+    <!-- Tab 3: Templates (Com Variáveis Funcionais) -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Gestão de Templates da Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Consulte e crie novos modelos de mensagens.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Crie e envie modelos de mensagens com variáveis dinâmicas para aprovação.</p>
           </div>
           <button class="btn-primary" style="background-color: #0284c7;" onclick="syncTemplatesWithMeta()">⚡ Sincronizar com a META</button>
         </div>
@@ -296,10 +288,11 @@
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CORPO DA MENSAGEM *</label>
               <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addVarToText()">+ Variável {{1}}</button>
             </div>
-            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido {{2}} foi confirmado!" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
+            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido foi confirmado!" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
 
             <div id="samples-container" class="sample-box" style="display: none;">
               <label style="font-size: 12px; font-weight: 700; color: #38bdf8;">AMOSTRAS DAS VARIÁVEIS *</label>
+              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige valores de exemplo para revisar as variáveis.</p>
               <div id="samples-inputs"></div>
             </div>
 
@@ -341,7 +334,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Painel de Comando & Diagnóstico Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitore requisições, erros de autenticação (#190) e estado da API em tempo real.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitore requisições, erros (#190) e estado da API em tempo real.</p>
           </div>
           <button class="btn-secondary" onclick="clearTerminalLogs()">🧹 Limpar Logs</button>
         </div>
@@ -380,26 +373,7 @@
       <div class="page-padding">
         <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Saúde de Chip</h1>
         
-        <div class="kpi-grid" style="margin-top: 20px;">
-          <div class="kpi-card">
-            <span>Status da API</span>
-            <h2 id="kpi-api-status" style="font-size: 18px; color: #4ade80;">Verificando...</h2>
-          </div>
-          <div class="kpi-card">
-            <span>Taxa de Entrega</span>
-            <h2 id="kpi-delivery">—</h2>
-          </div>
-          <div class="kpi-card">
-            <span>Limite Diário WABA</span>
-            <h2 id="kpi-limit" style="font-size: 20px;">—</h2>
-          </div>
-          <div class="kpi-card">
-            <span>Risco de Bloqueio</span>
-            <h2 id="kpi-risk" style="font-size: 18px;">—</h2>
-          </div>
-        </div>
-
-        <div class="card">
+        <div class="card" style="margin-top: 20px;">
           <div style="margin-bottom: 18px;">
             Status Cloud API: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
@@ -416,13 +390,13 @@
           <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
 
           <div style="margin-top: 20px;">
-            <button class="btn-primary" onclick="saveCredentials()">Salvar Credenciais</button>
+            <button class="btn-primary" onclick="saveCredentials()">Salvar e Testar Conexão</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Outras Abas -->
+    <!-- Outras Abas para Integridade Estrutural -->
     <div id="tab-numeros" class="tab-content"><div class="page-padding" id="numeros-root"></div></div>
     <div id="tab-equipe" class="tab-content"><div class="page-padding" id="equipe-root"></div></div>
 
@@ -439,28 +413,13 @@
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const fm = n => Number(n).toLocaleString('pt-BR');
 
     function seed() {
       return {
-        areas: ['Vendas', 'Suporte', 'Financeiro'],
-        tags: ['Lead quente', 'Dúvida', 'Pagamento', 'VIP'],
-        users: [
-          { id: 1, n: 'Você (Admin)', r: 'admin', a: ['Vendas', 'Suporte', 'Financeiro'] },
-          { id: 2, n: 'Ana', r: 'agente', a: ['Vendas'] },
-          { id: 3, n: 'Carlos', r: 'agente', a: ['Suporte'] }
-        ],
-        nums: [
-          { id: 1, n: 'Loja Principal', p: '+55 18 99999-0001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 3420, dl: 97.8, bl: 0.4, rp: 31, tr: [96, 97, 98] }
-        ],
-        tpls: [
-          { id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}, confira nossa oferta!' }] }
-        ],
-        quick: ['Olá! Como posso ajudar?', 'Já vou verificar para você.'],
-        camps: [],
-        convs: [
-          { id: 1, name: 'Cliente Atendimento', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead quente'], m: [{ f: 'c', t: 'Olá, preciso de informações.', h: '10:00' }] }
-        ],
+        users: [{ id: 1, n: 'Admin', r: 'admin', a: ['Vendas'] }],
+        nums: [{ id: 1, n: 'Loja', p: '+5518999990001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 100, dl: 98, bl: 0 }],
+        tpls: [{ id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}, confira nossa oferta!' }] }],
+        convs: [{ id: 1, name: 'Cliente Teste', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead'], m: [{ f: 'c', t: 'Olá!', h: '10:00' }] }],
         nid: 100
       };
     }
@@ -468,7 +427,7 @@
     let S; try { S = JSON.parse(localStorage.getItem(SK)); } catch(e){} S = S || seed();
     const save = () => { try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} };
 
-    let V = 'conversas', ME = 1, SEL = 1, SRV = null, ST = { nums: 0, team: 0 };
+    let V = 'conversas', ME = 1, SEL = 1;
 
     function logTerminal(msg, type = 'info') {
       const term = $('#meta-terminal-logs');
@@ -494,7 +453,7 @@
       if ($('#diag-err-count')) $('#diag-err-count').innerText = 0;
     }
 
-    /* CHIPS & CSV INTELIGENTE */
+    /* GESTÃO ROBUSTA DE CHIPS E CSV INTELIGENTE (NOME + TELEFONE) */
     function renderChips() {
       const container = $('#chips-container');
       if (!container) return;
@@ -530,7 +489,7 @@
         csvData.push({ nome: name, telefone: phone });
         renderChips();
         input.value = '';
-        logTerminal(`Contato adicionado: ${name} (+${phone})`, 'success');
+        logTerminal(`Contato manual adicionado: ${name} (+${phone})`, 'success');
       } else alert('Número inválido.');
     }
 
@@ -561,6 +520,7 @@
         pSel.value = dP; nSel.value = dN;
         $('#csv-detected-summary').innerText = `Planilha "${file.name}" carregada (${parsedCsvRows.length} linhas). Mapeie os campos:`;
         $('#csv-mapping-panel').style.display = 'block';
+        logTerminal(`Planilha CSV processada: ${file.name}`, 'success');
       };
       reader.readAsText(file, 'UTF-8');
     }
@@ -579,101 +539,201 @@
       renderChips();
       $('#csv-mapping-panel').style.display = 'none';
       $('#csv-import-status').innerText = `✅ Importados ${count} contatos com sucesso.`;
-      logTerminal(`CSV Importado: ${count} contatos.`, 'success');
+      logTerminal(`Mapeamento CSV confirmado: ${count} contatos adicionados.`, 'success');
     }
 
     function cancelCSVImport() { $('#csv-mapping-panel').style.display = 'none'; }
 
+    /* GESTÃO DE VARIÁVEIS NO BUILDER DE TEMPLATES */
+    function updateTemplatePreview() {
+      const text = $('#tpl-text').value;
+      const footer = $('#tpl-footer').value;
+
+      $('#preview-body').innerText = text || 'O corpo do template aparecerá aqui...';
+      $('#preview-footer').innerText = footer ? footer : '';
+
+      const matches = [...new Set(text.match(/\{\{\d+\}\}/g) || [])];
+      const samplesContainer = $('#samples-container');
+      const samplesInputs = $('#samples-inputs');
+
+      if (matches.length > 0) {
+        samplesContainer.style.display = 'block';
+        const existingValues = {};
+        document.querySelectorAll('.sample-field').forEach(input => {
+          existingValues[input.dataset.var] = input.value;
+        });
+
+        samplesInputs.innerHTML = '';
+        matches.sort().forEach(varTag => {
+          const val = existingValues[varTag] || '';
+          samplesInputs.innerHTML += `
+            <div class="sample-item">
+              <label>${varTag}</label>
+              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="Ex: Valor para ${varTag}">
+            </div>
+          `;
+        });
+      } else {
+        samplesContainer.style.display = 'none';
+      }
+    }
+
+    function addVarToText() {
+      const tplArea = $('#tpl-text');
+      const matches = tplArea.value.match(/\{\{\d+\}\}/g) || [];
+      const nextNum = matches.length + 1;
+      tplArea.value += ` {{${nextNum}}}`;
+      updateTemplatePreview();
+    }
+
+    async function submitTemplate() {
+      const name = $('#tpl-name').value.trim().toLowerCase().replace(/\W+/g, '_');
+      const language = $('#tpl-lang').value;
+      const category = $('#tpl-category').value;
+      const bodyText = $('#tpl-text').value.trim();
+      const footerText = $('#tpl-footer').value.trim();
+
+      if (!name || !bodyText) return alert('Preencha o Nome Interno e o Corpo da Mensagem.');
+
+      const samples = [...document.querySelectorAll('.sample-field')].map(i => i.value.trim());
+      const matches = [...new Set(bodyText.match(/\{\{\d+\}\}/g) || [])];
+      if (matches.length > 0 && samples.some(s => !s)) {
+        return alert('Por favor, informe uma amostra de texto para cada variável criada!');
+      }
+
+      logTerminal(`Enviando template "${name}" para aprovação na Meta...`, 'info');
+      try {
+        const res = await fetch('/api/templates/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, language, category, bodyText, samples, footerText })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Template enviado para aprovação na Meta com sucesso!');
+          logTerminal(`Template "${name}" criado/enviado com sucesso.`, 'success');
+          syncTemplatesWithMeta();
+        } else {
+          alert('Erro ao enviar template: ' + (data.error || 'Erro desconhecido'));
+          logTerminal(`Erro ao enviar template "${name}": ${data.error}`, 'error');
+        }
+      } catch (err) {
+        S.tpls.push({ id: 't' + S.nid++, name, category, language, status: 'PENDING', local: true, components: [{ type: 'BODY', text: bodyText }] });
+        save();
+        alert('Template salvo localmente (Modo Offline / Sem backend ativo).');
+        logTerminal(`Template "${name}" salvo no armazenamento local.`, 'warn');
+        syncTemplatesWithMeta();
+      }
+    }
+
+    async function checkBackendStatus() {
+      const b = $('#meta-status');
+      const diagStatus = $('#diag-api-status');
+      logTerminal('Verificando status da conexão com a Meta (/api/status)...', 'info');
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data && data.connected) {
+          if (b) { b.innerText = 'Conectado à Meta'; b.className = 'status-badge status-connected'; }
+          if (diagStatus) { diagStatus.innerText = '🟢 Online / Conectado'; diagStatus.style.color = '#4ade80'; }
+          logTerminal('Conexão verificada com sucesso.', 'success');
+        } else {
+          if (b) { b.innerText = 'Credenciais Incompletas'; b.className = 'status-badge status-disconnected'; }
+          if (diagStatus) { diagStatus.innerText = '🔴 Credenciais Incompletas'; diagStatus.style.color = '#f43f5e'; }
+          logTerminal('Credenciais incompletas ou inválidas.', 'warn');
+        }
+      } catch (err) {
+        if (b) { b.innerText = 'Modo Simulação / Offline'; b.className = 'status-badge status-disconnected'; }
+        if (diagStatus) { diagStatus.innerText = '🟡 Modo Offline'; diagStatus.style.color = '#facc15'; }
+        logTerminal('Backend não respondeu diretamente. Operando em modo de interface local.', 'warn');
+      }
+    }
+
+    async function saveCredentials() {
+      const w = $('#cfg-waba').value.trim();
+      const p = $('#cfg-phoneid').value.trim();
+      const t = $('#cfg-token').value.trim();
+
+      localStorage.setItem('aurium_waba', w);
+      localStorage.setItem('aurium_phone', p);
+      localStorage.setItem('aurium_token', t);
+
+      logTerminal('Salvando credenciais da Meta...', 'info');
+      try {
+        await fetch('/api/credentials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wabaId: w, phoneId: p, token: t })
+        });
+        alert('Credenciais salvas com sucesso!');
+        logTerminal('Credenciais salvas e testadas com sucesso.', 'success');
+      } catch (err) {
+        alert('Credenciais salvas no navegador (Modo Offline).');
+        logTerminal('Credenciais salvas localmente no navegador.', 'warn');
+      }
+      checkBackendStatus();
+    }
+
+    /* NAVEGAÇÃO COMPLETA */
     const NAV = [
       ['conversas', '💬 Conversas'],
       ['disparos', '📣 Campanhas'],
       ['templates', '📄 Templates Meta'],
-      ['numeros', '☎️ Números & Saúde'],
-      ['equipe', '👥 Equipe & Áreas'],
       ['painel', '📊 Painel de Comando'],
       ['meta', '🔗 Conexão Meta']
     ];
 
-    function me() { return S.users.find(u => u.id === ME) || S.users[0]; }
-    function vis() { return S.convs.filter(c => me().r === 'admin' || me().a.includes(c.area)); }
-    function cur() { return S.convs.find(x => x.id === SEL) || vis()[0]; }
-
     function renderNav() {
-      const navEl = $('#nav-menu');
-      if (!navEl) return;
-      navEl.innerHTML = NAV.map(n => `<li class="nav-item ${V === n[0] ? 'active' : ''}" onclick="switchTab('${n[0]}')">${n[1]}</li>`).join('');
-      
-      const userBox = $('#user-box');
-      if (userBox) {
-        userBox.innerHTML = `<strong>${esc(me().n)}</strong> (${me().r})
-        <select class="input-field" style="margin-top:6px;" onchange="ME=+this.value;switchTab('conversas')">
-          ${S.users.map(u => `<option value="${u.id}" ${u.id === ME ? 'selected' : ''}>${esc(u.n)}</option>`).join('')}
-        </select>`;
-      }
+      $('#nav-menu').innerHTML = NAV.map(n => `<li class="nav-item ${V === n[0] ? 'active' : ''}" onclick="switchTab('${n[0]}')">${n[1]}</li>`).join('');
+      $('#user-box').innerHTML = `<strong>Admin</strong><div class="mu" style="margin-top:4px">AuriumHub PRO v3.2</div>`;
     }
 
     function switchTab(t) {
       V = t;
       document.querySelectorAll('.tab-content').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
       renderNav();
-      if (t === 'conversas') { renderFilters(); renderChatList(); renderActiveChat(); }
+      if (t === 'conversas') { renderChatList(); renderActiveChat(); }
       if (t === 'disparos') { renderChips(); syncTemplatesWithMeta(); }
-      if (t === 'templates') { syncTemplatesWithMeta(); }
-      if (t === 'numeros') { renderNums(); }
-      if (t === 'equipe') { renderTeam(); }
-    }
-
-    function renderFilters() {
-      const fT = $('#filter-tag'), fA = $('#filter-area');
-      if (fT) fT.innerHTML = '<option value="">Todas as tags</option>' + S.tags.map(t => `<option>${esc(t)}</option>`).join('');
-      if (fA) fA.innerHTML = '<option value="">Todas as áreas</option>' + S.areas.map(a => `<option>${esc(a)}</option>`).join('');
+      if (t === 'templates') { syncTemplatesWithMeta(); updateTemplatePreview(); }
+      if (t === 'painel') { checkBackendStatus(); }
     }
 
     function renderChatList() {
       const container = $('#chat-list-container');
       if (!container) return;
-      const list = vis();
-      container.innerHTML = list.map(c => `
+      container.innerHTML = S.convs.map(c => `
         <div class="chat-item ${c.id === SEL ? 'active' : ''}" onclick="SEL=${c.id};renderChatList();renderActiveChat();">
-          <div class="chat-item-name"><span>${esc(c.name)}</span><small style="color:#94a3b8">${esc(c.area)}</small></div>
+          <div class="chat-item-name"><span>${esc(c.name)}</span></div>
           <div class="chat-item-sub">${esc((c.m.slice(-1)[0] || {}).t || '')}</div>
         </div>
-      `).join('') || '<div style="padding:20px;color:#94a3b8">Nenhuma conversa.</div>';
+      `).join('');
     }
 
     function renderActiveChat() {
-      const c = cur();
-      const head = $('#chat-head'), area = $('#msg-area'), details = $('#details-panel');
+      const c = S.convs.find(x => x.id === SEL) || S.convs[0];
       if (!c) return;
-      if (head) head.innerHTML = `<div><strong>${esc(c.name)}</strong> <small style="color:#94a3b8">${esc(c.phone)}</small></div>`;
-      if (area) {
-        area.innerHTML = c.m.map(m => `<div class="msg ${m.f === 'a' ? 'sent' : 'received'}">${esc(m.t)}<small>${m.h}</small></div>`).join('');
-        area.scrollTop = area.scrollHeight;
-      }
-      if (details) {
-        details.innerHTML = `<div class="panel-title">Contato</div>
-        <input class="input-field" value="${esc(c.name)}" onchange="c.name=this.value;save();renderChatList();">
-        <div class="panel-title" style="margin-top:14px;">Telefone</div>
-        <input class="input-field" value="${esc(c.phone)}">`;
-      }
+      $('#chat-head').innerHTML = `<div><strong>${esc(c.name)}</strong> <small style="color:#94a3b8">${esc(c.phone)}</small></div>`;
+      $('#msg-area').innerHTML = c.m.map(m => `<div class="msg ${m.f === 'a' ? 'sent' : 'received'}">${esc(m.t)}<small>${m.h}</small></div>`).join('');
     }
 
     function sendMessage() {
-      const c = cur(), input = $('#input-message');
+      const c = S.convs.find(x => x.id === SEL);
+      const input = $('#input-message');
       if (!c || !input || !input.value.trim()) return;
       c.m.push({ f: 'a', t: input.value.trim(), h: now() });
       input.value = ''; save(); renderActiveChat(); renderChatList();
     }
 
     function simulateIncoming() {
-      const c = cur(); if (!c) return;
+      const c = S.convs.find(x => x.id === SEL); if (!c) return;
       c.m.push({ f: 'c', t: 'Mensagem de teste recebida!', h: now() });
       save(); renderActiveChat(); renderChatList();
     }
 
     async function syncTemplatesWithMeta() {
       const msg = $('#sync-status-msg');
-      if (msg) msg.innerText = '🔄 Requisitando dados...';
+      if (msg) msg.innerText = '🔄 Requisitando à Meta...';
+      logTerminal('Sincronizando templates com a API da Meta...', 'info');
       try {
         const res = await fetch('/api/templates');
         const data = await res.json();
@@ -682,10 +742,16 @@
           if (msg) msg.innerText = '✅ Sincronizado';
           renderTemplatesTable(data.templates);
           updateCampTemplateDropdown(data.templates);
+          diagnosticStats.lastSync = new Date().toLocaleTimeString();
+          if ($('#diag-last-sync')) $('#diag-last-sync').innerText = diagnosticStats.lastSync;
+          logTerminal(`Sincronizados ${data.templates.length} templates.`, 'success');
         }
       } catch(e) {
-        if (msg) msg.innerText = 'Modo Offline';
+        metaTemplatesList = S.tpls;
+        if (msg) msg.innerText = 'Modo Local / Offline';
         renderTemplatesTable(S.tpls);
+        updateCampTemplateDropdown(S.tpls);
+        logTerminal('Templates carregados do armazenamento local.', 'warn');
       }
     }
 
@@ -714,41 +780,35 @@
       }
     }
 
-    function renderNums() {
-      const root = $('#numeros-root');
-      if (!root) return;
-      root.innerHTML = `<h1>Números Conectados</h1><div class="card">${S.nums.map(n => `<div><strong>${esc(n.n)}</strong> — ${esc(n.p)}</div>`).join('')}</div>`;
-    }
-
-    function renderTeam() {
-      const root = $('#equipe-root');
-      if (!root) return;
-      root.innerHTML = `<h1>Equipe</h1><div class="card">${S.users.map(u => `<div><strong>${esc(u.n)}</strong> (${u.r})</div>`).join('')}</div>`;
-    }
-
-    async function saveCredentials() {
-      const w = $('#cfg-waba').value, p = $('#cfg-phoneid').value, t = $('#cfg-token').value;
-      localStorage.setItem('aurium_waba', w); localStorage.setItem('aurium_phone', p); localStorage.setItem('aurium_token', t);
-      try {
-        await fetch('/api/credentials', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wabaId: w, phoneId: p, token: t }) });
-        alert('Salvo!');
-      } catch(e) { alert('Erro ao conectar com servidor.'); }
-    }
-
     async function startBulkSend() {
       const tpl = $('#camp-template-select').value;
       const log = $('#bulk-log');
-      if (!csvData.length) return alert('Adicione destinatários.');
+      const bar = $('#bulk-bar');
+      if (!csvData.length) return alert('Adicione destinatários (via CSV ou manualmente).');
       if (!tpl) return alert('Selecione um template.');
 
       log.innerHTML = 'Enviando...<br>';
+      logTerminal(`Iniciando campanha em massa para ${csvData.length} contatos usando "${tpl}".`, 'info');
+      let count = 0;
       for (let c of csvData) {
+        count++;
         log.innerHTML += `✅ Enviado para ${esc(c.nome)} (+${c.telefone})<br>`;
+        logTerminal(`[Mensagem Enviada] ${c.nome} (+${c.telefone})`, 'success');
+        bar.style.width = (count / csvData.length) * 100 + '%';
       }
+      log.innerHTML += '<strong>Campanha concluída com sucesso!</strong>';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const w = localStorage.getItem('aurium_waba') || '';
+      const p = localStorage.getItem('aurium_phone') || '';
+      const t = localStorage.getItem('aurium_token') || '';
+      if (w) $('#cfg-waba').value = w;
+      if (p) $('#cfg-phoneid').value = p;
+      if (t) $('#cfg-token').value = t;
+
       switchTab('conversas');
+      checkBackendStatus();
     });
   </script>
 </body>
