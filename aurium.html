@@ -24,21 +24,23 @@
     .tab-content { display: none; width: 100%; height: 100%; }
     .tab-content.active { display: flex; }
 
-    /* Layout Chat / Conversas */
+    /* Layout Chat / Conversas com Recursos ZapHub */
     .chat-list-panel { width: 340px; background-color: #0b1120; border-right: 1px solid #1e293b; display: flex; flex-direction: column; }
-    .chat-list-header { padding: 18px; border-bottom: 1px solid #1e293b; display: flex; gap: 8px; }
-    .filter-select { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; padding: 7px 12px; border-radius: 6px; font-size: 13px; outline: none; }
+    .chat-list-header { padding: 18px; border-bottom: 1px solid #1e293b; display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-select { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; padding: 7px 12px; border-radius: 6px; font-size: 13px; outline: none; flex: 1; }
     
     .chat-item { padding: 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: 0.2s; }
     .chat-item:hover, .chat-item.active { background-color: #1e293b; }
-    .chat-item-name { font-weight: 600; font-size: 15px; color: #f8fafc; }
+    .chat-item-name { font-weight: 600; font-size: 15px; color: #f8fafc; display: flex; justify-content: space-between; align-items: center; }
     .chat-item-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
     .tag { display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-top: 6px; font-weight: 600; }
+    .tag-warning { background: rgba(234, 179, 8, 0.15); color: #facc15; }
 
     .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0f172a; }
-    .chat-header { padding: 18px 24px; background-color: #0b1120; border-bottom: 1px solid #1e293b; font-weight: 600; font-size: 16px; }
+    .chat-header { padding: 18px 24px; background-color: #0b1120; border-bottom: 1px solid #1e293b; font-weight: 600; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
     .messages-area { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .msg { max-width: 60%; padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+    .msg { max-width: 60%; padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; position: relative; }
+    .msg small { display: block; text-align: right; color: #94a3b8; font-size: 10px; margin-top: 4px; }
     .msg.sent { background-color: #0369a1; align-self: flex-end; color: #f8fafc; border-bottom-right-radius: 2px; }
     .msg.received { background-color: #1e293b; align-self: flex-start; color: #f1f5f9; border-bottom-left-radius: 2px; }
 
@@ -51,8 +53,8 @@
     .btn-secondary { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; font-weight: 500; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .btn-secondary:hover { background: #334155; }
 
-    .details-panel { width: 300px; background-color: #0b1120; border-left: 1px solid #1e293b; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
-    .panel-title { font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .details-panel { width: 300px; background-color: #0b1120; border-left: 1px solid #1e293b; padding: 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    .panel-title { font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .input-field { width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; color: #f8fafc; margin-top: 6px; font-size: 13.5px; outline: none; transition: 0.2s; }
     .input-field:focus { border-color: #38bdf8; }
 
@@ -61,6 +63,12 @@
     .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
     .status-connected { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
     .status-disconnected { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    /* Dashboard de Saúde / KPIs estilo ZapHub */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; }
+    .kpi-card span { font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+    .kpi-card h2 { font-size: 26px; font-weight: 700; color: #f8fafc; margin-top: 8px; }
 
     /* Builder Layout */
     .template-builder-container { display: flex; gap: 28px; margin-top: 20px; }
@@ -87,49 +95,79 @@
     <div>
       <div class="logo">AuriumHub <span>PRO</span></div>
       <ul class="nav-menu">
-        <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas</li>
+        <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas & Filas</li>
         <li class="nav-item" onclick="switchTab('disparos', this)">📣 Campanhas / Disparos</li>
         <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates Meta</li>
-        <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão Meta</li>
+        <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão & Saúde</li>
       </ul>
     </div>
     <div class="user-footer">
-      <div>AuriumHub Online • Vercel</div>
+      <div>AuriumHub Online • v2.6</div>
     </div>
   </div>
 
   <div class="main-container">
 
-    <!-- Tab 1: Conversas -->
+    <!-- Tab 1: Conversas com Filas e Tags do ZapHub -->
     <div id="tab-conversas" class="tab-content active">
       <div class="chat-list-panel">
         <div class="chat-list-header">
-          <select class="filter-select"><option>Abertas</option></select>
-          <select class="filter-select"><option>Todas as tags</option></select>
+          <select id="filter-status" class="filter-select" onchange="renderChatList()">
+            <option value="aberta">Abertas</option>
+            <option value="fechada">Fechadas</option>
+          </select>
+          <select id="filter-tag" class="filter-select" onchange="renderChatList()">
+            <option value="">Todas as tags</option>
+            <option value="Lead quente">Lead quente</option>
+            <option value="Dúvida">Dúvida</option>
+            <option value="Pagamento">Pagamento</option>
+            <option value="VIP">VIP</option>
+          </select>
         </div>
-        <div class="chat-item active">
-          <div class="chat-item-name">Marina Souza</div>
-          <div class="chat-item-sub">Vendas • Ana</div>
-          <div class="chat-item-sub">Oi! Vi a promoção de vocês...</div>
-          <span class="tag">Lead quente</span>
+        <div id="chat-list-container" style="overflow-y: auto; flex: 1;">
+          <!-- Renderizado via JS -->
         </div>
       </div>
 
       <div class="chat-box">
-        <div class="chat-header">Marina Souza <span style="font-weight: normal; font-size: 13px; color: #94a3b8;">+55 18 98888-1111</span></div>
+        <div class="chat-header">
+          <span id="active-chat-name">Selecione uma conversa</span> 
+          <span id="active-chat-phone" style="font-weight: normal; font-size: 13px; color: #94a3b8;"></span>
+        </div>
         <div class="messages-area" id="msg-area">
-          <div class="msg received">Oi! Vi a promoção de vocês, ainda está valendo?</div>
+          <div style="color: #94a3b8; text-align: center; margin-top: 40px;">Selecione um chat ao lado para iniciar o atendimento.</div>
         </div>
         <div class="chat-input-area">
-          <input type="text" id="input-message" class="chat-input" placeholder="Digite uma mensagem...">
+          <input type="text" id="input-message" class="chat-input" placeholder="Digite uma mensagem..." onkeydown="if(event.key==='Enter') sendMessage()">
           <button class="btn-primary" onclick="sendMessage()">Enviar</button>
         </div>
       </div>
 
       <div class="details-panel">
         <div>
-          <div class="panel-title">Configurar Destinatário Real</div>
-          <label style="font-size: 12px; color: #94a3b8;">Número com DDI e DDD:</label>
+          <div class="panel-title">Fila / Setor (ZapHub)</div>
+          <select id="chat-queue-select" class="input-field" onchange="updateCurrentChatProperty('queue', this.value)">
+            <option value="Vendas">Vendas</option>
+            <option value="Suporte">Suporte</option>
+            <option value="Financeiro">Financeiro</option>
+          </select>
+        </div>
+        <div>
+          <div class="panel-title">Atendente Responsável</div>
+          <input type="text" id="chat-agent-input" class="input-field" value="Ana" onchange="updateCurrentChatProperty('agent', this.value)">
+        </div>
+        <div>
+          <div class="panel-title">Etiqueta / Tag</div>
+          <select id="chat-tag-select" class="input-field" onchange="updateCurrentChatProperty('tag', this.value)">
+            <option value="Lead quente">Lead quente</option>
+            <option value="Dúvida">Dúvida</option>
+            <option value="Pagamento">Pagamento</option>
+            <option value="VIP">VIP</option>
+          </select>
+        </div>
+        <div style="border-top: 1px solid #1e293b; padding-top: 14px;">
+          <div class="panel-title">Destinatário Real (Cloud API)</div>
+          <label style="font-size: 11px; color: #94a3b8;">Número com DDI e DDD:</label>
           <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999">
         </div>
       </div>
@@ -296,13 +334,34 @@
       </div>
     </div>
 
-    <!-- Tab 4: Conexão Meta -->
+    <!-- Tab 4: Conexão e Saúde de Chips (ZapHub Feature) -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
-        <h1 style="font-size: 24px; font-weight: 700;">WhatsApp Business Platform (Cloud API)</h1>
-        <div class="card" style="margin-top: 20px;">
+        <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Saúde de Chip</h1>
+        
+        <!-- Dashboard de Saúde ZapHub -->
+        <div class="kpi-grid" style="margin-top: 20px;">
+          <div class="kpi-card">
+            <span>Status da API</span>
+            <h2 id="kpi-api-status" style="font-size: 18px; color: #4ade80;">Verificando...</h2>
+          </div>
+          <div class="kpi-card">
+            <span>Taxa de Entrega</span>
+            <h2>99.4%</h2>
+          </div>
+          <div class="kpi-card">
+            <span>Limite Diário WABA</span>
+            <h2>1,000 msgs</h2>
+          </div>
+          <div class="kpi-card">
+            <span>Risco de Bloqueio</span>
+            <h2 style="color: #4ade80; font-size: 18px;">Baixo (Chip Seguro)</h2>
+          </div>
+        </div>
+
+        <div class="card">
           <div style="margin-bottom: 18px;">
-            Status de Conexão: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
+            Status Cloud API: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
 
           <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta (Gravadas Permanentemente)</h3>
@@ -331,6 +390,13 @@
     let csvData = [];
     let metaTemplatesList = [];
 
+    // Sistema de conversas avançado inspirado no ZapHub
+    let conversationsState = [
+      { id: 1, name: 'Marina Souza', phone: '+5518988881111', queue: 'Vendas', agent: 'Ana', status: 'aberta', tag: 'Lead quente', messages: [{ sender: 'received', text: 'Oi! Vi a promoção de vocês, ainda está valendo?', time: '09:12' }] },
+      { id: 2, name: 'Carlos Alberto', phone: '+5511977772222', queue: 'Suporte', agent: 'Carlos', status: 'aberta', tag: 'Dúvida', messages: [{ sender: 'received', text: 'Como faço para redefinir minha senha?', time: '10:45' }] }
+    ];
+    let activeConversationId = 1;
+
     function switchTab(tabName, element) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -341,6 +407,10 @@
       if (tabName === 'templates' || tabName === 'disparos') {
         syncTemplatesWithMeta();
         fetchWabaPhoneNumbers();
+      }
+      if (tabName === 'conversas') {
+        renderChatList();
+        renderActiveChat();
       }
     }
 
@@ -362,6 +432,82 @@
       renderCachedTemplates();
       syncTemplatesWithMeta();
       fetchWabaPhoneNumbers();
+      renderChatList();
+      renderActiveChat();
+    }
+
+    // Funções do Inbox ZapHub
+    function renderChatList() {
+      const container = document.getElementById('chat-list-container');
+      const filterStatus = document.getElementById('filter-status').value;
+      const filterTag = document.getElementById('filter-tag').value;
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = conversationsState.filter(c => {
+        if (c.status !== filterStatus) return false;
+        if (filterTag && c.tag !== filterTag) return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; color: #94a3b8; font-size: 13px;">Nenhuma conversa encontrada.</div>';
+        return;
+      }
+
+      filtered.forEach(c => {
+        const lastMsg = c.messages[c.messages.length - 1]?.text || '';
+        const isActive = c.id === activeConversationId ? 'active' : '';
+        container.innerHTML += `
+          <div class="chat-item ${isActive}" onclick="selectConversation(${c.id})">
+            <div class="chat-item-name">
+              <span>${c.name}</span>
+              <span style="font-size: 11px; color: #94a3b8;">${c.queue}</span>
+            </div>
+            <div class="chat-item-sub">${lastMsg.substring(0, 30)}...</div>
+            <span class="tag">${c.tag}</span>
+          </div>
+        `;
+      });
+    }
+
+    function selectConversation(id) {
+      activeConversationId = id;
+      renderChatList();
+      renderActiveChat();
+    }
+
+    function renderActiveChat() {
+      const c = conversationsState.find(item => item.id === activeConversationId);
+      if (!c) return;
+
+      document.getElementById('active-chat-name').innerText = c.name;
+      document.getElementById('active-chat-phone').innerText = c.phone;
+      document.getElementById('chat-queue-select').value = c.queue;
+      document.getElementById('chat-agent-input').value = c.agent;
+      document.getElementById('chat-tag-select').value = c.tag;
+      document.getElementById('target-phone').value = c.phone.replace(/\D/g, '');
+
+      const msgArea = document.getElementById('msg-area');
+      msgArea.innerHTML = '';
+      c.messages.forEach(m => {
+        msgArea.innerHTML += `
+          <div class="msg ${m.sender === 'sent' ? 'sent' : 'received'}">
+            ${m.text}
+            <small>${m.time}</small>
+          </div>
+        `;
+      });
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }
+
+    function updateCurrentChatProperty(prop, val) {
+      const c = conversationsState.find(item => item.id === activeConversationId);
+      if (c) {
+        c[prop] = val;
+        renderChatList();
+      }
     }
 
     async function fetchWabaPhoneNumbers() {
@@ -373,14 +519,12 @@
         const statusData = await res.json();
 
         if (statusData.phoneId) {
-          const displayNumber = statusData.displayPhoneNumber || 'Número configurado';
-          const verifiedName = statusData.verifiedName
-            ? ` — ${statusData.verifiedName}`
-            : '';
+          const displayNumber = statusData.display_phone_number || statusData.displayPhoneNumber || 'Número configurado';
+          const verifiedName = statusData.verified_name ? ` — ${statusData.verified_name}` : '';
 
           senderSelect.innerHTML = `
             <option value="${statusData.phoneId}">
-              ${displayNumber}${verifiedName}
+              ${displayNumber}${verifiedName} (${statusData.phoneId})
             </option>
           `;
         }
@@ -402,6 +546,7 @@
 
     async function checkBackendStatus() {
       const statusBadge = document.getElementById('meta-status');
+      const kpiApiStatus = document.getElementById('kpi-api-status');
       try {
         const res = await fetch('/api/status');
         const data = await res.json();
@@ -409,9 +554,11 @@
         if (data.connected) {
           statusBadge.innerText = 'Conectado à Meta';
           statusBadge.className = 'status-badge status-connected';
+          if (kpiApiStatus) { kpiApiStatus.innerText = 'Online / Conectado'; kpiApiStatus.style.color = '#4ade80'; }
         } else {
           statusBadge.innerText = 'Credenciais Incompletas';
           statusBadge.className = 'status-badge status-disconnected';
+          if (kpiApiStatus) { kpiApiStatus.innerText = 'Desconectado'; kpiApiStatus.style.color = '#f43f5e'; }
         }
       } catch (err) {
         statusBadge.innerText = 'Erro Backend';
@@ -516,7 +663,6 @@
       document.getElementById('csv-mapping-panel').style.display = 'none';
     }
 
-    // Sincronização direta enviando requisição GET para a META via Backend
     async function syncTemplatesWithMeta() {
       const msgEl = document.getElementById('sync-status-msg');
       if (msgEl) msgEl.innerText = '🔄 Requisitando dados à Meta...';
@@ -552,6 +698,7 @@
 
     function renderTemplatesTable(templates) {
       const listEl = document.getElementById('tpl-list');
+      if (!listEl) return;
       if (!templates || templates.length === 0) {
         listEl.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;">Nenhum template encontrado.</td></tr>';
         return;
@@ -574,13 +721,11 @@
       });
     }
 
-    // Filtra e exibe APENAS OS TEMPLATES APROVADOS (APPROVED) para a campanha
     function updateCampTemplateDropdown(templates) {
       const select = document.getElementById('camp-template-select');
       if (!select) return;
 
       select.innerHTML = '<option value="">— Selecione um template APROVADO —</option>';
-      
       const approvedTemplates = templates.filter(t => t.status === 'APPROVED');
 
       if (approvedTemplates.length === 0) {
@@ -614,15 +759,18 @@
     async function sendMessage() {
       const inputMsg = document.getElementById('input-message');
       const targetPhone = document.getElementById('target-phone').value;
-      const msgArea = document.getElementById('msg-area');
 
       if (!inputMsg.value.trim()) return;
 
-      const messageText = inputMsg.value;
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'msg sent';
-      msgDiv.innerText = messageText;
-      msgArea.appendChild(msgDiv);
+      const messageText = inputMsg.value.trim();
+      const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const c = conversationsState.find(item => item.id === activeConversationId);
+      if (c) {
+        c.messages.push({ sender: 'sent', text: messageText, time: timeNow });
+        renderActiveChat();
+        renderChatList();
+      }
       inputMsg.value = '';
 
       try {
@@ -656,29 +804,16 @@
 
       for (let i = 0; i < csvData.length; i++) {
         const contact = csvData[i];
-        const selectedTpl = metaTemplatesList.find(
-          tpl => tpl.name === selectedTemplate
-        );
+        const selectedTpl = metaTemplatesList.find(tpl => tpl.name === selectedTemplate);
         const templateLanguage = selectedTpl?.language || 'pt_BR';
 
-        // Só enviar parâmetros quando o template realmente possuir variáveis.
-        // O template hello_world, por exemplo, não possui nenhuma variável.
-        const bodyComponent = selectedTpl?.components?.find(
-          component => component.type === 'BODY'
-        );
+        const bodyComponent = selectedTpl?.components?.find(component => component.type === 'BODY');
         const variableMatches = bodyComponent?.text?.match(/\{\{\d+\}\}/g) || [];
         const variableCount = variableMatches.length;
 
         let templateParams = [];
         if (variableCount >= 1 && contact.nome) {
           templateParams = [contact.nome];
-        }
-
-        if (variableCount > 1) {
-          logDiv.innerHTML +=
-            `⚠️ ${contact.nome}: o template exige ${variableCount} ` +
-            `parâmetros, mas o CSV atual fornece apenas o nome.<br>`;
-          continue;
         }
 
         try {
@@ -697,10 +832,9 @@
           if (result.success) {
             logDiv.innerHTML += `✅ Enviado com sucesso para ${contact.nome} (${contact.telefone})<br>`;
           } else {
-            // Explicação detalhada caso seja erro de número sandbox não autorizado
             let errText = result.error;
             if (errText.includes('131030')) {
-              errText = 'Número não autorizado na lista de testes da Meta (Sandbox). Adicione este número no painel do desenvolvedor Meta.';
+              errText = 'Número não autorizado na lista de testes da Meta (Sandbox).';
             }
             logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${errText}<br>`;
           }
@@ -740,7 +874,6 @@
         });
       } else {
         samplesContainer.style.display = 'none';
-        samplesInputs.innerHTML = '';
       }
     }
 
@@ -779,10 +912,7 @@
         return;
       }
 
-      const button = document.querySelector(
-        'button[onclick="submitTemplate()"]'
-      );
-
+      const button = document.querySelector('button[onclick="submitTemplate()"]');
       if (button) {
         button.disabled = true;
         button.innerText = 'Enviando para a Meta...';
@@ -792,42 +922,19 @@
         const res = await fetch('/api/templates/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            language,
-            category,
-            bodyText,
-            samples,
-            footerText
-          })
+          body: JSON.stringify({ name, language, category, bodyText, samples, footerText })
         });
 
         const data = await res.json();
 
         if (!res.ok || !data.success) {
-          throw new Error(
-            data.error || 'Não foi possível enviar o template para a Meta.'
-          );
+          throw new Error(data.error || 'Não foi possível enviar o template para a Meta.');
         }
 
-        const templateId = data.data?.id
-          ? `\nID: ${data.data.id}`
-          : '';
-        const templateStatus = data.data?.status
-          ? `\nStatus: ${data.data.status}`
-          : '\nStatus: enviado para análise da Meta';
-
-        alert(
-          'Template enviado para a Meta com sucesso!' +
-          templateStatus +
-          templateId +
-          '\n\nA página será atualizada agora.'
-        );
-
+        alert('Template enviado para a Meta com sucesso! A página será atualizada.');
         window.location.reload();
       } catch (err) {
         alert('Erro ao enviar o template:\n\n' + err.message);
-
         if (button) {
           button.disabled = false;
           button.innerText = 'Enviar para Aprovação na Meta';
