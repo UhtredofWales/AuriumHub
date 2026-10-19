@@ -24,7 +24,7 @@
     .tab-content { display: none; width: 100%; height: 100%; }
     .tab-content.active { display: flex; }
 
-    /* Layout Chat / Conversas com Recursos ZapHub */
+    /* Layout Chat / Conversas */
     .chat-list-panel { width: 340px; background-color: #0b1120; border-right: 1px solid #1e293b; display: flex; flex-direction: column; }
     .chat-list-header { padding: 18px; border-bottom: 1px solid #1e293b; display: flex; gap: 8px; flex-wrap: wrap; }
     .filter-select { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; padding: 7px 12px; border-radius: 6px; font-size: 13px; outline: none; flex: 1; }
@@ -63,7 +63,7 @@
     .status-connected { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
     .status-disconnected { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
 
-    /* Dashboard de Saúde / KPIs estilo ZapHub */
+    /* Dashboard de Saúde / KPIs */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .kpi-card { background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; }
     .kpi-card span { font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
@@ -79,7 +79,7 @@
     .sample-item { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
     .sample-item label { background: #38bdf8; color: #0f172a; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
 
-    /* Componente de Destinatários com Chips (Estilo ZapHub) */
+    /* Destinatários com Chips */
     .recipient-container { background: #0b1120; border: 1px solid #1e293b; border-radius: 10px; padding: 16px; margin-top: 6px; }
     .recipient-input-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px; }
     .recipient-input { flex: 1; background: transparent; border: none; outline: none; color: #f8fafc; font-size: 14px; }
@@ -88,24 +88,22 @@
     .contact-chip-remove { cursor: pointer; color: #93c5fd; font-weight: bold; margin-left: 4px; font-size: 14px; }
     .contact-chip-remove:hover { color: #f43f5e; }
 
-    /* Import CSV Box PRO */
+    /* Import CSV Box */
     .csv-import-box { background: #182232; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin-top: 16px; }
     
     table { width: 100%; border-collapse: collapse; margin-top: 16px; }
     th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #1e293b; font-size: 13.5px; }
     th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; }
 
-    /* Terminal de Logs do Painel de Comando */
+    /* Terminal do Painel de Comando */
     .log-terminal { background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #38bdf8; height: 320px; overflow-y: auto; line-height: 1.6; }
     .log-error { color: #f43f5e; }
     .log-success { color: #4ade80; }
     .log-warn { color: #facc15; }
 
-    /* Recursos ZapHub */
     .mu { color: #94a3b8; font-size: 12px; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .row .input-field { width: auto; margin-top: 0; flex: 1; min-width: 140px; }
-    .tag { margin-right: 4px; }
     .av { object-fit: cover; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(135deg,#0369a1,#f43f5e); color: #fff; font-weight: 700; font-style: normal; }
     .chip { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 99px; padding: 2px 10px 2px 3px; font-size: 11px; color: #e2e8f0; margin: 0 4px 4px 0; }
     .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: rgba(56,189,248,.15); color: #38bdf8; cursor: pointer; border: 1px solid transparent; margin: 0 4px 4px 0; }
@@ -126,8 +124,6 @@
     .alert { background: rgba(234,179,8,.12); color: #facc15; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
     .btn-sm { padding: 4px 10px; font-size: 12px; }
     .btn-danger { background: transparent; border: 1px solid #7f1d3a; color: #fb7185; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
-    .chat-item-name .row { flex-wrap: nowrap; }
-    .user-footer select { margin: 6px 0 0; }
   </style>
 </head>
 <body>
@@ -143,7 +139,7 @@
 
   <div class="main-container">
 
-    <!-- Tab 1: Conversas, filas, tags, transferência -->
+    <!-- Tab 1: Conversas -->
     <div id="tab-conversas" class="tab-content active">
       <div class="chat-list-panel">
         <div class="chat-list-header">
@@ -153,10 +149,12 @@
           </select>
           <select id="filter-tag" class="filter-select" onchange="renderChatList()"></select>
           <select id="filter-area" class="filter-select" onchange="renderChatList()"></select>
-          <label class="mu"><input type="checkbox" id="filter-mine" onchange="renderChatList()"> Só minhas</label>
+          <label class="mu" style="display:flex;align-items:center;gap:4px;"><input type="checkbox" id="filter-mine" onchange="renderChatList()"> Só minhas</label>
         </div>
         <div id="chat-list-container" style="overflow-y: auto; flex: 1;"></div>
-        <div style="padding: 12px; border-top: 1px solid #1e293b;"><button class="btn-secondary" style="width: 100%;" onclick="simulateIncoming()">+ Simular mensagem recebida</button></div>
+        <div style="padding: 12px; border-top: 1px solid #1e293b;">
+          <button class="btn-secondary" style="width: 100%;" onclick="simulateIncoming()">+ Simular mensagem recebida</button>
+        </div>
       </div>
       <div class="chat-box">
         <div class="chat-header" id="chat-head"></div>
@@ -170,13 +168,13 @@
       <div class="details-panel" id="details-panel"></div>
     </div>
 
-    <!-- Tab 2: Disparos e Campanhas (Com chips e leitor inteligente de CSV) -->
+    <!-- Tab 2: Disparos -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Nova campanha</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Envie campanhas em massa usando apenas os templates aprovados pela Meta.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Envie campanhas em massa usando templates aprovados pela Meta.</p>
           </div>
           <div>
             <button class="btn-primary" onclick="startBulkSend()">🚀 Enviar Campanha</button>
@@ -199,7 +197,7 @@
                 <option value="">Sincronize ou aguarde carregar os templates...</option>
               </select>
 
-              <!-- DESTINATÁRIOS COM BALÕES/CHIPS DE CONTATOS E LEITURA INTELIGENTE NOME/TELEFONE -->
+              <!-- DESTINATÁRIOS INTELIGENTES -->
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
               <div class="recipient-container">
                 <div class="recipient-input-wrapper">
@@ -214,7 +212,7 @@
                 </div>
               </div>
 
-              <!-- Painel Mapeamento CSV Inteligente -->
+              <!-- Painel Mapeamento CSV -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -236,7 +234,7 @@
 
               <div id="csv-import-status" style="font-size: 13px; color: #4ade80; margin-top: 10px; font-weight: 500;"></div>
 
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block; margin-top: 16px;">INCLUIR CONTATOS DAS CONVERSAS COM A TAG (OPCIONAL)</label>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block; margin-top: 16px;">INCLUIR CONTATOS COM A TAG (OPCIONAL)</label>
               <select id="camp-tag" class="input-field" onchange="includeTagContacts(this.value)"></select>
             </div>
 
@@ -250,7 +248,7 @@
 
           <!-- Prévia -->
           <div style="flex: 0.8;" class="card">
-            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">💭 PRÉVIA DO TEMPLATE</h3>
+            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">💭 PRÉVIA DO TEMPLATE</h3>
             <div class="whatsapp-preview-card" style="margin-top: 16px;">
               <div id="camp-preview-body" style="white-space: pre-wrap;">Selecione um template aprovado para visualizar...</div>
               <div id="camp-preview-footer" style="font-size: 11px; color: #94a3b8; margin-top: 10px;"></div>
@@ -260,13 +258,13 @@
       </div>
     </div>
 
-    <!-- Tab 3: Gestor de Templates com Sincronização Direta -->
+    <!-- Tab 3: Templates -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Gestão de Templates da Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Clique em sincronizar para consultar o estado atual diretamente na Meta.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Consulte e crie novos modelos de mensagens.</p>
           </div>
           <button class="btn-primary" style="background-color: #0284c7;" onclick="syncTemplatesWithMeta()">⚡ Sincronizar com a META</button>
         </div>
@@ -302,11 +300,10 @@
 
             <div id="samples-container" class="sample-box" style="display: none;">
               <label style="font-size: 12px; font-weight: 700; color: #38bdf8;">AMOSTRAS DAS VARIÁVEIS *</label>
-              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige um valor de exemplo para cada variável para revisar o template.</p>
               <div id="samples-inputs"></div>
             </div>
 
-            <label style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-top: 16px; display: block;">RODAPÉ / FOOTER (OPCIONAL)</label>
+            <label style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-top: 16px; display: block;">RODAPÉ (OPCIONAL)</label>
             <input type="text" id="tpl-footer" class="input-field" placeholder="ex: AuriumHub Soluções" oninput="updateTemplatePreview()">
 
             <button class="btn-primary" style="margin-top: 20px; width: 100%; padding: 12px;" onclick="submitTemplate()">Enviar para Aprovação na Meta</button>
@@ -328,23 +325,17 @@
           </div>
           <table>
             <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Idioma</th>
-                <th>Status na Meta</th>
-                <th></th>
-              </tr>
+              <tr><th>Nome</th><th>Categoria</th><th>Idioma</th><th>Status</th><th></th></tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="4" style="color: #94a3b8;">Clique em "Sincronizar com a META" acima.</td></tr>
+              <tr><td colspan="5" style="color: #94a3b8;">Clique em sincronizar.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- Tab 4: 📊 PAINEL DE COMANDO / LOGS DA META -->
+    <!-- Tab 4: 📊 PAINEL DE COMANDO / LOGS -->
     <div id="tab-painel" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -384,12 +375,11 @@
       </div>
     </div>
 
-    <!-- Tab 5: Conexão e Saúde de Chips (ZapHub Feature) -->
+    <!-- Tab 5: Conexão Meta -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
         <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Saúde de Chip</h1>
         
-        <!-- Dashboard de Saúde ZapHub -->
         <div class="kpi-grid" style="margin-top: 20px;">
           <div class="kpi-card">
             <span>Status da API</span>
@@ -414,9 +404,9 @@
             Status Cloud API: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
 
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta (Gravadas Permanentemente)</h3>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta</h3>
           
-          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">WABA ID (ID da Conta do WhatsApp Business):</label>
+          <label style="font-size: 12px; color: #94a3b8; display: block; font-weight: 600;">WABA ID:</label>
           <input type="text" id="cfg-waba" class="input-field" placeholder="Ex: 3593503124150921">
 
           <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Phone Number ID:</label>
@@ -426,13 +416,13 @@
           <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
 
           <div style="margin-top: 20px;">
-            <button class="btn-primary" onclick="saveCredentials()">Salvar / Atualizar Credenciais</button>
+            <button class="btn-primary" onclick="saveCredentials()">Salvar Credenciais</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Demais abas do sistema completo -->
+    <!-- Outras Abas -->
     <div id="tab-numeros" class="tab-content"><div class="page-padding" id="numeros-root"></div></div>
     <div id="tab-equipe" class="tab-content"><div class="page-padding" id="equipe-root"></div></div>
 
@@ -445,8 +435,43 @@
     let metaTemplatesList = [];
     let diagnosticStats = { requests: 0, errors: 0, lastSync: 'Nunca' };
 
-    function logTerminal(message, type = 'info') {
-      const term = document.getElementById('meta-terminal-logs');
+    const SK = 'aurium_state_v3';
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const fm = n => Number(n).toLocaleString('pt-BR');
+
+    function seed() {
+      return {
+        areas: ['Vendas', 'Suporte', 'Financeiro'],
+        tags: ['Lead quente', 'Dúvida', 'Pagamento', 'VIP'],
+        users: [
+          { id: 1, n: 'Você (Admin)', r: 'admin', a: ['Vendas', 'Suporte', 'Financeiro'] },
+          { id: 2, n: 'Ana', r: 'agente', a: ['Vendas'] },
+          { id: 3, n: 'Carlos', r: 'agente', a: ['Suporte'] }
+        ],
+        nums: [
+          { id: 1, n: 'Loja Principal', p: '+55 18 99999-0001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 3420, dl: 97.8, bl: 0.4, rp: 31, tr: [96, 97, 98] }
+        ],
+        tpls: [
+          { id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}, confira nossa oferta!' }] }
+        ],
+        quick: ['Olá! Como posso ajudar?', 'Já vou verificar para você.'],
+        camps: [],
+        convs: [
+          { id: 1, name: 'Cliente Atendimento', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead quente'], m: [{ f: 'c', t: 'Olá, preciso de informações.', h: '10:00' }] }
+        ],
+        nid: 100
+      };
+    }
+
+    let S; try { S = JSON.parse(localStorage.getItem(SK)); } catch(e){} S = S || seed();
+    const save = () => { try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} };
+
+    let V = 'conversas', ME = 1, SEL = 1, SRV = null, ST = { nums: 0, team: 0 };
+
+    function logTerminal(msg, type = 'info') {
+      const term = $('#meta-terminal-logs');
       if (!term) return;
       const time = new Date().toLocaleTimeString();
       let cssClass = '';
@@ -455,36 +480,28 @@
       if (type === 'warn') cssClass = 'log-warn';
 
       diagnosticStats.requests++;
-      term.innerHTML += `<span class="${cssClass}">[${time}] ${message}</span><br>`;
+      term.innerHTML += `<span class="${cssClass}">[${time}] ${msg}</span><br>`;
       term.scrollTop = term.scrollHeight;
 
-      const reqEl = document.getElementById('diag-req-count');
-      const errEl = document.getElementById('diag-err-count');
-      if (reqEl) reqEl.innerText = diagnosticStats.requests;
-      if (errEl) errEl.innerText = diagnosticStats.errors;
+      if ($('#diag-req-count')) $('#diag-req-count').innerText = diagnosticStats.requests;
+      if ($('#diag-err-count')) $('#diag-err-count').innerText = diagnosticStats.errors;
     }
 
     function clearTerminalLogs() {
-      const term = document.getElementById('meta-terminal-logs');
-      if (term) term.innerHTML = '[Sistema] Logs limpos pelo usuário.<br>';
-      diagnosticStats.requests = 0;
-      diagnosticStats.errors = 0;
-      const reqEl = document.getElementById('diag-req-count');
-      const errEl = document.getElementById('diag-err-count');
-      if (reqEl) reqEl.innerText = 0;
-      if (errEl) errEl.innerText = 0;
+      if ($('#meta-terminal-logs')) $('#meta-terminal-logs').innerHTML = '[Sistema] Logs limpos.<br>';
+      diagnosticStats.requests = 0; diagnosticStats.errors = 0;
+      if ($('#diag-req-count')) $('#diag-req-count').innerText = 0;
+      if ($('#diag-err-count')) $('#diag-err-count').innerText = 0;
     }
 
-    /* GESTOR DE BALÕES / CHIPS DE CONTATOS E LEITURA INTELIGENTE DE CSV */
+    /* CHIPS & CSV INTELIGENTE */
     function renderChips() {
-      const container = document.getElementById('chips-container');
+      const container = $('#chips-container');
       if (!container) return;
-
       if (csvData.length === 0) {
         container.innerHTML = '<span style="font-size: 12px; color: #64748b;">Nenhum contato adicionado ainda.</span>';
         return;
       }
-
       container.innerHTML = csvData.map((c, index) => `
         <div class="contact-chip">
           <span>${esc(c.nome)} &lt;+${c.telefone}&gt;</span>
@@ -493,584 +510,246 @@
       `).join('');
     }
 
-    function removeChip(index) {
-      csvData.splice(index, 1);
+    function removeChip(idx) {
+      csvData.splice(idx, 1);
       renderChips();
-      const statusEl = document.getElementById('csv-import-status');
-      if (statusEl) statusEl.innerText = csvData.length > 0 ? `✅ ${csvData.length} contatos mapeados.` : '';
     }
 
     function addManualContact() {
-      const input = document.getElementById('manual-recipient-input');
+      const input = $('#manual-recipient-input');
       const val = input.value.trim();
       if (!val) return;
-
-      let name = 'Cliente';
-      let phone = val;
-
+      let name = 'Cliente', phone = val;
       if (val.includes('<') && val.includes('>')) {
         const parts = val.split('<');
         name = parts[0].trim();
         phone = parts[1].replace('>', '').trim();
       }
-
       phone = phone.replace(/\D/g, '');
       if (phone.length >= 8) {
         csvData.push({ nome: name, telefone: phone });
         renderChips();
         input.value = '';
-        logTerminal(`Contato manual adicionado: ${name} (+${phone})`, 'success');
-        document.getElementById('csv-import-status').innerText = `✅ ${csvData.length} contatos no disparo.`;
-      } else {
-        alert('Número inválido. Informe o código do país e DDD (ex: 5518991879642)');
-      }
+        logTerminal(`Contato adicionado: ${name} (+${phone})`, 'success');
+      } else alert('Número inválido.');
     }
 
-    function handleCSVUpload(event) {
-      const file = event.target.files[0];
+    function handleCSVUpload(e) {
+      const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
-        
-        if (lines.length === 0) {
-          alert('Arquivo CSV vazio.');
-          return;
-        }
+      reader.onload = function(evt) {
+        const lines = evt.target.result.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (!lines.length) return alert('CSV Vazio.');
+        const sep = lines[0].includes(';') ? ';' : ',';
+        parsedCsvHeaders = lines[0].split(sep).map(h => h.trim().replace(/^["']|["']$/g, ''));
+        parsedCsvRows = lines.slice(1).map(l => l.split(sep).map(c => c.trim().replace(/^["']|["']$/g, '')));
 
-        const firstLine = lines[0];
-        const separator = firstLine.includes(';') ? ';' : ',';
+        const pSel = $('#csv-phone-col'), nSel = $('#csv-name-col');
+        pSel.innerHTML = ''; nSel.innerHTML = '';
+        let dP = 0, dN = 0;
 
-        parsedCsvHeaders = firstLine.split(separator).map(h => h.trim().replace(/^["']|["']$/g, ''));
-        parsedCsvRows = lines.slice(1).map(line => line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, '')));
+        parsedCsvHeaders.forEach((h, idx) => {
+          const sample = parsedCsvRows[0] && parsedCsvRows[0][idx] ? parsedCsvRows[0][idx] : '';
+          const hL = h.toLowerCase();
+          if (hL.match(/phone|telef|celular|num|fone/) || sample.replace(/\D/g, '').length >= 8) dP = idx;
+          if (hL.match(/name|nome|cliente|contato/) && !hL.match(/phone|telef/)) dN = idx;
 
-        const phoneSelect = document.getElementById('csv-phone-col');
-        const nameSelect = document.getElementById('csv-name-col');
-
-        phoneSelect.innerHTML = '';
-        nameSelect.innerHTML = '';
-
-        let detectedPhoneIdx = 0;
-        let detectedNameIdx = 0;
-
-        parsedCsvHeaders.forEach((header, idx) => {
-          const sampleVal = parsedCsvRows[0] && parsedCsvRows[0][idx] ? parsedCsvRows[0][idx] : '';
-          const hLower = header.toLowerCase();
-          
-          if (hLower.match(/phone|telef|celular|num|fone/) || sampleVal.replace(/\D/g, '').length >= 8) {
-            detectedPhoneIdx = idx;
-          }
-          if (hLower.match(/name|nome|cliente|contato/) && !hLower.match(/phone|telef/)) {
-            detectedNameIdx = idx;
-          }
-
-          phoneSelect.innerHTML += `<option value="${idx}">${header} (Ex: ${sampleVal})</option>`;
-          nameSelect.innerHTML += `<option value="${idx}">${header} (Ex: ${sampleVal})</option>`;
+          pSel.innerHTML += `<option value="${idx}">${h} (Ex: ${sample})</option>`;
+          nSel.innerHTML += `<option value="${idx}">${h} (Ex: ${sample})</option>`;
         });
-
-        phoneSelect.value = detectedPhoneIdx;
-        nameSelect.value = detectedNameIdx;
-
-        document.getElementById('csv-detected-summary').innerText = `Planilha "${file.name}" carregada (${parsedCsvRows.length} linhas). Confirme as colunas de Nome e Telefone:`;
-        document.getElementById('csv-mapping-panel').style.display = 'block';
-        logTerminal(`Planilha CSV processada: ${file.name} com ${parsedCsvRows.length} linhas.`, 'success');
+        pSel.value = dP; nSel.value = dN;
+        $('#csv-detected-summary').innerText = `Planilha "${file.name}" carregada (${parsedCsvRows.length} linhas). Mapeie os campos:`;
+        $('#csv-mapping-panel').style.display = 'block';
       };
-
       reader.readAsText(file, 'UTF-8');
     }
 
     function confirmCSVImport() {
-      const phoneIdx = parseInt(document.getElementById('csv-phone-col').value);
-      const nameIdx = parseInt(document.getElementById('csv-name-col').value);
-
-      let importedCount = 0;
+      const pIdx = parseInt($('#csv-phone-col').value), nIdx = parseInt($('#csv-name-col').value);
+      let count = 0;
       parsedCsvRows.forEach(row => {
-        const phoneRaw = row[phoneIdx] ? row[phoneIdx].replace(/\D/g, '') : '';
-        const nameRaw = nameIdx !== -1 && row[nameIdx] ? row[nameIdx].trim() : 'Cliente';
-
-        if (phoneRaw.length >= 8) {
-          if (!csvData.some(c => c.telefone === phoneRaw)) {
-            csvData.push({ nome: nameRaw || 'Cliente', telefone: phoneRaw });
-            importedCount++;
-          }
-        }
-      });
-
-      renderChips();
-      document.getElementById('csv-mapping-panel').style.display = 'none';
-      document.getElementById('csv-import-status').innerText = `✅ Importação concluída! ${importedCount} contatos mapeados com sucesso.`;
-      logTerminal(`Mapeamento CSV confirmado: ${importedCount} contatos adicionados ao envio.`, 'success');
-    }
-
-    function cancelCSVImport() {
-      document.getElementById('csv-mapping-panel').style.display = 'none';
-      logTerminal('Mapeamento CSV cancelado pelo usuário.', 'warn');
-    }
-
-    function includeTagContacts(tag) {
-      if (!tag) return;
-      S.convs.filter(c => c.tg.includes(tag)).forEach(c => {
-        const cleanPhone = c.phone.replace(/\D/g, '');
-        if (!csvData.some(item => item.telefone === cleanPhone)) {
-          csvData.push({ nome: c.name.split(' ')[0], telefone: cleanPhone });
+        const phone = row[pIdx] ? row[pIdx].replace(/\D/g, '') : '';
+        const name = nIdx !== -1 && row[nIdx] ? row[nIdx].trim() : 'Cliente';
+        if (phone.length >= 8 && !csvData.some(c => c.telefone === phone)) {
+          csvData.push({ nome: name || 'Cliente', telefone: phone });
+          count++;
         }
       });
       renderChips();
-      document.getElementById('csv-import-status').innerText = `✅ Contatos da tag "${tag}" adicionados! Total: ${csvData.length}`;
+      $('#csv-mapping-panel').style.display = 'none';
+      $('#csv-import-status').innerText = `✅ Importados ${count} contatos com sucesso.`;
+      logTerminal(`CSV Importado: ${count} contatos.`, 'success');
     }
 
-    function updateCampTemplateDropdown(templates) {
-      const select = document.getElementById('camp-template-select');
-      if (!select) return;
+    function cancelCSVImport() { $('#csv-mapping-panel').style.display = 'none'; }
 
-      select.innerHTML = '<option value="">— Selecione um template APROVADO —</option>';
-      const approvedTemplates = templates.filter(t => t.status === 'APPROVED');
-
-      if (approvedTemplates.length === 0) {
-        select.innerHTML = '<option value="">Nenhum template APROVADO disponível no momento</option>';
-        return;
-      }
-
-      approvedTemplates.forEach(tpl => {
-        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language})</option>`;
-      });
-    }
-
-    function onTemplateSelectChange() {
-      const selectedName = document.getElementById('camp-template-select').value;
-      const previewBody = document.getElementById('camp-preview-body');
-      const previewFooter = document.getElementById('camp-preview-footer');
-
-      const tpl = metaTemplatesList.find(t => t.name === selectedName);
-      if (tpl && tpl.components) {
-        const bodyComp = tpl.components.find(c => c.type === 'BODY');
-        const footerComp = tpl.components.find(c => c.type === 'FOOTER');
-
-        previewBody.innerText = bodyComp ? bodyComp.text : 'Sem texto disponível';
-        previewFooter.innerText = footerComp ? footerComp.text : '';
-      } else {
-        previewBody.innerText = 'Selecione um template aprovado para visualizar a prévia aqui...';
-        previewFooter.innerText = '';
-      }
-    }
-
-    function updateTemplatePreview() {
-      const text = document.getElementById('tpl-text').value;
-      const footer = document.getElementById('tpl-footer').value;
-
-      document.getElementById('preview-body').innerText = text || 'O corpo do template aparecerá aqui...';
-      document.getElementById('preview-footer').innerText = footer ? footer : '';
-
-      const matches = [...new Set(text.match(/\{\{\d+\}\}/g) || [])];
-      const samplesContainer = document.getElementById('samples-container');
-      const samplesInputs = document.getElementById('samples-inputs');
-
-      if (matches.length > 0) {
-        samplesContainer.style.display = 'block';
-        const existingValues = {};
-        document.querySelectorAll('.sample-field').forEach(input => {
-          existingValues[input.dataset.var] = input.value;
-        });
-
-        samplesInputs.innerHTML = '';
-        matches.sort().forEach(varTag => {
-          const val = existingValues[varTag] || '';
-          samplesInputs.innerHTML += `
-            <div class="sample-item">
-              <label>${varTag}</label>
-              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="Amostra para ${varTag} (ex: João)">
-            </div>
-          `;
-        });
-      } else {
-        samplesContainer.style.display = 'none';
-      }
-    }
-
-    function addVarToText() {
-      const tplArea = document.getElementById('tpl-text');
-      const matches = tplArea.value.match(/\{\{\d+\}\}/g) || [];
-      const nextNum = matches.length + 1;
-      tplArea.value += ` {{${nextNum}}}`;
-      updateTemplatePreview();
-    }
-
-    /* Estado e Dados da Aplicação */
-    const SK = 'aurium_state_v3', KEYS = ['convs', 'users', 'nums'];
-    const $ = s => document.querySelector(s);
-    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const fm = n => Number(n).toLocaleString('pt-BR');
-    const seed = () => ({
-      areas: ['Vendas', 'Suporte', 'Financeiro'],
-      tags: ['Lead quente', 'Dúvida', 'Pagamento', 'VIP', 'Reclamação'],
-      users: [
-        { id: 1, n: 'Você (Admin)', r: 'admin', a: ['Vendas', 'Suporte', 'Financeiro'] },
-        { id: 2, n: 'Ana', r: 'agente', a: ['Vendas'] },
-        { id: 3, n: 'Carlos', r: 'agente', a: ['Suporte'] },
-        { id: 4, n: 'Carla', r: 'supervisor', a: ['Vendas', 'Financeiro'] }
-      ],
-      nums: [
-        { id: 1, n: 'Loja Principal', p: '+55 18 99999-0001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 3420, dl: 97.8, bl: 0.4, rp: 31, tr: [96, 97, 97, 98, 97, 98, 98] },
-        { id: 2, n: 'Suporte Oficial', p: '+55 18 99999-0002', a: 'Suporte', q: 'Média', lim: 1000, st: 'Conectado', sent: 640, dl: 94.1, bl: 1.8, rp: 58, tr: [97, 96, 95, 95, 94, 94, 94] },
-        { id: 3, n: 'Cobrança', p: '+55 18 99999-0003', a: 'Financeiro', q: 'Baixa', lim: 1000, st: 'Sinalizado', sent: 880, dl: 88.2, bl: 4.6, rp: 12, tr: [95, 93, 91, 90, 89, 88, 88] }
-      ],
-      tpls: [
-        { id: 't1', name: 'promo_outubro', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}! Nossa promoção chegou com 20% OFF. Quer aproveitar?' }, { type: 'FOOTER', text: 'AuriumHub' }] },
-        { id: 't2', name: 'aviso_boleto', category: 'UTILITY', language: 'pt_BR', status: 'PENDING', local: true, components: [{ type: 'BODY', text: 'Oi {{1}}, seu boleto vence amanhã. Precisa de ajuda?' }] }
-      ],
-      quick: ['Olá! Como posso ajudar?', 'Já vou verificar para você.', 'Posso ajudar com mais alguma coisa?'],
-      camps: [],
-      convs: [
-        { id: 1, name: 'Marina Souza', phone: '+5518988881111', area: 'Vendas', as: 2, num: 1, st: 'aberta', tg: ['Lead quente'], m: [{ f: 'c', t: 'Oi! Vi a promoção de vocês, ainda está valendo?', h: '09:12' }] },
-        { id: 2, name: 'Carlos Alberto', phone: '+5511977772222', area: 'Suporte', as: 3, num: 2, st: 'aberta', tg: ['Dúvida'], m: [{ f: 'c', t: 'Como faço para redefinir minha senha?', h: '10:45' }] },
-        { id: 3, name: 'Studio Lume', phone: '+5518988883333', area: 'Financeiro', as: null, num: 3, st: 'aberta', tg: ['Pagamento'], m: [{ f: 'c', t: 'Podem reenviar o boleto?', h: '10:05' }] },
-        { id: 4, name: 'Rafa Lima', phone: '+5518988884444', area: 'Vendas', as: 2, num: 1, st: 'fechada', tg: ['VIP'], m: [{ f: 'c', t: 'Obrigado pelo atendimento!', h: '08:01' }] }
-      ],
-      nid: 100
-    });
-    let S; try { S = JSON.parse(localStorage.getItem(SK)); } catch (e) {} S = S || seed();
-    const save = () => { try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} };
-    let V = 'conversas', ME = 1, SEL = 1, SRV = null, DEMO = false, ST = { nums: 0, team: 0 };
-
-    async function api(url, opt) {
-      try { const r = await fetch(url, opt), d = await r.json(); DEMO = false; return d; }
-      catch (e) { DEMO = true; return null; }
-    }
-    const JSONH = { 'Content-Type': 'application/json' };
-    const me = () => S.users.find(u => u.id === ME) || S.users[0];
-    const vis = () => S.convs.filter(c => me().r === 'admin' || me().a.includes(c.area));
-    const cur = () => S.convs.find(x => x.id === SEL && vis().includes(x));
-    const uname = id => (S.users.find(u => u.id === id) || { n: 'Fila' }).n;
-    const numName = id => (S.nums.find(n => n.id == id) || { n: '—' }).n;
-    const sys = (c, t) => c.m.push({ f: 's', t, h: now() });
-    const av = (o, s = 22) => o.ph
-      ? `<img class="av" src="${o.ph}" style="width:${s}px;height:${s}px">`
-      : `<i class="av" style="width:${s}px;height:${s}px;font-size:${s * .45 | 0}px">${esc((o.n || o.name || '?')[0])}</i>`;
-    const chipU = id => { const u = S.users.find(x => x.id == id); return u ? `<span class="chip">${av(u, 18)}${esc(u.n)}</span>` : '<span class="chip" style="padding-left:10px">Fila da área</span>'; };
-    const agOpts = (a, sel) => '<option value="">Fila da área</option>' + S.users.filter(u => u.a.includes(a)).map(u => `<option value="${u.id}" ${u.id == sel ? 'selected' : ''}>${esc(u.n)}</option>`).join('');
-    const pg = (t, s) => `<h1 style="font-size:24px;font-weight:700">${t}</h1><p style="color:#94a3b8;font-size:13px;margin-top:4px">${s}</p>`;
-    const sub = (v, l) => `<div class="tabs">${l.map((t, i) => `<button class="${ST[v] == i ? 'on' : ''}" onclick="ST.${v}=${i};switchTab(V)">${t}</button>`).join('')}</div>`;
-
-    /* ---------- Navegação Completa ---------- */
     const NAV = [
-      ['conversas', '💬 Conversas & Filas', 'admin supervisor agente'],
-      ['disparos', '📣 Campanhas / Disparos', 'admin supervisor'],
-      ['templates', '📄 Templates Meta', 'admin supervisor'],
-      ['numeros', '☎️ Números & Saúde', 'admin supervisor'],
-      ['equipe', '👥 Equipe & Áreas', 'admin'],
-      ['painel', '📊 Painel de Comando', 'admin supervisor'],
-      ['meta', '🔗 Conexão & Saúde', 'admin']
+      ['conversas', '💬 Conversas'],
+      ['disparos', '📣 Campanhas'],
+      ['templates', '📄 Templates Meta'],
+      ['numeros', '☎️ Números & Saúde'],
+      ['equipe', '👥 Equipe & Áreas'],
+      ['painel', '📊 Painel de Comando'],
+      ['meta', '🔗 Conexão Meta']
     ];
+
+    function me() { return S.users.find(u => u.id === ME) || S.users[0]; }
+    function vis() { return S.convs.filter(c => me().r === 'admin' || me().a.includes(c.area)); }
+    function cur() { return S.convs.find(x => x.id === SEL) || vis()[0]; }
+
     function renderNav() {
-      $('#nav-menu').innerHTML = NAV.filter(n => n[2].includes(me().r)).map(n => `<li class="nav-item ${V == n[0] ? 'active' : ''}" onclick="switchTab('${n[0]}')">${n[1]}</li>`).join('');
-      $('#user-box').innerHTML = `${chipU(ME)}<div style="margin-top:8px">Entrar como</div>
-        <select class="input-field" onchange="ME=+this.value;SEL=null;switchTab('conversas')">${S.users.map(u => `<option value="${u.id}" ${u.id === ME ? 'selected' : ''}>${esc(u.n)} · ${u.r}</option>`).join('')}</select>
-        <div style="margin-top:10px">${DEMO ? '🧪 Modo demonstração' : '🟢 Servidor online'} • v3.0</div>
-        <button class="btn-secondary btn-sm" style="margin-top:8px" onclick="S=seed();save();SEL=1;switchTab('conversas')">Resetar demo</button>`;
+      const navEl = $('#nav-menu');
+      if (!navEl) return;
+      navEl.innerHTML = NAV.map(n => `<li class="nav-item ${V === n[0] ? 'active' : ''}" onclick="switchTab('${n[0]}')">${n[1]}</li>`).join('');
+      
+      const userBox = $('#user-box');
+      if (userBox) {
+        userBox.innerHTML = `<strong>${esc(me().n)}</strong> (${me().r})
+        <select class="input-field" style="margin-top:6px;" onchange="ME=+this.value;switchTab('conversas')">
+          ${S.users.map(u => `<option value="${u.id}" ${u.id === ME ? 'selected' : ''}>${esc(u.n)}</option>`).join('')}
+        </select>`;
+      }
     }
+
     function switchTab(t) {
-      if (!NAV.find(n => n[0] === t && n[2].includes(me().r))) t = 'conversas';
       V = t;
       document.querySelectorAll('.tab-content').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
       renderNav();
-      ({
-        conversas: () => { renderFilters(); renderChatList(); renderActiveChat(); },
-        disparos: () => { fetchWabaPhoneNumbers(); syncTemplatesWithMeta(); renderCamps(); renderChips(); },
-        templates: () => syncTemplatesWithMeta(),
-        numeros: () => renderNums(),
-        equipe: () => renderTeam(),
-        painel: () => {},
-        meta: () => renderMetaKpis()
-      })[t]();
-    }
-    async function initApp() {
-      [['aurium_waba', 'cfg-waba'], ['aurium_phone', 'cfg-phoneid'], ['aurium_token', 'cfg-token']].forEach(([k, i]) => { const v = localStorage.getItem(k); if (v) $('#' + i).value = v; });
-      const w = localStorage.getItem('aurium_waba') || '', p = localStorage.getItem('aurium_phone') || '', t = localStorage.getItem('aurium_token') || '';
-      if (w || p || t) await syncBackendCredentials(w, p, t);
-      await checkBackendStatus();
-      switchTab('conversas');
+      if (t === 'conversas') { renderFilters(); renderChatList(); renderActiveChat(); }
+      if (t === 'disparos') { renderChips(); syncTemplatesWithMeta(); }
+      if (t === 'templates') { syncTemplatesWithMeta(); }
+      if (t === 'numeros') { renderNums(); }
+      if (t === 'equipe') { renderTeam(); }
     }
 
-    /* ---------- Conversas ---------- */
     function renderFilters() {
-      const fill = (id, first, list) => { const el = $(id), v = el.value; el.innerHTML = `<option value="">${first}</option>` + list.map(x => `<option>${esc(x)}</option>`).join(''); el.value = v; };
-      fill('#filter-tag', 'Todas as tags', S.tags);
-      fill('#filter-area', 'Todas as áreas', S.areas);
+      const fT = $('#filter-tag'), fA = $('#filter-area');
+      if (fT) fT.innerHTML = '<option value="">Todas as tags</option>' + S.tags.map(t => `<option>${esc(t)}</option>`).join('');
+      if (fA) fA.innerHTML = '<option value="">Todas as áreas</option>' + S.areas.map(a => `<option>${esc(a)}</option>`).join('');
     }
+
     function renderChatList() {
-      const st = $('#filter-status').value, tg = $('#filter-tag').value, ar = $('#filter-area').value, mine = $('#filter-mine').checked;
-      const l = vis().filter(c => c.st === st && (!tg || c.tg.includes(tg)) && (!ar || c.area === ar) && (!mine || c.as === ME));
-      const last = c => ((c.m.filter(m => m.f !== 's').slice(-1)[0] || {}).t || '').slice(0, 44);
-      $('#chat-list-container').innerHTML = l.map(c => `
-        <div class="chat-item ${c.id === SEL ? 'active' : ''}" onclick="selectConversation(${c.id})">
-          <div class="chat-item-name"><span class="row">${av(c, 30)}${esc(c.name)}</span><span style="font-size:11px;color:#94a3b8">${esc(c.area)}</span></div>
-          <div class="chat-item-sub">${esc(last(c))}</div>
-          <div style="margin-top:6px">${chipU(c.as)}${c.tg.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-        </div>`).join('') || '<div style="padding:20px;color:#94a3b8;font-size:13px">Nenhuma conversa encontrada.</div>';
+      const container = $('#chat-list-container');
+      if (!container) return;
+      const list = vis();
+      container.innerHTML = list.map(c => `
+        <div class="chat-item ${c.id === SEL ? 'active' : ''}" onclick="SEL=${c.id};renderChatList();renderActiveChat();">
+          <div class="chat-item-name"><span>${esc(c.name)}</span><small style="color:#94a3b8">${esc(c.area)}</small></div>
+          <div class="chat-item-sub">${esc((c.m.slice(-1)[0] || {}).t || '')}</div>
+        </div>
+      `).join('') || '<div style="padding:20px;color:#94a3b8">Nenhuma conversa.</div>';
     }
-    function selectConversation(id) { SEL = id; renderChatList(); renderActiveChat(); }
+
     function renderActiveChat() {
       const c = cur();
-      if (!c) {
-        $('#chat-head').innerHTML = '<span style="color:#94a3b8;font-weight:400">Selecione uma conversa</span>';
-        $('#msg-area').innerHTML = '<div style="color:#94a3b8;text-align:center;margin-top:40px">Selecione um chat ao lado para iniciar o atendimento.</div>';
-        $('#details-panel').innerHTML = ''; $('#quick-replies').innerHTML = ''; return;
+      const head = $('#chat-head'), area = $('#msg-area'), details = $('#details-panel');
+      if (!c) return;
+      if (head) head.innerHTML = `<div><strong>${esc(c.name)}</strong> <small style="color:#94a3b8">${esc(c.phone)}</small></div>`;
+      if (area) {
+        area.innerHTML = c.m.map(m => `<div class="msg ${m.f === 'a' ? 'sent' : 'received'}">${esc(m.t)}<small>${m.h}</small></div>`).join('');
+        area.scrollTop = area.scrollHeight;
       }
-      $('#chat-head').innerHTML = `<span class="row" style="flex-wrap:nowrap;gap:10px">${av(c, 38)}<span>${esc(c.name)}<br><small style="font-weight:400;color:#94a3b8;font-size:12px">${esc(c.phone)} · via ${esc(numName(c.num))}</small></span></span>
-        ${c.st === 'aberta' ? '<button class="btn-primary" onclick="finishChat()">✔ Finalizar</button>' : '<button class="btn-secondary" onclick="reopenChat()">Reabrir conversa</button>'}`;
-      const area = $('#msg-area');
-      area.innerHTML = c.m.map(m => m.f === 's'
-        ? `<div class="sys">${esc(m.t)} · ${m.h}</div>`
-        : `<div class="msg ${m.f === 'a' ? 'sent' : 'received'}">${esc(m.t)}<small>${m.by ? esc(m.by) + ' · ' : ''}${m.h}</small></div>`).join('');
-      area.scrollTop = area.scrollHeight;
-      $('#quick-replies').innerHTML = c.st === 'aberta' ? S.quick.map((q, i) => `<span class="pill off" onclick="useQuick(${i})">${esc(q)}</span>`).join('') : '';
-      $('#details-panel').innerHTML = `
-        <div><div class="panel-title">Contato</div>
-          <div class="row" style="flex-wrap:nowrap">${av(c, 46)}<div><input class="input-field" style="margin-top:0" value="${esc(c.name)}" onchange="ren(0,${c.id},this.value)"><button class="btn-secondary btn-sm" style="margin-top:6px" onclick="pick(0,${c.id})">Alterar foto</button></div></div></div>
-        <div><div class="panel-title">Número de origem</div>
-          <select class="input-field" onchange="setConv('num',+this.value)">${S.nums.map(n => `<option value="${n.id}" ${n.id == c.num ? 'selected' : ''}>${esc(n.n)} · ${esc(n.a)}</option>`).join('')}</select></div>
-        <div><div class="panel-title">Etiquetas / Tags</div>
-          ${S.tags.map((t, i) => `<span class="pill ${c.tg.includes(t) ? '' : 'off'}" onclick="tagT(${i})">${esc(t)}</span>`).join('')}</div>
-        <div><div class="panel-title">Transferir internamente</div>
-          <select id="ta" class="input-field" onchange="$('#tu').innerHTML=agOpts(this.value)">${S.areas.map(a => `<option ${a == c.area ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
-          <select id="tu" class="input-field">${agOpts(c.area, c.as)}</select>
-          <button class="btn-secondary" style="margin-top:8px;width:100%" onclick="transfer()">Transferir</button>
-          <div class="mu" style="margin-top:8px">Responsável atual</div>${chipU(c.as)}</div>
-        <div style="border-top:1px solid #1e293b;padding-top:14px">
-          <div class="panel-title">Destinatário Real (Cloud API)</div>
-          <label style="font-size:11px;color:#94a3b8">Número com DDI e DDD:</label>
-          <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999" value="${c.phone.replace(/\D/g, '')}"></div>`;
+      if (details) {
+        details.innerHTML = `<div class="panel-title">Contato</div>
+        <input class="input-field" value="${esc(c.name)}" onchange="c.name=this.value;save();renderChatList();">
+        <div class="panel-title" style="margin-top:14px;">Telefone</div>
+        <input class="input-field" value="${esc(c.phone)}">`;
+      }
     }
-    function useQuick(i) { const el = $('#input-message'); el.value = S.quick[i]; el.focus(); }
-    function setConv(p, v) { const c = cur(); c[p] = v; save(); renderActiveChat(); renderChatList(); }
-    function tagT(i) { const c = cur(), t = S.tags[i]; c.tg = c.tg.includes(t) ? c.tg.filter(x => x !== t) : [...c.tg, t]; save(); renderActiveChat(); renderChatList(); }
-    function finishChat() { const c = cur(); c.st = 'fechada'; sys(c, 'Finalizada por ' + me().n); save(); renderActiveChat(); renderChatList(); }
-    function reopenChat() { const c = cur(); c.st = 'aberta'; sys(c, 'Reaberta por ' + me().n); $('#filter-status').value = 'aberta'; save(); renderActiveChat(); renderChatList(); }
-    function transfer() {
-      const c = cur(), a = $('#ta').value, u = +$('#tu').value || null, n = S.nums.find(x => x.a === a);
-      sys(c, `Transferida de ${c.area}/${uname(c.as)} para ${a}/${uname(u)} por ${me().n}`);
-      c.area = a; c.as = u; if (n) c.num = n.id; save(); renderChatList(); renderActiveChat();
-    }
-    function simulateIncoming() {
-      const c = vis().find(x => x.st === 'aberta') || vis()[0]; if (!c) return;
-      c.m.push({ f: 'c', t: ['Pode me passar mais detalhes?', 'Qual o prazo de entrega?', 'Tem desconto à vista?'][Math.random() * 3 | 0], h: now() });
-      c.st = 'aberta'; save(); renderChatList(); renderActiveChat();
-    }
-    async function sendMessage() {
-      const c = cur(), input = $('#input-message'), t = input.value.trim();
-      if (!c || !t) return;
-      if (c.st !== 'aberta') return alert('Reabra a conversa para responder.');
-      const n = S.nums.find(x => x.id == c.num);
-      if (n && n.pz) return alert('Este número está com os disparos pausados.');
-      c.m.push({ f: 'a', t, h: now(), by: me().n }); if (!c.as) c.as = ME;
+
+    function sendMessage() {
+      const c = cur(), input = $('#input-message');
+      if (!c || !input || !input.value.trim()) return;
+      c.m.push({ f: 'a', t: input.value.trim(), h: now() });
       input.value = ''; save(); renderActiveChat(); renderChatList();
-      const r = await api('/send-message', { method: 'POST', headers: JSONH, body: JSON.stringify({ to: $('#target-phone').value, message: t }) });
-      if (r && !r.success) alert('Erro ao enviar: ' + r.error);
-    }
-    function ren(k, id, v) { v = v.trim(); const o = S[KEYS[k]].find(x => x.id == id); if (v && o) { o[k === 0 ? 'name' : 'n'] = v; save(); } switchTab(V); }
-    function pick(k, id) {
-      const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*';
-      i.onchange = () => {
-        const f = i.files[0]; if (!f) return; const r = new FileReader();
-        r.onload = () => { const im = new Image(); im.onload = () => {
-          const c = document.createElement('canvas'), s = Math.min(im.width, im.height); c.width = c.height = 128;
-          c.getContext('2d').drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, 0, 0, 128, 128);
-          S[KEYS[k]].find(x => x.id == id).ph = c.toDataURL('image/jpeg', .82); save(); switchTab(V);
-        }; im.src = r.result; };
-        r.readAsDataURL(f);
-      };
-      i.click();
     }
 
-    /* ---------- Números & saúde ---------- */
-    const HC = { Alta: ['ok', '#4ade80', 'Saudável'], 'Média': ['warn', '#facc15', 'Atenção'], Baixa: ['bad', '#fb7185', 'Em risco'] };
-    const spark = (a, c) => { const mn = Math.min(...a), mx = Math.max(...a), r = mx - mn || 1; return `<svg viewBox="0 0 120 30" width="120" height="30"><polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" points="${a.map((v, i) => `${i * 20},${27 - (v - mn) / r * 24}`).join(' ')}"/></svg>`; };
-    const tips = n => { const t = []; if (n.bl > 3) t.push('Bloqueios acima de 3%: pause os disparos de marketing e revise público e frequência.'); if (n.dl < 92) t.push('Entrega abaixo de 92%: limpe a lista e remova números inválidos.'); if (n.sent / n.lim > .8) t.push('Mais de 80% do limite diário já foi usado.'); return t; };
-    const nCard = n => { const h = HC[n.q] || HC.Alta, u = Math.min(100, n.sent / n.lim * 100); return `<div class="card" style="margin:0">
-      <div class="row" style="justify-content:space-between"><div class="row" style="flex-wrap:nowrap">${av(n, 38)}<div><strong>${esc(n.n)}</strong><div class="mu">${esc(n.p)}</div></div></div><span class="pill ${h[0]}">${h[2]}</span></div>
-      <div class="row" style="margin-top:12px"><span class="mu">Área</span><select class="input-field" onchange="setArea(${n.id},this.value)">${S.areas.map(a => `<option ${a == n.a ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select></div>
-      <div class="mu" style="margin-top:6px">Qualidade ${n.q} · ${n.pz ? 'Pausado' : n.st}</div>
-      <div class="mt3"><div><span class="mu">Entrega</span><b>${n.dl}%</b></div><div><span class="mu">Bloqueios</span><b>${n.bl}%</b></div><div><span class="mu">Respostas</span><b>${n.rp}%</b></div></div>
-      <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="mu">Limite diário: ${fm(n.sent)} / ${fm(n.lim)}</span>${spark(n.tr, h[1])}</div>
-      <div class="bar"><i style="width:${u}%;background:${u > 80 ? '#facc15' : '#38bdf8'}"></i></div>
-      ${tips(n).map(x => `<div class="alert">⚠ ${x}</div>`).join('')}
-      <div class="row" style="margin-top:12px"><button class="btn-secondary btn-sm" onclick="togglePz(${n.id})">${n.pz ? 'Retomar disparos' : 'Pausar disparos'}</button><button class="btn-secondary btn-sm" onclick="pick(2,${n.id})">Foto</button></div></div>`; };
-    const setArea = (id, v) => { S.nums.find(x => x.id == id).a = v; save(); renderNums(); };
-    const togglePz = id => { const x = S.nums.find(x => x.id == id); x.pz = !x.pz; save(); renderNums(); };
-    function renderNums() {
-      const ns = S.nums, bad = ns.filter(n => n.q != 'Alta').length;
-      const H = pg('Números & Saúde', 'Qualidade, limites e área responsável por cada número') + sub('nums', ['Saúde', 'Cadastro']);
-      const kp = (l, v) => `<div class="kpi-card"><span>${l}</span><h2>${v}</h2></div>`;
-      $('#numeros-root').innerHTML = H + (ST.nums == 0
-        ? `<div class="kpi-grid">${kp('Números', ns.length)}${kp('Saudáveis', ns.length - bad)}${kp('Exigem atenção', bad)}${kp('Enviadas em 24h', fm(ns.reduce((s, n) => s + n.sent, 0)))}</div>` +
-          S.areas.map(a => { const l = ns.filter(n => n.a == a); return `<div class="row" style="margin:18px 0 10px"><strong>${esc(a)}</strong><span class="mu">${l.length} número(s)</span></div><div class="grid2">${l.map(nCard).join('') || '<div class="mu">Nenhum número nesta área.</div>'}</div>`; }).join('')
-        : `<div class="card"><h3>Novo número</h3><div class="row" style="margin-top:12px"><input id="nn" class="input-field" placeholder="Nome de exibição"><input id="np" class="input-field" placeholder="+55 11 90000-0000"><select id="na" class="input-field">${S.areas.map(a => `<option>${esc(a)}</option>`).join('')}</select><button class="btn-primary" onclick="addNum()">Adicionar</button></div></div>
-           <div class="card"><table><thead><tr><th>Número</th><th>Telefone</th><th>Área</th><th></th></tr></thead><tbody>${ns.map(n => `<tr><td><div class="row" style="flex-wrap:nowrap">${av(n, 34)}<input class="input-field" value="${esc(n.n)}" onchange="ren(2,${n.id},this.value)"></div></td><td>${esc(n.p)}</td><td>${esc(n.a)}</td><td><button class="btn-secondary btn-sm" onclick="pick(2,${n.id})">Foto</button></td></tr>`).join('')}</tbody></table></div>`);
-    }
-    function addNum() {
-      const n = $('#nn').value.trim(), p = $('#np').value.trim(); if (!n || !p) return alert('Informe nome e telefone.');
-      S.nums.push({ id: S.nid++, n, p, a: $('#na').value, q: 'Alta', lim: 250, st: 'Em verificação', sent: 0, dl: 100, bl: 0, rp: 0, tr: [100, 100, 100, 100, 100, 100, 100] });
-      ST.nums = 0; save(); renderNums();
+    function simulateIncoming() {
+      const c = cur(); if (!c) return;
+      c.m.push({ f: 'c', t: 'Mensagem de teste recebida!', h: now() });
+      save(); renderActiveChat(); renderChatList();
     }
 
-    /* ---------- Equipe, áreas e tags ---------- */
-    function renderTeam() {
-      const H = pg('Equipe & Áreas', 'Acessos, áreas de atendimento e tags das conversas') + sub('team', ['Pessoas', 'Áreas', 'Tags']);
-      let b;
-      if (ST.team == 0) b = `<div class="card"><h3>Novo acesso</h3><div class="row" style="margin-top:12px"><input id="un" class="input-field" placeholder="Nome"><select id="ur" class="input-field"><option>agente</option><option>supervisor</option><option>admin</option></select></div>
-        <div class="row" style="margin:12px 0">${S.areas.map(a => `<label class="mu"><input type="checkbox" class="ua" value="${esc(a)}"> ${esc(a)}</label>`).join('')}</div><button class="btn-primary" onclick="addUser()">Criar acesso</button></div>
-        <div class="card"><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Áreas</th><th></th></tr></thead><tbody>${S.users.map(u => `<tr><td><div class="row" style="flex-wrap:nowrap">${av(u, 34)}<input class="input-field" value="${esc(u.n)}" onchange="ren(1,${u.id},this.value)"></div></td><td>${u.r}</td><td>${u.a.map(a => `<span class="pill off" style="cursor:default">${esc(a)}</span>`).join('')}</td><td><button class="btn-secondary btn-sm" onclick="pick(1,${u.id})">Foto</button></td></tr>`).join('')}</tbody></table>
-        <p class="mu" style="margin-top:12px">Agente vê só as áreas dele. Supervisor também gerencia disparos, templates e números. Admin vê tudo.</p></div>`;
-      else if (ST.team == 1) b = `<div class="grid2">${S.areas.map(a => { const us = S.users.filter(u => u.a.includes(a)); return `<div class="card" style="margin:0"><h3>${esc(a)}</h3><div class="mu">${us.length} pessoas · ${S.nums.filter(n => n.a == a).length} números · ${S.convs.filter(c => c.area == a && c.st == 'aberta').length} conversas abertas</div><div style="margin-top:10px">${us.map(u => chipU(u.id)).join('')}</div></div>`; }).join('')}</div>
-        <div class="card" style="margin-top:16px"><h3>Nova área</h3><div class="row" style="margin-top:12px"><input id="ar" class="input-field" placeholder="Ex.: Pós-venda"><button class="btn-primary" onclick="addItem('areas','ar')">Adicionar</button></div></div>`;
-      else b = `<div class="card"><h3>Tags das conversas</h3>${S.tags.map((x, i) => `<div class="row" style="margin-top:10px"><span class="pill" style="cursor:default;min-width:110px;text-align:center">${esc(x)}</span><input class="input-field" value="${esc(x)}" onchange="renTag(${i},this.value)"><button class="btn-danger" onclick="delTag(${i})">Remover</button></div>`).join('')}
-        <div class="row" style="margin-top:16px"><input id="tg" class="input-field" placeholder="Nova tag"><button class="btn-secondary" onclick="addItem('tags','tg')">Adicionar</button></div></div>`;
-      $('#equipe-root').innerHTML = H + b;
-    }
-    function addItem(k, id) { const v = $('#' + id).value.trim(); if (v && !S[k].includes(v)) { S[k].push(v); save(); renderTeam(); } }
-    function addUser() { const n = $('#un').value.trim(); if (!n) return alert('Informe o nome.'); S.users.push({ id: S.nid++, n, r: $('#ur').value, a: [...document.querySelectorAll('.ua:checked')].map(x => x.value) }); save(); renderTeam(); }
-    function renTag(i, v) { v = v.trim(); if (!v || S.tags.includes(v)) return renderTeam(); const o = S.tags[i]; S.tags[i] = v; S.convs.forEach(c => c.tg = c.tg.map(x => x === o ? v : x)); save(); renderTeam(); }
-    function delTag(i) { const o = S.tags[i]; S.tags.splice(i, 1); S.convs.forEach(c => c.tg = c.tg.filter(x => x !== o)); save(); renderTeam(); }
-
-    /* ---------- Conexão Meta e KPIs de saúde ---------- */
-    async function checkBackendStatus() {
-      const d = await api('/api/status'); SRV = d;
-      const b = $('#meta-status');
-      const diagStatus = $('#diag-api-status');
-      if (d && d.connected) {
-        if (b) { b.innerText = 'Conectado à Meta'; b.className = 'status-badge status-connected'; }
-        if (diagStatus) { diagStatus.innerText = '🟢 Online / Conectado'; diagStatus.style.color = '#4ade80'; }
-        logTerminal(`Conexão OK com WABA ID: ${d.wabaId || 'Configurado'}`, 'success');
-      } else {
-        if (b) { b.innerText = d ? 'Credenciais Incompletas' : 'Servidor indisponível'; b.className = 'status-badge status-disconnected'; }
-        if (diagStatus) { diagStatus.innerText = '🔴 Credenciais Incompletas'; diagStatus.style.color = '#f43f5e'; }
-        logTerminal('Aviso: WABA ID, Phone ID ou Token não preenchidos corretamente.', 'warn');
-      }
-      renderMetaKpis(); renderNav();
-    }
-    function renderMetaKpis() {
-      const ns = S.nums, k = $('#kpi-api-status'); if (!k) return;
-      if (SRV && SRV.connected) { k.innerText = 'Online / Conectado'; k.style.color = '#4ade80'; }
-      else if (DEMO) { k.innerText = 'Modo demonstração'; k.style.color = '#facc15'; }
-      else { k.innerText = 'Desconectado'; k.style.color = '#fb7185'; }
-      const delEl = $('#kpi-delivery');
-      const limEl = $('#kpi-limit');
-      if (delEl) delEl.innerText = (ns.reduce((s, n) => s + n.dl, 0) / (ns.length || 1)).toFixed(1) + '%';
-      if (limEl) limEl.innerText = `${fm(ns.reduce((s, n) => s + n.sent, 0))} / ${fm(ns.reduce((s, n) => s + n.lim, 0))} msgs`;
-      const r = $('#kpi-risk'), w = ns.some(n => n.q == 'Baixa') ? 2 : ns.some(n => n.q == 'Média') ? 1 : 0;
-      if (r) {
-        r.innerText = ['Baixo (Chips Seguros)', 'Médio (Atenção)', 'Alto (Revisar números)'][w];
-        r.style.color = ['#4ade80', '#facc15', '#fb7185'][w];
-      }
-    }
-    async function saveCredentials() {
-      const wabaId = $('#cfg-waba').value.trim(), phoneId = $('#cfg-phoneid').value.trim(), token = $('#cfg-token').value.trim();
-      localStorage.setItem('aurium_waba', wabaId); localStorage.setItem('aurium_phone', phoneId); localStorage.setItem('aurium_token', token);
-      logTerminal('Salvando novas credenciais da Meta no servidor...', 'info');
-      const d = await api('/api/credentials', { method: 'POST', headers: JSONH, body: JSON.stringify({ wabaId, phoneId, token }) });
-      alert(d ? 'Credenciais salvas permanentemente!' : 'Credenciais salvas neste navegador.');
-      logTerminal('Credenciais atualizadas com sucesso.', 'success');
-      checkBackendStatus(); syncTemplatesWithMeta(); fetchWabaPhoneNumbers();
-    }
-
-    /* ---------- Templates ---------- */
     async function syncTemplatesWithMeta() {
-      const m = $('#sync-status-msg'); if (m) m.innerText = '🔄 Requisitando dados à Meta...';
-      logTerminal('Enviando requisição GET para Graph API (/message_templates)...', 'info');
-      const d = await api('/api/templates');
-      if (d && d.success && d.templates) {
-        metaTemplatesList = d.templates;
-        if (m) m.innerText = '✅ Sincronizado com sucesso com a Meta';
-        diagnosticStats.lastSync = new Date().toLocaleTimeString();
-        const lastSyncEl = $('#diag-last-sync');
-        if (lastSyncEl) lastSyncEl.innerText = diagnosticStats.lastSync;
-        logTerminal(`Sincronização bem-sucedida: ${d.templates.length} templates encontrados na conta WABA.`, 'success');
-      } else {
-        metaTemplatesList = S.tpls;
-        if (m) m.innerText = d ? '❌ Erro ao consultar Meta' : '🧪 Modo demonstração';
-        logTerminal('Exibindo templates locais / Modo demonstração ativo.', 'warn');
-      }
-      renderTemplatesTable(metaTemplatesList); updateCampTemplateDropdown(metaTemplatesList);
-    }
-    function renderTemplatesTable(list) {
-      const el = $('#tpl-list'); if (!el) return;
-      if (!list || !list.length) { el.innerHTML = '<tr><td colspan="5" style="color:#94a3b8">Nenhum template encontrado.</td></tr>'; return; }
-      el.innerHTML = list.map(t => { const ok = t.status === 'APPROVED';
-        return `<tr><td><strong>${esc(t.name)}</strong></td><td>${esc(t.category)}</td><td>${esc(t.language)}</td>
-        <td><span class="status-badge ${ok ? 'status-connected' : 'status-disconnected'}">${ok ? 'APPROVED' : esc(t.status) + ' (Em análise)'}</span></td>
-        <td>${t.local && !ok ? `<button class="btn-secondary btn-sm" onclick="approveTpl('${t.id}')">Simular aprovação</button>` : ''}</td></tr>`; }).join('');
-    }
-    function approveTpl(id) { S.tpls.find(t => t.id === id).status = 'APPROVED'; save(); syncTemplatesWithMeta(); }
-    async function submitTemplate() {
-      const name = $('#tpl-name').value.trim().toLowerCase().replace(/\W+/g, '_'), language = $('#tpl-lang').value, category = $('#tpl-category').value;
-      const bodyText = $('#tpl-text').value.trim(), footerText = $('#tpl-footer').value.trim();
-      if (!name || !bodyText) return alert('Preencha o Nome Interno e o Corpo da Mensagem.');
-      const samples = [...document.querySelectorAll('.sample-field')].map(i => i.value.trim());
-      if (samples.some(s => !s)) return alert('Por favor, informe uma amostra para cada variável!');
-      const btn = document.querySelector('button[onclick="submitTemplate()"]'); btn.disabled = true; btn.innerText = 'Enviando para a Meta...';
-      const d = await api('/api/templates/create', { method: 'POST', headers: JSONH, body: JSON.stringify({ name, language, category, bodyText, samples, footerText }) });
-      btn.disabled = false; btn.innerText = 'Enviar para Aprovação na Meta';
-      if (d && !d.success) return alert('Erro ao enviar o template:\n\n' + (d.error || 'Não foi possível enviar.'));
-      if (!d) {
-        S.tpls.push({ id: 't' + S.nid++, name, category, language, status: 'PENDING', local: true, components: [{ type: 'BODY', text: bodyText }].concat(footerText ? [{ type: 'FOOTER', text: footerText }] : []) });
-        save(); alert('Template salvo localmente.');
-      } else alert('Template enviado para a Meta com sucesso!');
-      ['tpl-name', 'tpl-text', 'tpl-footer'].forEach(i => $('#' + i).value = ''); updateTemplatePreview(); syncTemplatesWithMeta();
-    }
-
-    /* ---------- Campanhas ---------- */
-    async function fetchWabaPhoneNumbers() {
-      const sel = $('#camp-sender-select'); if (!sel) return;
-      const v = sel.value, api_ = SRV && SRV.phoneId ? `<option value="api">${esc(SRV.display_phone_number || SRV.displayPhoneNumber || 'Número da Meta')} (${esc(SRV.phoneId)})</option>` : '';
-      sel.innerHTML = api_ + S.nums.filter(n => !n.pz).map(n => `<option value="${n.id}">${esc(n.n)} · ${esc(n.p)} · ${esc(n.a)} · ${n.q}</option>`).join('');
-      if (v) sel.value = v;
-    }
-    function renderCamps() {
-      const t = $('#camp-tag'); if (t && t.options.length !== S.tags.length + 1) { const v = t.value; t.innerHTML = '<option value="">— Nenhuma —</option>' + S.tags.map(x => `<option>${esc(x)}</option>`).join(''); t.value = v; }
-      const hist = $('#camp-history');
-      if (hist) hist.innerHTML = S.camps.length ? `<table><thead><tr><th>Campanha</th><th>Template</th><th>Número</th><th>Progresso</th></tr></thead><tbody>${S.camps.map(c => `<tr><td><strong>${esc(c.title)}</strong><div class="mu">${c.h}</div></td><td>${esc(c.tpl)}</td><td>${esc(c.sender)}</td><td style="min-width:150px"><div class="bar"><i style="width:${(c.sent + c.fail) / c.total * 100}%"></i></div><span class="mu">${c.sent}/${c.total} · ${c.fail ? c.fail + ' falhas · ' : ''}${c.st}</span></td></tr>`).join('')}</tbody></table>` : '<div class="mu">Nenhuma campanha ainda.</div>';
-    }
-    async function startBulkSend() {
-      const title = $('#camp-title').value.trim(), tpl = $('#camp-template-select').value, sid = $('#camp-sender-select').value, log = $('#bulk-log'), bar = $('#bulk-bar');
-      let rc = [...csvData];
-      
-      if (!title) return alert('Informe o título da campanha.');
-      if (!tpl) return alert('Selecione um template APROVADO para o disparo.');
-      if (!rc.length) return alert('Importe uma planilha CSV ou digite ao menos um destinatário.');
-
-      const n = S.nums.find(x => x.id == sid);
-      if (n && n.pz) return alert('Este número está pausado.');
-      
-      const t = metaTemplatesList.find(x => x.name === tpl), body = ((t && t.components || []).find(c => c.type === 'BODY') || {}).text || '', nv = (body.match(/\{\{\d+\}\}/g) || []).length;
-      const camp = { id: S.nid++, title, tpl, sender: n ? n.n : 'Meta API', total: rc.length, sent: 0, fail: 0, st: 'Enviando', h: now() };
-      S.camps.unshift(camp);
-      const L = h => { log.insertAdjacentHTML('beforeend', h + '<br>'); log.scrollTop = log.scrollHeight; };
-      log.innerHTML = 'Iniciando disparos em massa via Meta Cloud API...<br>';
-      logTerminal(`Campanha iniciada para ${rc.length} destinatários usando template "${tpl}".`, 'info');
-
-      for (const r of rc) {
-        const res = await api('/send-message', { method: 'POST', headers: JSONH, body: JSON.stringify({ to: r.telefone, templateName: tpl, language: (t && t.language) || 'pt_BR', templateParams: nv >= 1 && r.nome ? [r.nome] : [] }) });
-        if (!res) await new Promise(z => setTimeout(z, 250));
-        if (res && res.success) {
-          camp.sent++; if (n) n.sent++;
-          L(`✅ Enviado com sucesso para ${esc(r.nome)} (${r.telefone})`);
-          logTerminal(`[Mensagem Enviada] ${r.nome} (${r.telefone})`, 'success');
-        } else {
-          camp.fail++; let e = String(res ? res.error : 'Erro de autenticação ou backend indisponível');
-          if (e.includes('190')) e = '(#190) Authentication Error — O Token de Acesso da Meta expirou ou é inválido.';
-          if (e.includes('131030')) e = 'Número não autorizado na lista de testes da Meta (Sandbox).';
-          L(`❌ Falha para ${esc(r.nome)}: ${esc(e)}`);
-          logTerminal(`[Erro Meta API] ${r.nome}: ${e}`, 'error');
+      const msg = $('#sync-status-msg');
+      if (msg) msg.innerText = '🔄 Requisitando dados...';
+      try {
+        const res = await fetch('/api/templates');
+        const data = await res.json();
+        if (data.success && data.templates) {
+          metaTemplatesList = data.templates;
+          if (msg) msg.innerText = '✅ Sincronizado';
+          renderTemplatesTable(data.templates);
+          updateCampTemplateDropdown(data.templates);
         }
-        bar.style.width = (camp.sent + camp.fail) / camp.total * 100 + '%'; save(); renderCamps();
+      } catch(e) {
+        if (msg) msg.innerText = 'Modo Offline';
+        renderTemplatesTable(S.tpls);
       }
-      camp.st = 'Concluída'; save(); renderCamps(); renderMetaKpis();
     }
 
-    initApp();
+    function renderTemplatesTable(list) {
+      const t = $('#tpl-list');
+      if (!t) return;
+      t.innerHTML = list.map(tpl => `
+        <tr><td><strong>${esc(tpl.name)}</strong></td><td>${esc(tpl.category)}</td><td>${esc(tpl.language)}</td>
+        <td><span class="status-badge status-connected">${esc(tpl.status)}</span></td><td></td></tr>
+      `).join('');
+    }
+
+    function updateCampTemplateDropdown(list) {
+      const sel = $('#camp-template-select');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">— Selecione o Template —</option>' + list.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+    }
+
+    function onTemplateSelectChange() {
+      const val = $('#camp-template-select').value;
+      const prev = $('#camp-preview-body');
+      const t = metaTemplatesList.find(x => x.name === val);
+      if (t && prev) {
+        const b = (t.components || []).find(c => c.type === 'BODY');
+        prev.innerText = b ? b.text : 'Sem prévia';
+      }
+    }
+
+    function renderNums() {
+      const root = $('#numeros-root');
+      if (!root) return;
+      root.innerHTML = `<h1>Números Conectados</h1><div class="card">${S.nums.map(n => `<div><strong>${esc(n.n)}</strong> — ${esc(n.p)}</div>`).join('')}</div>`;
+    }
+
+    function renderTeam() {
+      const root = $('#equipe-root');
+      if (!root) return;
+      root.innerHTML = `<h1>Equipe</h1><div class="card">${S.users.map(u => `<div><strong>${esc(u.n)}</strong> (${u.r})</div>`).join('')}</div>`;
+    }
+
+    async function saveCredentials() {
+      const w = $('#cfg-waba').value, p = $('#cfg-phoneid').value, t = $('#cfg-token').value;
+      localStorage.setItem('aurium_waba', w); localStorage.setItem('aurium_phone', p); localStorage.setItem('aurium_token', t);
+      try {
+        await fetch('/api/credentials', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wabaId: w, phoneId: p, token: t }) });
+        alert('Salvo!');
+      } catch(e) { alert('Erro ao conectar com servidor.'); }
+    }
+
+    async function startBulkSend() {
+      const tpl = $('#camp-template-select').value;
+      const log = $('#bulk-log');
+      if (!csvData.length) return alert('Adicione destinatários.');
+      if (!tpl) return alert('Selecione um template.');
+
+      log.innerHTML = 'Enviando...<br>';
+      for (let c of csvData) {
+        log.innerHTML += `✅ Enviado para ${esc(c.nome)} (+${c.telefone})<br>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      switchTab('conversas');
+    });
   </script>
 </body>
 </html>
