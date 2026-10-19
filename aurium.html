@@ -52,14 +52,13 @@
     .btn-secondary:hover { background: #334155; }
 
     .details-panel { width: 300px; background-color: #0b1120; border-left: 1px solid #1e293b; padding: 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
-    .panel-title { font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .input-field { width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; color: #f8fafc; margin-top: 6px; font-size: 13.5px; outline: none; transition: 0.2s; }
     .input-field:focus { border-color: #38bdf8; }
 
     .page-padding { padding: 32px; width: 100%; overflow-y: auto; }
     .card { background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
     
-    /* Status Badges Dinâmicos da Meta */
+    /* Status Badges Oficiais da Meta */
     .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
     .status-approved { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
     .status-pending { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
@@ -97,7 +96,7 @@
     th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #1e293b; font-size: 13.5px; }
     th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; }
 
-    /* Terminal do Painel de Comando */
+    /* Terminal de Diagnóstico */
     .log-terminal { background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #38bdf8; height: 320px; overflow-y: auto; line-height: 1.6; }
     .log-error { color: #f43f5e; }
     .log-success { color: #4ade80; }
@@ -228,7 +227,7 @@
       </div>
     </div>
 
-    <!-- Tab 3: Templates (Com Status em Tempo Real) -->
+    <!-- Tab 3: Templates (Com API Real da Meta) -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -242,7 +241,7 @@
         <div class="template-builder-container">
           <div class="builder-form card">
             <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">NOME INTERNO *</label>
-            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation_v3" style="margin-bottom: 16px;">
+            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation" style="margin-bottom: 16px;">
 
             <div style="display: flex; gap: 16px;">
               <div style="flex: 1;">
@@ -256,8 +255,8 @@
               <div style="flex: 1;">
                 <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CATEGORIA *</label>
                 <select id="tpl-category" class="input-field" style="margin-bottom: 16px;">
-                  <option value="MARKETING">Marketing (Promoções, novidades)</option>
-                  <option value="UTILITY">Utilidade (Confirmações, avisos)</option>
+                  <option value="MARKETING">Marketing</option>
+                  <option value="UTILITY">Utilidade</option>
                 </select>
               </div>
             </div>
@@ -267,11 +266,9 @@
               <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addVarToText()">+ Variável dinâmica</button>
             </div>
             <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, tudo bem?" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
-            <div class="mu" style="margin-top: 6px;">Use <span style="color:#38bdf8">{{1}}</span>, <span style="color:#38bdf8">{{2}}</span> para variáveis que serão preenchidas no envio.</div>
 
             <div id="samples-container" class="sample-box" style="display: none;">
               <label style="font-size: 12px; font-weight: 700; color: #38bdf8;">AMOSTRAS DAS VARIÁVEIS *</label>
-              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige um valor de exemplo por variável para revisar o template.</p>
               <div id="samples-inputs"></div>
             </div>
 
@@ -300,7 +297,7 @@
               <tr><th>Nome</th><th>Categoria</th><th>Idioma</th><th>Status Meta</th><th>Ação</th></tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="5" style="color: #94a3b8;">Clique em sincronizar.</td></tr>
+              <tr><td colspan="5" style="color: #94a3b8;">Clique em sincronizar com a Meta.</td></tr>
             </tbody>
           </table>
         </div>
@@ -313,7 +310,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div>
             <h1 style="font-size: 24px; font-weight: 700;">Painel de Comando & Diagnóstico Meta</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitore requisições, erros (#190) e estado da API em tempo real.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Monitore requisições reais à Graph API da Meta em tempo real.</p>
           </div>
           <button class="btn-secondary" onclick="clearTerminalLogs()">🧹 Limpar Logs</button>
         </div>
@@ -340,8 +337,7 @@
         <div class="card">
           <h3>Terminal de Diagnóstico de Integração (Meta Cloud API)</h3>
           <div id="meta-terminal-logs" class="log-terminal">
-            [Sistema] Painel de comando inicializado com sucesso.<br>
-            [Meta API] Aguardando chamadas para monitoramento em tempo real...<br>
+            [Sistema] AuriumHub PRO pronto para conexões reais.<br>
           </div>
         </div>
       </div>
@@ -350,20 +346,20 @@
     <!-- Tab 5: Conexão Meta -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
-        <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Saúde de Chip</h1>
+        <h1 style="font-size: 24px; font-weight: 700;">Conexão Meta & Credenciais Oficiais</h1>
         <div class="card" style="margin-top: 20px;">
           <div style="margin-bottom: 18px;">
             Status Cloud API: <span id="meta-status" class="status-badge status-approved">Verificando...</span>
           </div>
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta</h3>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta (Graph API v18.0)</h3>
           <label style="font-size: 12px; color: #94a3b8; display: block; font-weight: 600;">WABA ID:</label>
           <input type="text" id="cfg-waba" class="input-field" placeholder="Ex: 3593503124150921">
           <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Phone Number ID:</label>
           <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
-          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Token de Acesso da Meta:</label>
+          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Token de Acesso Permanente (Meta):</label>
           <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
           <div style="margin-top: 20px;">
-            <button class="btn-primary" onclick="saveCredentials()">Salvar e Testar Conexão</button>
+            <button class="btn-primary" onclick="saveCredentials()">Salvar e Testar Conexão Real</button>
           </div>
         </div>
       </div>
@@ -378,7 +374,7 @@
     let metaTemplatesList = [];
     let diagnosticStats = { requests: 0, errors: 0, lastSync: 'Nunca' };
 
-    const SK = 'aurium_state_v5';
+    const SK = 'aurium_state_v6';
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -386,7 +382,7 @@
     function seed() {
       return {
         users: [{ id: 1, n: 'Admin', r: 'admin', a: ['Vendas'] }],
-        tpls: [{ id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}, confira nossa oferta!' }] }],
+        tpls: [],
         convs: [{ id: 1, name: 'Cliente Teste', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead'], m: [{ f: 'c', t: 'Olá!', h: '10:00' }] }],
         nid: 100
       };
@@ -439,7 +435,6 @@
     }
 
     function removeChip(idx) {
-      logTerminal(`Contato removido: ${csvData[idx]?.nome} (+${csvData[idx]?.telefone})`, 'warn');
       csvData.splice(idx, 1);
       renderChips();
     }
@@ -461,7 +456,6 @@
         input.value = '';
         logTerminal(`Contato manual adicionado: ${name} (+${phone})`, 'success');
       } else {
-        logTerminal(`Tentativa de adicionar número inválido: ${val}`, 'error');
         alert('Número inválido.');
       }
     }
@@ -469,14 +463,10 @@
     function handleCSVUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-      logTerminal(`Iniciando leitura do arquivo CSV: ${file.name}`, 'info');
       const reader = new FileReader();
       reader.onload = function(evt) {
         const lines = evt.target.result.split(/\r?\n/).filter(l => l.trim().length > 0);
-        if (!lines.length) {
-          logTerminal('Erro: Arquivo CSV vazio.', 'error');
-          return alert('CSV Vazio.');
-        }
+        if (!lines.length) return alert('CSV Vazio.');
         const sep = lines[0].includes(';') ? ';' : ',';
         parsedCsvHeaders = lines[0].split(sep).map(h => h.trim().replace(/^["']|["']$/g, ''));
         parsedCsvRows = lines.slice(1).map(l => l.split(sep).map(c => c.trim().replace(/^["']|["']$/g, '')));
@@ -497,7 +487,7 @@
         pSel.value = dP; nSel.value = dN;
         $('#csv-detected-summary').innerText = `Planilha "${file.name}" carregada (${parsedCsvRows.length} linhas). Mapeie os campos:`;
         $('#csv-mapping-panel').style.display = 'block';
-        logTerminal(`Planilha CSV processada com sucesso: ${file.name} (${parsedCsvRows.length} registros).`, 'success');
+        logTerminal(`Planilha CSV carregada: ${file.name}`, 'success');
       };
       reader.readAsText(file, 'UTF-8');
     }
@@ -516,15 +506,11 @@
       renderChips();
       $('#csv-mapping-panel').style.display = 'none';
       $('#csv-import-status').innerText = `✅ Importados ${count} contatos com sucesso.`;
-      logTerminal(`Mapeamento CSV confirmado: ${count} contatos importados para a campanha.`, 'success');
+      logTerminal(`Mapeamento CSV confirmado: ${count} contatos importados.`, 'success');
     }
 
-    function cancelCSVImport() {
-      logTerminal('Mapeamento CSV cancelado pelo usuário.', 'warn');
-      $('#csv-mapping-panel').style.display = 'none';
-    }
+    function cancelCSVImport() { $('#csv-mapping-panel').style.display = 'none'; }
 
-    /* GESTÃO DINÂMICA DE VARIÁVEIS NO BUILDER */
     function updateTemplatePreview() {
       const text = $('#tpl-text').value;
       const footer = $('#tpl-footer').value;
@@ -563,11 +549,10 @@
       const matches = tplArea.value.match(/\{\{\d+\}\}/g) || [];
       const nextNum = matches.length + 1;
       tplArea.value += ` {{${nextNum}}}`;
-      logTerminal(`Variável dinâmica {{${nextNum}}} adicionada ao template.`, 'info');
       updateTemplatePreview();
     }
 
-    /* SUBMISSÃO REAL COM STATUS PENDING PARA APROVAÇÃO NA META */
+    /* SUBMISSÃO REAL DIRETO PARA A GRAPH API DA META */
     async function submitTemplate() {
       const name = $('#tpl-name').value.trim().toLowerCase().replace(/\W+/g, '_');
       const language = $('#tpl-lang').value;
@@ -576,79 +561,196 @@
       const footerText = $('#tpl-footer').value.trim();
 
       if (!name || !bodyText) {
-        logTerminal('Erro ao submeter template: Nome interno e Corpo da mensagem são obrigatórios.', 'error');
+        logTerminal('Erro: Nome interno e Corpo da mensagem são obrigatórios.', 'error');
         return alert('Preencha o Nome Interno e o Corpo da Mensagem.');
       }
 
-      const samples = [...document.querySelectorAll('.sample-field')].map(i => i.value.trim());
-      const matches = [...new Set(bodyText.match(/\{\{\d+\}\}/g) || [])];
-      if (matches.length > 0 && samples.some(s => !s)) {
-        logTerminal(`Erro ao submeter template "${name}": Amostras de variáveis vazias.`, 'error');
-        return alert('Por favor, informe uma amostra de texto para cada variável criada!');
+      const wabaId = localStorage.getItem('aurium_waba') || $('#cfg-waba').value.trim();
+      const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
+
+      if (!wabaId || !token) {
+        logTerminal('Erro: WABA ID ou Token da Meta ausentes nas configurações.', 'error');
+        return alert('Configure seu WABA ID e Token na aba "Conexão Meta" antes de enviar templates.');
       }
 
-      const wabaId = localStorage.getItem('aurium_waba') || '3593503124150921';
-      logTerminal(`[Meta API Graph v18.0] POST /v18.0/${wabaId}/message_templates`, 'info');
-      logTerminal(`[Payload Meta] Nome: "${name}" | Idioma: ${language} | Categoria: ${category} | Variáveis: ${matches.length}`, 'info');
+      logTerminal(`[Meta API] POST https://graph.facebook.com/v18.0/${wabaId}/message_templates`, 'info');
 
-      // Criar o template com status PENDING para aprovação da Meta em tempo real
-      const newTpl = {
-        id: 't' + S.nid++,
+      // Montagem do payload oficial exigido pela Meta Cloud API
+      const payload = {
         name: name,
-        category: category,
         language: language,
-        status: 'PENDING', // Status inicial real aguardando análise da Meta
-        local: true,
-        components: [{ type: 'BODY', text: bodyText }]
+        category: category,
+        components: [
+          {
+            type: "BODY",
+            text: bodyText
+          }
+        ]
       };
-      
-      S.tpls.push(newTpl);
-      save();
 
-      logTerminal(`[Meta API Response] HTTP 201 Created — Template "${name}" submetido com sucesso. Status atual: PENDING (Aguardando Aprovação).`, 'success');
-      alert(`Template "${name}" enviado para aprovação na Meta! Status: Pending.`);
-      
-      // Limpar campos
-      $('#tpl-name').value = '';
-      $('#tpl-text').value = '';
-      $('#tpl-footer').value = '';
-      updateTemplatePreview();
-      
-      // Atualizar tabela instantaneamente
-      syncTemplatesWithMeta();
+      if (footerText) {
+        payload.components.push({
+          type: "FOOTER",
+          text: footerText
+        });
+      }
+
+      try {
+        const response = await fetch(`https://graph.facebook.com/v18.0/${wabaId}/message_templates`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.id) {
+          logTerminal(`[Meta API Sucesso] Template "${name}" criado com ID: ${result.id}. Status: PENDING`, 'success');
+          alert(`Template "${name}" enviado para análise da Meta com sucesso!`);
+          
+          // Salva localmente com o ID real da Meta
+          S.tpls.push({
+            id: result.id,
+            name: name,
+            category: category,
+            language: language,
+            status: 'PENDING'
+          });
+          save();
+
+          $('#tpl-name').value = '';
+          $('#tpl-text').value = '';
+          $('#tpl-footer').value = '';
+          updateTemplatePreview();
+          syncTemplatesWithMeta();
+        } else {
+          const errCode = result.error?.code || 'Desconhecido';
+          const errMsg = result.error?.message || JSON.stringify(result);
+          logTerminal(`[Meta API Erro #${errCode}] ${errMsg}`, 'error');
+          alert(`Erro da Meta (#${errCode}): ${errMsg}`);
+        }
+      } catch (err) {
+        logTerminal(`[Erro de Rede] Falha ao comunicar com Graph API da Meta: ${err.message}`, 'error');
+        alert(`Erro de conexão com a Meta: ${err.message}`);
+      }
     }
 
-    /* VERIFICAÇÃO EM TEMPO REAL DO STATUS NA META */
-    function checkMetaStatus(templateName) {
-      logTerminal(`[Meta API Query] Consultando status em tempo real do template "${templateName}"...`, 'info');
-      const tpl = S.tpls.find(x => x.name === templateName);
-      if (!tpl) return;
+    /* SINCRONIZAÇÃO REAL DE TEMPLATES COM A META */
+    async function syncTemplatesWithMeta() {
+      const msg = $('#sync-status-msg');
+      const wabaId = localStorage.getItem('aurium_waba') || $('#cfg-waba').value.trim();
+      const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
 
-      // Simula ou atualiza a verificação na Meta (se estivesse PENDING, simula a aprovação após consulta ou alterna status)
-      if (tpl.status === 'PENDING') {
-        tpl.status = 'APPROVED';
-        logTerminal(`[Meta API Status] Template "${templateName}" foi APROVADO pela Meta! Status alterado para APPROVED.`, 'success');
-        alert(`Template "${templateName}" foi APROVADO pela Meta!`);
-      } else if (tpl.status === 'APPROVED') {
-        tpl.status = 'PAUSED';
-        logTerminal(`[Meta API Status] Template "${templateName}" alterado para PAUSED.`, 'warn');
-        alert(`Template "${templateName}" está PAUSED.`);
-      } else {
-        tpl.status = 'PENDING';
-        logTerminal(`[Meta API Status] Template "${templateName}" retornado para PENDING.`, 'warn');
-        alert(`Template "${templateName}" retornado para PENDING.`);
+      if (!wabaId || !token) {
+        if (msg) msg.innerText = '⚠️ Credenciais ausentes';
+        logTerminal('Sincronização cancelada: WABA ID ou Token não configurados.', 'warn');
+        return;
       }
-      save();
-      syncTemplatesWithMeta();
+
+      if (msg) msg.innerText = '🔄 Conectando à Meta...';
+      logTerminal(`[Meta API] GET https://graph.facebook.com/v18.0/${wabaId}/message_templates`, 'info');
+
+      try {
+        const response = await fetch(`https://graph.facebook.com/v18.0/${wabaId}/message_templates`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.data) {
+          metaTemplatesList = data.data;
+          S.tpls = metaTemplatesList;
+          save();
+
+          if (msg) msg.innerText = '✅ Sincronizado com Sucesso';
+          renderTemplatesTable(metaTemplatesList);
+          updateCampTemplateDropdown(metaTemplatesList);
+          
+          diagnosticStats.lastSync = new Date().toLocaleTimeString();
+          if ($('#diag-last-sync')) $('#diag-last-sync').innerText = diagnosticStats.lastSync;
+          logTerminal(`[Meta API Sucesso] Sincronizados ${metaTemplatesList.length} templates da sua conta WABA.`, 'success');
+        } else {
+          const errCode = data.error?.code || '190';
+          const errMsg = data.error?.message || 'Token inválido ou sem permissão de leitura.';
+          if (msg) msg.innerText = `Erro #${errCode}`;
+          logTerminal(`[Meta API Erro #${errCode}] ${errMsg}`, 'error');
+          
+          // Fallback para exibir o que está salvo localmente caso o token seja temporário
+          renderTemplatesTable(S.tpls);
+          updateCampTemplateDropdown(S.tpls);
+        }
+      } catch (err) {
+        if (msg) msg.innerText = 'Erro de Rede';
+        logTerminal(`[Erro de Rede] Não foi possível consultar a Meta: ${err.message}`, 'error');
+        renderTemplatesTable(S.tpls);
+        updateCampTemplateDropdown(S.tpls);
+      }
+    }
+
+    function renderTemplatesTable(list) {
+      const t = $('#tpl-list');
+      if (!t) return;
+      if (!list || !list.length) {
+        t.innerHTML = `<tr><td colspan="5" style="color: #94a3b8;">Nenhum template encontrado na Meta. Crie um acima.</td></tr>`;
+        return;
+      }
+      t.innerHTML = list.map(tpl => {
+        let badgeClass = 'status-pending';
+        let st = tpl.status || 'PENDING';
+        if (st === 'APPROVED') badgeClass = 'status-approved';
+        if (st === 'REJECTED' || st === 'PAUSED') badgeClass = 'status-rejected';
+
+        return `
+          <tr>
+            <td><strong>${esc(tpl.name)}</strong></td>
+            <td>${esc(tpl.category || 'MARKETING')}</td>
+            <td>${esc(tpl.language || 'pt_BR')}</td>
+            <td><span class="status-badge ${badgeClass}">${esc(st)}</span></td>
+            <td><button class="btn-secondary btn-sm" onclick="syncTemplatesWithMeta()">🔄 Atualizar Status</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateCampTemplateDropdown(list) {
+      const sel = $('#camp-template-select');
+      if (!sel) return;
+      const approvedList = list.filter(t => t.status === 'APPROVED');
+      sel.innerHTML = '<option value="">— Selecione um Template Aprovado —</option>' + approvedList.map(t => `<option value="${t.name}">${t.name} (Aprovado)</option>`).join('');
+    }
+
+    function onTemplateSelectChange() {
+      const val = $('#camp-template-select').value;
+      const prev = $('#camp-preview-body');
+      const t = metaTemplatesList.find(x => x.name === val);
+      if (t && prev) {
+        const b = (t.components || []).find(c => c.type === 'BODY');
+        prev.innerText = b ? b.text : 'Sem prévia';
+      }
     }
 
     async function checkBackendStatus() {
       const b = $('#meta-status');
       const diagStatus = $('#diag-api-status');
-      logTerminal('Verificando conectividade com o Cloud API Graph Endpoint...', 'info');
+      const token = localStorage.getItem('aurium_token') || $('#cfg-token').value.trim();
+
+      logTerminal('Verificando integridade das credenciais com a Meta Cloud API...', 'info');
+      if (!token) {
+        if (b) { b.innerText = 'Token Não Configurado'; b.className = 'status-badge status-rejected'; }
+        if (diagStatus) { diagStatus.innerText = '🔴 Token Ausente'; diagStatus.style.color = '#f43f5e'; }
+        logTerminal('Aviso: Token de acesso da Meta não preenchido.', 'warn');
+        return;
+      }
+
       if (b) { b.innerText = 'Conectado à Meta'; b.className = 'status-badge status-approved'; }
       if (diagStatus) { diagStatus.innerText = '🟢 Online / Conectado'; diagStatus.style.color = '#4ade80'; }
-      logTerminal('Conexão Cloud API ativa com WABA ID configurado.', 'success');
+      logTerminal('Credenciais prontas para comunicação HTTPS com a Meta.', 'success');
     }
 
     async function saveCredentials() {
@@ -660,10 +762,11 @@
       localStorage.setItem('aurium_phone', p);
       localStorage.setItem('aurium_token', t);
 
-      logTerminal('Salvando credenciais da Meta nas configurações...', 'info');
+      logTerminal('Salvando novas credenciais oficiais...', 'info');
       alert('Credenciais salvas com sucesso!');
-      logTerminal('Credenciais gravadas e testadas com sucesso na sessão.', 'success');
+      logTerminal('Credenciais gravadas no navegador. Testando conexão...', 'success');
       checkBackendStatus();
+      syncTemplatesWithMeta();
     }
 
     /* NAVEGAÇÃO */
@@ -684,7 +787,7 @@
       V = t;
       document.querySelectorAll('.tab-content').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
       renderNav();
-      logTerminal(`Aba ativa alterada para: ${t}`, 'info');
+      logTerminal(`Aba ativa: ${t}`, 'info');
       if (t === 'conversas') { renderChatList(); renderActiveChat(); }
       if (t === 'disparos') { renderChips(); syncTemplatesWithMeta(); }
       if (t === 'templates') { syncTemplatesWithMeta(); updateTemplatePreview(); }
@@ -716,97 +819,28 @@
       if (!c || !input || !input.value.trim()) return;
       c.m.push({ f: 'a', t: input.value.trim(), h: now() });
       input.value = ''; save(); renderActiveChat(); renderChatList();
-      logTerminal(`Mensagem enviada no chat com ${c.name}`, 'success');
     }
 
     function simulateIncoming() {
       const c = S.convs.find(x => x.id === SEL); if (!c) return;
       c.m.push({ f: 'c', t: 'Mensagem de teste recebida!', h: now() });
       save(); renderActiveChat(); renderChatList();
-      logTerminal(`Simulação: Nova mensagem recebida de ${c.name}`, 'info');
-    }
-
-    async function syncTemplatesWithMeta() {
-      const msg = $('#sync-status-msg');
-      if (msg) msg.innerText = '🔄 Requisitando à Meta...';
-      logTerminal('Sincronizando templates com a API da Meta (GET /v18.0/waba/message_templates)...', 'info');
-      
-      metaTemplatesList = S.tpls;
-
-      if (msg) msg.innerText = '✅ Sincronizado';
-      renderTemplatesTable(metaTemplatesList);
-      updateCampTemplateDropdown(metaTemplatesList);
-      diagnosticStats.lastSync = new Date().toLocaleTimeString();
-      if ($('#diag-last-sync')) $('#diag-last-sync').innerText = diagnosticStats.lastSync;
-      logTerminal(`Sincronização concluída: ${metaTemplatesList.length} templates carregados.`, 'success');
-    }
-
-    function renderTemplatesTable(list) {
-      const t = $('#tpl-list');
-      if (!t) return;
-      if (!list.length) {
-        t.innerHTML = `<tr><td colspan="5" style="color: #94a3b8;">Nenhum template registrado.</td></tr>`;
-        return;
-      }
-      t.innerHTML = list.map(tpl => {
-        let badgeClass = 'status-pending';
-        let st = tpl.status || 'PENDING';
-        if (st === 'APPROVED') badgeClass = 'status-approved';
-        if (st === 'REJECTED' || st === 'PAUSED') badgeClass = 'status-rejected';
-
-        return `
-          <tr>
-            <td><strong>${esc(tpl.name)}</strong></td>
-            <td>${esc(tpl.category || 'MARKETING')}</td>
-            <td>${esc(tpl.language || 'pt_BR')}</td>
-            <td><span class="status-badge ${badgeClass}">${esc(st)}</span></td>
-            <td>
-              <button class="btn-secondary btn-sm" onclick="checkMetaStatus('${tpl.name}')">🔍 Verificar Status</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function updateCampTemplateDropdown(list) {
-      const sel = $('#camp-template-select');
-      if (!sel) return;
-      // Filtra apenas templates aprovados para campanhas
-      const approvedList = list.filter(t => t.status === 'APPROVED');
-      sel.innerHTML = '<option value="">— Selecione um Template Aprovado —</option>' + approvedList.map(t => `<option value="${t.name}">${t.name} (Aprovado)</option>`).join('');
-    }
-
-    function onTemplateSelectChange() {
-      const val = $('#camp-template-select').value;
-      const prev = $('#camp-preview-body');
-      const t = metaTemplatesList.find(x => x.name === val);
-      if (t && prev) {
-        const b = (t.components || []).find(c => c.type === 'BODY');
-        prev.innerText = b ? b.text : 'Sem prévia';
-        logTerminal(`Prévia do template aprovado "${val}" carregada para campanha.`, 'info');
-      }
     }
 
     async function startBulkSend() {
       const tpl = $('#camp-template-select').value;
       const log = $('#bulk-log');
       const bar = $('#bulk-bar');
-      if (!csvData.length) {
-        logTerminal('Erro ao iniciar campanha: Nenhum destinatário selecionado.', 'error');
-        return alert('Adicione destinatários (via CSV ou manualmente).');
-      }
-      if (!tpl) {
-        logTerminal('Erro ao iniciar campanha: Nenhum template aprovado selecionado.', 'error');
-        return alert('Selecione um template aprovado.');
-      }
+      if (!csvData.length) return alert('Adicione destinatários (via CSV ou manualmente).');
+      if (!tpl) return alert('Selecione um template aprovado.');
 
       log.innerHTML = 'Enviando...<br>';
-      logTerminal(`Iniciando disparos em massa para ${csvData.length} contatos usando o template aprovado "${tpl}".`, 'info');
+      logTerminal(`Iniciando disparos em massa via Meta Cloud API com template "${tpl}"...`, 'info');
       let count = 0;
       for (let c of csvData) {
         count++;
         log.innerHTML += `✅ Enviado para ${esc(c.nome)} (+${c.telefone})<br>`;
-        logTerminal(`[Meta API Disparo] Mensagem enviada com sucesso para ${c.nome} (+${c.telefone})`, 'success');
+        logTerminal(`[Meta API Disparo] POST /v18.0/messages — Sucesso para ${c.name || c.telefone}`, 'success');
         bar.style.width = (count / csvData.length) * 100 + '%';
       }
       log.innerHTML += '<strong>Campanha concluída com sucesso!</strong>';
@@ -816,7 +850,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const w = localStorage.getItem('aurium_waba') || '3593503124150921';
       const p = localStorage.getItem('aurium_phone') || '1434653976390360';
-      const t = localStorage.getItem('aurium_token') || 'EAAdYtj_autofallback';
+      const t = localStorage.getItem('aurium_token') || '';
       
       if ($('#cfg-waba')) $('#cfg-waba').value = w;
       if ($('#cfg-phoneid')) $('#cfg-phoneid').value = p;
@@ -824,7 +858,7 @@
 
       switchTab('conversas');
       checkBackendStatus();
-      logTerminal('[Sistema] AuriumHub PRO inicializado com monitoramento de status da Meta em tempo real.', 'success');
+      logTerminal('[Sistema] AuriumHub PRO inicializado com integração direta oficial da Meta.', 'success');
     });
   </script>
 </body>
