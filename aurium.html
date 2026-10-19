@@ -21,7 +21,7 @@
     .tab-content { display: none; width: 100%; height: 100%; }
     .tab-content.active { display: flex; }
 
-    /* Layout do Chat */
+    /* Layout Chat */
     .chat-list-panel { width: 320px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; }
     .chat-list-header { padding: 15px; border-bottom: 1px solid #1f2c28; }
     .filter-select { background: #1f2c28; color: #e9edef; border: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; margin-right: 5px; }
@@ -53,7 +53,6 @@
     .status-connected { background: rgba(0, 168, 132, 0.2); color: #00a884; }
     .status-disconnected { background: rgba(234, 134, 134, 0.2); color: #ea8686; }
 
-    /* Layout da Criação de Templates */
     .template-builder-container { display: flex; gap: 25px; margin-top: 20px; }
     .builder-form { flex: 1.2; }
     .builder-preview { flex: 0.8; background-color: #0b1412; border: 1px solid #1f2c28; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
@@ -147,17 +146,16 @@
       </div>
     </div>
 
-    <!-- Tab 3: Gestor Profissional de Templates Meta -->
+    <!-- Tab 3: Gestor de Templates -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <h2>Criar e Enviar Template para Aprovação na Meta</h2>
         <p style="color: #8696a0; font-size: 13px; margin-top: 5px;">Templates do WhatsApp passam por revisão da Meta (PENDING até ser APPROVED).</p>
 
         <div class="template-builder-container">
-          <!-- Formulário -->
           <div class="builder-form card">
             <label style="font-size: 12px; font-weight: bold; color: #aebac1;">NOME INTERNO *</label>
-            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation" style="margin-bottom: 15px;">
+            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation_v2" style="margin-bottom: 15px;">
 
             <div style="display: flex; gap: 15px;">
               <div style="flex: 1;">
@@ -183,7 +181,6 @@
             </div>
             <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido {{2}} foi confirmado!" style="margin-top: 5px;" oninput="updateTemplatePreview()"></textarea>
 
-            <!-- Seção de Amostras Obrigatórias para Variáveis -->
             <div id="samples-container" class="sample-box" style="display: none;">
               <label style="font-size: 12px; font-weight: bold; color: #00a884;">AMOSTRAS DAS VARIÁVEIS *</label>
               <p style="font-size: 11px; color: #8696a0; margin-top: 2px;">A Meta exige um valor de exemplo para cada variável para revisar o template.</p>
@@ -196,7 +193,6 @@
             <button class="btn-send" style="margin-top: 20px; width: 100%; padding: 12px;" onclick="submitTemplate()">Enviar para Aprovação na Meta</button>
           </div>
 
-          <!-- Prévia do WhatsApp -->
           <div class="builder-preview card">
             <h3 style="font-size: 14px; color: #aebac1;">💭 PRÉVIA DO WHATSAPP</h3>
             <div class="whatsapp-preview-card">
@@ -221,7 +217,7 @@
               </tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="4" style="color: #8696a0;">Clique em "Atualizar Lista" para verificar os status.</td></tr>
+              <tr><td colspan="4" style="color: #8696a0;">Carregando templates salvos...</td></tr>
             </tbody>
           </table>
         </div>
@@ -237,7 +233,8 @@
             Status: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
 
-          <h3>Vincular Credenciais da Meta</h3>
+          <h3>Credenciais da Meta (Gravadas Permanente)</h3>
+          
           <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">WABA ID (ID da Conta do WhatsApp Business):</label>
           <input type="text" id="cfg-waba" class="input-field" placeholder="Ex: 3593503124150921">
 
@@ -245,9 +242,11 @@
           <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
 
           <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">Token de Acesso da Meta:</label>
-          <input type="password" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
+          <input type="text" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
 
-          <button class="btn-send" style="margin-top: 15px;" onclick="saveCredentials()">Vincular Credenciais</button>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-send" onclick="saveCredentials()">Salvar / Atualizar Credenciais</button>
+          </div>
         </div>
       </div>
     </div>
@@ -263,6 +262,46 @@
       
       document.getElementById('tab-' + tabName).classList.add('active');
       element.classList.add('active');
+
+      if (tabName === 'templates') {
+        fetchTemplates();
+      }
+    }
+
+    // Carrega credenciais do localStorage e valida no backend
+    async function initApp() {
+      const storedWaba = localStorage.getItem('aurium_waba') || '';
+      const storedPhone = localStorage.getItem('aurium_phone') || '';
+      const storedToken = localStorage.getItem('aurium_token') || '';
+
+      if (storedWaba) document.getElementById('cfg-waba').value = storedWaba;
+      if (storedPhone) document.getElementById('cfg-phoneid').value = storedPhone;
+      if (storedToken) document.getElementById('cfg-token').value = storedToken;
+
+      // Se existirem dados salvos localmente, sincroniza automaticamente com o backend
+      if (storedWaba || storedPhone || storedToken) {
+        await syncBackendCredentials(storedWaba, storedPhone, storedToken);
+      } else {
+        await checkBackendStatus();
+      }
+
+      // Renderiza templates do cache local imediatamente
+      renderCachedTemplates();
+      // Em seguida, busca atualizações na Meta
+      fetchTemplates();
+    }
+
+    async function syncBackendCredentials(wabaId, phoneId, token) {
+      try {
+        await fetch('/api/credentials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wabaId, phoneId, token })
+        });
+        checkBackendStatus();
+      } catch (err) {
+        console.error('Erro ao sincronizar credenciais com o servidor.');
+      }
     }
 
     async function checkBackendStatus() {
@@ -270,11 +309,16 @@
       try {
         const res = await fetch('/api/status');
         const data = await res.json();
+
+        if (data.wabaId && !document.getElementById('cfg-waba').value) document.getElementById('cfg-waba').value = data.wabaId;
+        if (data.phoneId && !document.getElementById('cfg-phoneid').value) document.getElementById('cfg-phoneid').value = data.phoneId;
+        if (data.token && !document.getElementById('cfg-token').value) document.getElementById('cfg-token').value = data.token;
+
         if (data.connected) {
           statusBadge.innerText = 'Conectado à Meta';
           statusBadge.className = 'status-badge status-connected';
         } else {
-          statusBadge.innerText = 'Credenciais ausentes';
+          statusBadge.innerText = 'Credenciais ausentes / incompletas';
           statusBadge.className = 'status-badge status-disconnected';
         }
       } catch (err) {
@@ -284,9 +328,14 @@
     }
 
     async function saveCredentials() {
-      const wabaId = document.getElementById('cfg-waba').value;
-      const phoneId = document.getElementById('cfg-phoneid').value;
-      const token = document.getElementById('cfg-token').value;
+      const wabaId = document.getElementById('cfg-waba').value.trim();
+      const phoneId = document.getElementById('cfg-phoneid').value.trim();
+      const token = document.getElementById('cfg-token').value.trim();
+
+      // Salva permanentemente no localStorage do navegador
+      localStorage.setItem('aurium_waba', wabaId);
+      localStorage.setItem('aurium_phone', phoneId);
+      localStorage.setItem('aurium_token', token);
 
       try {
         const res = await fetch('/api/credentials', {
@@ -295,10 +344,11 @@
           body: JSON.stringify({ wabaId, phoneId, token })
         });
         const data = await res.json();
-        alert(data.message);
+        alert('Credenciais salvas e gravadas permanentemente!');
         checkBackendStatus();
+        fetchTemplates();
       } catch (err) {
-        alert('Erro ao salvar credenciais.');
+        alert('Erro ao salvar credenciais no servidor.');
       }
     }
 
@@ -332,7 +382,6 @@
       }
     }
 
-    // Leitura do Ficheiro CSV
     function handleCSVUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -398,7 +447,6 @@
       }
     }
 
-    // Atualiza a prévia do WhatsApp e gera os campos de amostra dinamicamente
     function updateTemplatePreview() {
       const text = document.getElementById('tpl-text').value;
       const footer = document.getElementById('tpl-footer').value;
@@ -406,7 +454,6 @@
       document.getElementById('preview-body').innerText = text || 'O corpo do template aparecerá aqui...';
       document.getElementById('preview-footer').innerText = footer ? footer : '';
 
-      // Identifica variáveis como {{1}}, {{2}}...
       const matches = [...new Set(text.match(/\{\{\d+\}\}/g) || [])];
       const samplesContainer = document.getElementById('samples-container');
       const samplesInputs = document.getElementById('samples-inputs');
@@ -414,7 +461,6 @@
       if (matches.length > 0) {
         samplesContainer.style.display = 'block';
         
-        // Preserva valores já digitados
         const existingValues = {};
         document.querySelectorAll('.sample-field').forEach(input => {
           existingValues[input.dataset.var] = input.value;
@@ -444,7 +490,6 @@
       updateTemplatePreview();
     }
 
-    // Submeter Template com Amostras das Variáveis
     async function submitTemplate() {
       const name = document.getElementById('tpl-name').value;
       const language = document.getElementById('tpl-lang').value;
@@ -457,7 +502,6 @@
         return;
       }
 
-      // Coleta os valores de exemplo digitados pelo usuário
       const sampleInputs = document.querySelectorAll('.sample-field');
       const samples = [];
       let missingSample = false;
@@ -468,7 +512,7 @@
       });
 
       if (missingSample) {
-        alert('Por favor, informe um valor de amostra/exemplo para cada variável!');
+        alert('Por favor, informe um valor de amostra para cada variável!');
         return;
       }
 
@@ -491,40 +535,60 @@
       }
     }
 
-    // Listar Templates da Meta
-    async function fetchTemplates() {
-      const listEl = document.getElementById('tpl-list');
-      listEl.innerHTML = '<tr><td colspan="4">Buscando templates na Meta...</td></tr>';
+    // Renderiza templates em cache no localStorage
+    function renderCachedTemplates() {
+      const cached = localStorage.getItem('aurium_templates');
+      if (!cached) return;
 
+      try {
+        const templates = JSON.parse(cached);
+        renderTemplatesTable(templates);
+      } catch (e) {
+        console.error('Erro ao ler templates do cache local.');
+      }
+    }
+
+    function renderTemplatesTable(templates) {
+      const listEl = document.getElementById('tpl-list');
+      if (!templates || templates.length === 0) {
+        listEl.innerHTML = '<tr><td colspan="4">Nenhum template registrado ainda.</td></tr>';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      templates.forEach(tpl => {
+        listEl.innerHTML += `
+          <tr>
+            <td><strong>${tpl.name}</strong></td>
+            <td>${tpl.category}</td>
+            <td>${tpl.language}</td>
+            <td><span class="status-badge ${tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected'}">${tpl.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    // Busca templates na Meta e grava a resposta permanentemente no localStorage
+    async function fetchTemplates() {
       try {
         const res = await fetch('/api/templates');
         const data = await res.json();
 
-        if (data.success) {
-          listEl.innerHTML = '';
-          if (!data.templates || data.templates.length === 0) {
-            listEl.innerHTML = '<tr><td colspan="4">Nenhum template encontrado nesta conta WABA.</td></tr>';
-            return;
-          }
-          data.templates.forEach(tpl => {
-            listEl.innerHTML += `
-              <tr>
-                <td><strong>${tpl.name}</strong></td>
-                <td>${tpl.category}</td>
-                <td>${tpl.language}</td>
-                <td><span class="status-badge ${tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected'}">${tpl.status}</span></td>
-              </tr>
-            `;
-          });
-        } else {
-          listEl.innerHTML = `<tr><td colspan="4" style="color:#ea8686;">Erro: ${data.error}</td></tr>`;
+        if (data.success && data.templates) {
+          localStorage.setItem('aurium_templates', JSON.stringify(data.templates));
+          renderTemplatesTable(data.templates);
+        } else if (!localStorage.getItem('aurium_templates')) {
+          document.getElementById('tpl-list').innerHTML = `<tr><td colspan="4" style="color:#ea8686;">${data.error || 'Não foi possível carregar.'}</td></tr>`;
         }
       } catch (err) {
-        listEl.innerHTML = '<tr><td colspan="4" style="color:#ea8686;">Erro ao conectar com a API.</td></tr>';
+        if (!localStorage.getItem('aurium_templates')) {
+          document.getElementById('tpl-list').innerHTML = '<tr><td colspan="4" style="color:#ea8686;">Erro ao conectar com a API da Meta.</td></tr>';
+        }
       }
     }
 
-    checkBackendStatus();
+    // Inicialização automática ao carregar a página
+    initApp();
   </script>
 </body>
 </html>
