@@ -3,68 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuriumHub PRO</title>
+  <title>AuriumHub PRO — Gestão de WhatsApp</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0b1412; color: #e9edef; display: flex; height: 100vh; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #0f172a; color: #f1f5f9; display: flex; height: 100vh; overflow: hidden; }
     
-    .sidebar { width: 220px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 10px; }
-    .logo { font-size: 20px; font-weight: bold; color: #00a884; margin-bottom: 25px; padding-left: 10px; }
-    .logo span { color: #25d366; font-size: 12px; background: rgba(37,211,102,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+    /* Sidebar */
+    .sidebar { width: 240px; background-color: #0b1120; border-right: 1px solid #1e293b; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 14px; }
+    .logo { font-size: 20px; font-weight: 700; color: #38bdf8; margin-bottom: 30px; padding-left: 10px; display: flex; align-items: center; gap: 8px; }
+    .logo span { color: #f43f5e; font-size: 11px; background: rgba(244,63,94,0.15); padding: 2px 8px; border-radius: 6px; font-weight: 600; }
     .nav-menu { list-style: none; }
-    .nav-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: #aebac1; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-    .nav-item:hover, .nav-item.active { background-color: #1f2c28; color: #00a884; font-weight: 600; }
+    .nav-item { padding: 12px 16px; margin-bottom: 6px; border-radius: 8px; cursor: pointer; color: #94a3b8; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease; }
+    .nav-item:hover { background-color: #1e293b; color: #e2e8f0; }
+    .nav-item.active { background-color: #1e293b; color: #38bdf8; font-weight: 600; border-left: 3px solid #38bdf8; }
     
-    .user-footer { border-top: 1px solid #1f2c28; padding-top: 15px; font-size: 12px; color: #8696a0; }
+    .user-footer { border-top: 1px solid #1e293b; padding-top: 16px; font-size: 12px; color: #64748b; }
 
-    .main-container { flex: 1; display: flex; background-color: #0b1412; }
+    /* Main Container */
+    .main-container { flex: 1; display: flex; background-color: #0f172a; overflow: hidden; }
     .tab-content { display: none; width: 100%; height: 100%; }
     .tab-content.active { display: flex; }
 
-    /* Layout Chat */
-    .chat-list-panel { width: 320px; background-color: #111b18; border-right: 1px solid #1f2c28; display: flex; flex-direction: column; }
-    .chat-list-header { padding: 15px; border-bottom: 1px solid #1f2c28; }
-    .filter-select { background: #1f2c28; color: #e9edef; border: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; margin-right: 5px; }
+    /* Layout Chat / Conversas */
+    .chat-list-panel { width: 340px; background-color: #0b1120; border-right: 1px solid #1e293b; display: flex; flex-direction: column; }
+    .chat-list-header { padding: 18px; border-bottom: 1px solid #1e293b; display: flex; gap: 8px; }
+    .filter-select { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; padding: 7px 12px; border-radius: 6px; font-size: 13px; outline: none; }
     
-    .chat-item { padding: 15px; border-bottom: 1px solid #1a2522; cursor: pointer; }
-    .chat-item:hover, .chat-item.active { background-color: #1a2522; }
-    .chat-item-name { font-weight: 600; font-size: 15px; color: #e9edef; }
-    .chat-item-sub { font-size: 12px; color: #8696a0; margin-top: 3px; }
-    .tag { display: inline-block; background: #00a88422; color: #00a884; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 5px; }
+    .chat-item { padding: 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: 0.2s; }
+    .chat-item:hover, .chat-item.active { background-color: #1e293b; }
+    .chat-item-name { font-weight: 600; font-size: 15px; color: #f8fafc; }
+    .chat-item-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+    .tag { display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-top: 6px; font-weight: 600; }
 
-    .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0b1412; }
-    .chat-header { padding: 15px 20px; background-color: #111b18; border-bottom: 1px solid #1f2c28; font-weight: 600; }
-    .messages-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-    .msg { max-width: 65%; padding: 10px 14px; border-radius: 8px; font-size: 14px; line-height: 1.4; }
-    .msg.sent { background-color: #005c4b; align-self: flex-end; color: #e9edef; }
-    .msg.received { background-color: #202c33; align-self: flex-start; color: #e9edef; }
+    .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0f172a; }
+    .chat-header { padding: 18px 24px; background-color: #0b1120; border-bottom: 1px solid #1e293b; font-weight: 600; font-size: 16px; }
+    .messages-area { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .msg { max-width: 60%; padding: 12px 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+    .msg.sent { background-color: #0369a1; align-self: flex-end; color: #f8fafc; border-bottom-right-radius: 2px; }
+    .msg.received { background-color: #1e293b; align-self: flex-start; color: #f1f5f9; border-bottom-left-radius: 2px; }
 
-    .chat-input-area { padding: 15px; background-color: #111b18; border-top: 1px solid #1f2c28; display: flex; gap: 10px; }
-    .chat-input { flex: 1; background: #222e2a; border: 1px solid #2a3934; border-radius: 8px; padding: 10px 15px; color: #e9edef; outline: none; }
-    .btn-send { background-color: #00a884; border: none; color: #111b18; font-weight: bold; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+    .chat-input-area { padding: 18px; background-color: #0b1120; border-top: 1px solid #1e293b; display: flex; gap: 12px; }
+    .chat-input { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 16px; color: #f8fafc; outline: none; font-size: 14px; }
+    
+    /* Buttons PRO */
+    .btn-primary { background-color: #f43f5e; border: none; color: #ffffff; font-weight: 600; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary:hover { background-color: #e11d48; }
+    .btn-secondary { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; font-weight: 500; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .btn-secondary:hover { background: #334155; }
 
-    .details-panel { width: 280px; background-color: #111b18; border-left: 1px solid #1f2c28; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-    .panel-title { font-size: 14px; font-weight: 600; color: #aebac1; margin-bottom: 10px; }
-    .input-field { width: 100%; background: #222e2a; border: 1px solid #2a3934; border-radius: 6px; padding: 8px 12px; color: #e9edef; margin-top: 5px; font-size: 13px; }
+    .details-panel { width: 300px; background-color: #0b1120; border-left: 1px solid #1e293b; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .panel-title { font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .input-field { width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; color: #f8fafc; margin-top: 6px; font-size: 13.5px; outline: none; transition: 0.2s; }
+    .input-field:focus { border-color: #38bdf8; }
 
-    .page-padding { padding: 30px; width: 100%; overflow-y: auto; }
-    .card { background-color: #111b18; border: 1px solid #1f2c28; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-    .status-connected { background: rgba(0, 168, 132, 0.2); color: #00a884; }
-    .status-disconnected { background: rgba(234, 134, 134, 0.2); color: #ea8686; }
+    .page-padding { padding: 32px; width: 100%; overflow-y: auto; }
+    .card { background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .status-connected { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .status-disconnected { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
 
-    .template-builder-container { display: flex; gap: 25px; margin-top: 20px; }
+    /* Builder Layout */
+    .template-builder-container { display: flex; gap: 28px; margin-top: 20px; }
     .builder-form { flex: 1.2; }
-    .builder-preview { flex: 0.8; background-color: #0b1412; border: 1px solid #1f2c28; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+    .builder-preview { flex: 0.8; background-color: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
     
-    .whatsapp-preview-card { background-color: #202c33; padding: 14px; border-radius: 8px; margin-top: 15px; color: #e9edef; font-size: 14px; line-height: 1.4; border-left: 4px solid #00a884; }
-    .sample-box { background: #1f2c28; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px dashed #2a3934; }
-    .sample-item { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-    .sample-item label { background: #00a884; color: #111b18; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 4px; }
+    .whatsapp-preview-card { background-color: #1e293b; padding: 18px; border-radius: 10px; margin-top: 16px; color: #f8fafc; font-size: 14px; line-height: 1.5; border-left: 4px solid #38bdf8; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .sample-box { background: #182232; padding: 16px; border-radius: 10px; margin-top: 14px; border: 1px dashed #334155; }
+    .sample-item { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+    .sample-item label { background: #38bdf8; color: #0f172a; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #1f2c28; font-size: 13px; }
-    th { color: #8696a0; }
+    /* Import CSV Box PRO */
+    .csv-import-box { background: #182232; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin-top: 16px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #1e293b; font-size: 13.5px; }
+    th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -72,16 +85,16 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div>
-      <div class="logo">AuriumHub <span>v1</span></div>
+      <div class="logo">AuriumHub <span>PRO</span></div>
       <ul class="nav-menu">
         <li class="nav-item active" onclick="switchTab('conversas', this)">💬 Conversas</li>
-        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Disparos em Massa</li>
+        <li class="nav-item" onclick="switchTab('disparos', this)">📣 Campanhas / Disparos</li>
         <li class="nav-item" onclick="switchTab('templates', this)">📄 Templates Meta</li>
         <li class="nav-item" onclick="switchTab('meta', this)">🔗 Conexão Meta</li>
       </ul>
     </div>
     <div class="user-footer">
-      <div>AuriumHub Online</div>
+      <div>AuriumHub Online • Vercel</div>
     </div>
   </div>
 
@@ -103,72 +116,131 @@
       </div>
 
       <div class="chat-box">
-        <div class="chat-header">Marina Souza <span style="font-weight: normal; font-size: 12px; color: #8696a0;">+55 18 98888-1111</span></div>
+        <div class="chat-header">Marina Souza <span style="font-weight: normal; font-size: 13px; color: #94a3b8;">+55 18 98888-1111</span></div>
         <div class="messages-area" id="msg-area">
           <div class="msg received">Oi! Vi a promoção de vocês, ainda está valendo?</div>
         </div>
         <div class="chat-input-area">
           <input type="text" id="input-message" class="chat-input" placeholder="Digite uma mensagem...">
-          <button class="btn-send" onclick="sendMessage()">Enviar</button>
+          <button class="btn-primary" onclick="sendMessage()">Enviar</button>
         </div>
       </div>
 
       <div class="details-panel">
         <div>
           <div class="panel-title">Configurar Destinatário Real</div>
-          <label style="font-size: 12px; color: #8696a0;">Número com DDI e DDD:</label>
+          <label style="font-size: 12px; color: #94a3b8;">Número com DDI e DDD:</label>
           <input type="text" id="target-phone" class="input-field" placeholder="Ex: 5511999999999">
         </div>
       </div>
     </div>
 
-    <!-- Tab 2: Disparos em Massa -->
+    <!-- Tab 2: Disparos e Campanhas (Layout PRO) -->
     <div id="tab-disparos" class="tab-content">
       <div class="page-padding">
-        <h2>Disparos em Massa (Planilha CSV + Variáveis)</h2>
-        <div class="card" style="margin-top: 20px;">
-          <h3>1. Carregar Planilha CSV</h3>
-          <input type="file" id="csv-file" accept=".csv" class="input-field" style="margin-top: 10px;" onchange="handleCSVUpload(event)">
-          <div id="csv-preview" style="margin-top: 15px; color: #00a884; font-size: 13px;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div>
+            <h1 style="font-size: 24px; font-weight: 700;">Nova campanha</h1>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Envie mensagens em massa selecionando templates aprovados ou inserindo lista CSV.</p>
+          </div>
+          <div>
+            <button class="btn-secondary">Salvar rascunho</button>
+            <button class="btn-primary" style="margin-left: 8px;" onclick="startBulkSend()">Enviar Campanha</button>
+          </div>
         </div>
 
-        <div class="card">
-          <h3>2. Escrever Mensagem da Campanha</h3>
-          <p style="font-size: 12px; color: #8696a0; margin-top: 5px;">Use <strong>{{1}}</strong> no texto para ser substituído pelo Nome do cliente.</p>
-          <textarea id="bulk-message" class="input-field" rows="4" placeholder="Olá {{1}}, temos uma oferta especial para si!" style="margin-top: 10px;"></textarea>
-          <button class="btn-send" style="margin-top: 15px;" onclick="startBulkSend()">Iniciar Disparos</button>
-        </div>
+        <div style="display: flex; gap: 28px;">
+          <!-- Formulário da Campanha -->
+          <div style="flex: 1.2;">
+            <div class="card">
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TÍTULO DA CAMPANHA *</label>
+              <input type="text" id="camp-title" class="input-field" placeholder="Ex: Black Friday 2026" style="margin-bottom: 16px;">
 
-        <div class="card">
-          <h3>Progresso dos Disparos</h3>
-          <div id="bulk-log" style="font-size: 13px; color: #8696a0; margin-top: 10px; max-height: 150px; overflow-y: auto;">Aguardando envio...</div>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TEMPLATE (WABA DE CAMPANHAS) *</label>
+              <select id="camp-template-select" class="input-field" style="margin-bottom: 16px;" onchange="onTemplateSelectChange()">
+                <option value="">Carregando templates da Meta...</option>
+              </select>
+              <p style="font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 16px;">Número WABA dispara template aprovado diretamente pela Cloud API da Meta.</p>
+
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
+              
+              <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
+                <input type="text" id="manual-numbers" class="input-field" placeholder='+55 11 99999-9999 ou "Nome <+5511...>"' style="margin-top: 0;">
+                <label class="btn-secondary" style="cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                  <span>⬆ Importar CSV</span>
+                  <input type="file" id="csv-file" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+                </label>
+              </div>
+
+              <!-- Painel Inteligente de Mapeamento de Colunas CSV (igual à imagem) -->
+              <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
+                <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
+                
+                <div style="margin-bottom: 12px;">
+                  <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block;">Coluna de telefone *</label>
+                  <select id="csv-phone-col" class="input-field"></select>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                  <label style="font-size: 12px; font-weight: 700; color: #94a3b8; display: block;">Nome (opcional)</label>
+                  <select id="csv-name-col" class="input-field"></select>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-primary" onclick="confirmCSVImport()">Importar</button>
+                  <button class="btn-secondary" onclick="cancelCSVImport()">Cancelar</button>
+                </div>
+              </div>
+
+              <div id="csv-import-status" style="font-size: 13px; color: #4ade80; margin-top: 10px; font-weight: 500;"></div>
+            </div>
+
+            <div class="card">
+              <h3>Progresso e Log de Disparos</h3>
+              <div id="bulk-log" style="font-size: 13px; color: #94a3b8; margin-top: 12px; max-height: 180px; overflow-y: auto;">Aguardando envio...</div>
+            </div>
+          </div>
+
+          <!-- Painel da Prévia do Template Selecionado -->
+          <div style="flex: 0.8;" class="card">
+            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">💭 TEMPLATE WHATSAPP</h3>
+            <div class="whatsapp-preview-card" style="margin-top: 16px;">
+              <div id="camp-preview-body" style="white-space: pre-wrap;">Selecione um template aprovado da Meta para visualizar a prévia aqui...</div>
+              <div id="camp-preview-footer" style="font-size: 11px; color: #94a3b8; margin-top: 10px;"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Tab 3: Gestor de Templates -->
+    <!-- Tab 3: Gestor de Templates com Sincronização Meta -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
-        <h2>Criar e Enviar Template para Aprovação na Meta</h2>
-        <p style="color: #8696a0; font-size: 13px; margin-top: 5px;">Templates do WhatsApp passam por revisão da Meta (PENDING até ser APPROVED).</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h1 style="font-size: 24px; font-weight: 700;">Gestão de Templates da Meta</h1>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Crie novos modelos para aprovação ou sincronize os status atuais em tempo real.</p>
+          </div>
+          <button class="btn-primary" style="background-color: #0284c7;" onclick="syncTemplatesWithMeta()">⚡ Sincronizar com a META</button>
+        </div>
 
         <div class="template-builder-container">
           <div class="builder-form card">
-            <label style="font-size: 12px; font-weight: bold; color: #aebac1;">NOME INTERNO *</label>
-            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation_v2" style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">NOME INTERNO *</label>
+            <input type="text" id="tpl-name" class="input-field" placeholder="ex: order_confirmation_v3" style="margin-bottom: 16px;">
 
-            <div style="display: flex; gap: 15px;">
+            <div style="display: flex; gap: 16px;">
               <div style="flex: 1;">
-                <label style="font-size: 12px; font-weight: bold; color: #aebac1;">IDIOMA *</label>
-                <select id="tpl-lang" class="input-field" style="margin-bottom: 15px;">
+                <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">IDIOMA *</label>
+                <select id="tpl-lang" class="input-field" style="margin-bottom: 16px;">
                   <option value="pt_BR">Português (Brasil) — pt_BR</option>
                   <option value="en_US">Inglês — en_US</option>
                   <option value="es_ES">Espanhol — es_ES</option>
                 </select>
               </div>
               <div style="flex: 1;">
-                <label style="font-size: 12px; font-weight: bold; color: #aebac1;">CATEGORIA *</label>
-                <select id="tpl-category" class="input-field" style="margin-bottom: 15px;">
+                <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CATEGORIA *</label>
+                <select id="tpl-category" class="input-field" style="margin-bottom: 16px;">
                   <option value="MARKETING">Marketing (Promoções, novidades)</option>
                   <option value="UTILITY">Utilidade (Confirmações, avisos)</option>
                 </select>
@@ -176,36 +248,36 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="font-size: 12px; font-weight: bold; color: #aebac1;">CORPO DA MENSAGEM *</label>
-              <button class="btn-send" style="padding: 3px 8px; font-size: 11px;" onclick="addVarToText()">+ Variável {{1}}</button>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CORPO DA MENSAGEM *</label>
+              <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addVarToText()">+ Variável {{1}}</button>
             </div>
-            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido {{2}} foi confirmado!" style="margin-top: 5px;" oninput="updateTemplatePreview()"></textarea>
+            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido {{2}} foi confirmado!" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
 
             <div id="samples-container" class="sample-box" style="display: none;">
-              <label style="font-size: 12px; font-weight: bold; color: #00a884;">AMOSTRAS DAS VARIÁVEIS *</label>
-              <p style="font-size: 11px; color: #8696a0; margin-top: 2px;">A Meta exige um valor de exemplo para cada variável para revisar o template.</p>
+              <label style="font-size: 12px; font-weight: 700; color: #38bdf8;">AMOSTRAS DAS VARIÁVEIS *</label>
+              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige um valor de exemplo para cada variável para revisar o template.</p>
               <div id="samples-inputs"></div>
             </div>
 
-            <label style="font-size: 12px; font-weight: bold; color: #aebac1; margin-top: 15px; display: block;">RODAPÉ / FOOTER (OPCIONAL)</label>
+            <label style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-top: 16px; display: block;">RODAPÉ / FOOTER (OPCIONAL)</label>
             <input type="text" id="tpl-footer" class="input-field" placeholder="ex: AuriumHub Soluções" oninput="updateTemplatePreview()">
 
-            <button class="btn-send" style="margin-top: 20px; width: 100%; padding: 12px;" onclick="submitTemplate()">Enviar para Aprovação na Meta</button>
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; padding: 12px;" onclick="submitTemplate()">Enviar para Aprovação na Meta</button>
           </div>
 
           <div class="builder-preview card">
-            <h3 style="font-size: 14px; color: #aebac1;">💭 PRÉVIA DO WHATSAPP</h3>
+            <h3 style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">💭 PRÉVIA DO WHATSAPP</h3>
             <div class="whatsapp-preview-card">
               <div id="preview-body" style="white-space: pre-wrap;">O corpo do template aparecerá aqui...</div>
-              <div id="preview-footer" style="font-size: 11px; color: #8696a0; margin-top: 8px;"></div>
+              <div id="preview-footer" style="font-size: 11px; color: #94a3b8; margin-top: 10px;"></div>
             </div>
           </div>
         </div>
 
-        <div class="card" style="margin-top: 20px;">
+        <div class="card" style="margin-top: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3>Templates Registrados na Meta</h3>
-            <button class="btn-send" style="padding: 6px 14px; font-size: 12px;" onclick="fetchTemplates()">Atualizar Lista</button>
+            <span id="sync-status-msg" style="font-size: 12px; color: #94a3b8;">Sincronizado automaticamente</span>
           </div>
           <table>
             <thead>
@@ -213,11 +285,11 @@
                 <th>Nome</th>
                 <th>Categoria</th>
                 <th>Idioma</th>
-                <th>Status</th>
+                <th>Status na Meta</th>
               </tr>
             </thead>
             <tbody id="tpl-list">
-              <tr><td colspan="4" style="color: #8696a0;">Carregando templates salvos...</td></tr>
+              <tr><td colspan="4" style="color: #94a3b8;">Carregando templates da Meta...</td></tr>
             </tbody>
           </table>
         </div>
@@ -227,25 +299,25 @@
     <!-- Tab 4: Conexão Meta -->
     <div id="tab-meta" class="tab-content">
       <div class="page-padding">
-        <h2>WhatsApp Business Platform (Cloud API)</h2>
+        <h1 style="font-size: 24px; font-weight: 700;">WhatsApp Business Platform (Cloud API)</h1>
         <div class="card" style="margin-top: 20px;">
-          <div style="margin-bottom: 15px;">
-            Status: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
+          <div style="margin-bottom: 18px;">
+            Status de Conexão: <span id="meta-status" class="status-badge status-disconnected">Verificando...</span>
           </div>
 
-          <h3>Credenciais da Meta (Gravadas Permanente)</h3>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 14px;">Credenciais da Meta (Gravadas Permanentemente)</h3>
           
-          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">WABA ID (ID da Conta do WhatsApp Business):</label>
+          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">WABA ID (ID da Conta do WhatsApp Business):</label>
           <input type="text" id="cfg-waba" class="input-field" placeholder="Ex: 3593503124150921">
 
-          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">Phone Number ID:</label>
+          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Phone Number ID:</label>
           <input type="text" id="cfg-phoneid" class="input-field" placeholder="Ex: 1434653976390360">
 
-          <label style="font-size: 12px; color: #8696a0; margin-top: 10px; display: block;">Token de Acesso da Meta:</label>
+          <label style="font-size: 12px; color: #94a3b8; margin-top: 12px; display: block; font-weight: 600;">Token de Acesso da Meta:</label>
           <input type="text" id="cfg-token" class="input-field" placeholder="EAAdYtj...">
 
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn-send" onclick="saveCredentials()">Salvar / Atualizar Credenciais</button>
+          <div style="margin-top: 20px;">
+            <button class="btn-primary" onclick="saveCredentials()">Salvar / Atualizar Credenciais</button>
           </div>
         </div>
       </div>
@@ -254,7 +326,10 @@
   </div>
 
   <script>
+    let parsedCsvHeaders = [];
+    let parsedCsvRows = [];
     let csvData = [];
+    let metaTemplatesList = [];
 
     function switchTab(tabName, element) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -263,12 +338,11 @@
       document.getElementById('tab-' + tabName).classList.add('active');
       element.classList.add('active');
 
-      if (tabName === 'templates') {
-        fetchTemplates();
+      if (tabName === 'templates' || tabName === 'disparos') {
+        syncTemplatesWithMeta();
       }
     }
 
-    // Carrega credenciais do localStorage e valida no backend
     async function initApp() {
       const storedWaba = localStorage.getItem('aurium_waba') || '';
       const storedPhone = localStorage.getItem('aurium_phone') || '';
@@ -278,17 +352,14 @@
       if (storedPhone) document.getElementById('cfg-phoneid').value = storedPhone;
       if (storedToken) document.getElementById('cfg-token').value = storedToken;
 
-      // Se existirem dados salvos localmente, sincroniza automaticamente com o backend
       if (storedWaba || storedPhone || storedToken) {
         await syncBackendCredentials(storedWaba, storedPhone, storedToken);
       } else {
         await checkBackendStatus();
       }
 
-      // Renderiza templates do cache local imediatamente
       renderCachedTemplates();
-      // Em seguida, busca atualizações na Meta
-      fetchTemplates();
+      syncTemplatesWithMeta();
     }
 
     async function syncBackendCredentials(wabaId, phoneId, token) {
@@ -300,7 +371,7 @@
         });
         checkBackendStatus();
       } catch (err) {
-        console.error('Erro ao sincronizar credenciais com o servidor.');
+        console.error('Erro ao sincronizar credenciais.');
       }
     }
 
@@ -318,11 +389,11 @@
           statusBadge.innerText = 'Conectado à Meta';
           statusBadge.className = 'status-badge status-connected';
         } else {
-          statusBadge.innerText = 'Credenciais ausentes / incompletas';
+          statusBadge.innerText = 'Credenciais Incompletas';
           statusBadge.className = 'status-badge status-disconnected';
         }
       } catch (err) {
-        statusBadge.innerText = 'Erro ao conectar ao servidor';
+        statusBadge.innerText = 'Erro Backend';
         statusBadge.className = 'status-badge status-disconnected';
       }
     }
@@ -332,7 +403,6 @@
       const phoneId = document.getElementById('cfg-phoneid').value.trim();
       const token = document.getElementById('cfg-token').value.trim();
 
-      // Salva permanentemente no localStorage do navegador
       localStorage.setItem('aurium_waba', wabaId);
       localStorage.setItem('aurium_phone', phoneId);
       localStorage.setItem('aurium_token', token);
@@ -344,11 +414,176 @@
           body: JSON.stringify({ wabaId, phoneId, token })
         });
         const data = await res.json();
-        alert('Credenciais salvas e gravadas permanentemente!');
+        alert('Credenciais salvas permanentemente!');
         checkBackendStatus();
-        fetchTemplates();
+        syncTemplatesWithMeta();
       } catch (err) {
-        alert('Erro ao salvar credenciais no servidor.');
+        alert('Erro ao salvar no servidor.');
+      }
+    }
+
+    /* Leitura Inteligente do CSV com Painel de Mapeamento de Colunas */
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+        
+        if (lines.length === 0) {
+          alert('Arquivo CSV vazio.');
+          return;
+        }
+
+        const firstLine = lines[0];
+        const separator = firstLine.includes(';') ? ';' : ',';
+
+        parsedCsvHeaders = firstLine.split(separator).map(h => h.trim().replace(/^["']|["']$/g, ''));
+        parsedCsvRows = lines.slice(1).map(line => line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, '')));
+
+        const phoneSelect = document.getElementById('csv-phone-col');
+        const nameSelect = document.getElementById('csv-name-col');
+
+        phoneSelect.innerHTML = '';
+        nameSelect.innerHTML = '<option value="-1">— nenhuma —</option>';
+
+        let detectedPhoneIndex = 0;
+        let sampleDetectedNumber = '';
+
+        parsedCsvHeaders.forEach((header, idx) => {
+          // Procura amostra na primeira linha
+          const sampleVal = parsedCsvRows[0] && parsedCsvRows[0][idx] ? parsedCsvRows[0][idx] : '';
+          const isPhone = header.toLowerCase().match(/phone|telef|celular|num|fone/) || sampleVal.replace(/\D/g, '').length >= 8;
+          
+          if (isPhone && !sampleDetectedNumber) {
+            detectedPhoneIndex = idx;
+            sampleDetectedNumber = sampleVal.replace(/\D/g, '');
+          }
+
+          phoneSelect.innerHTML += `<option value="${idx}">${sampleVal ? sampleVal + ' (detectado)' : header}</option>`;
+          nameSelect.innerHTML += `<option value="${idx}">${header} (ex: ${sampleVal || 'Maria'})</option>`;
+        });
+
+        phoneSelect.value = detectedPhoneIndex;
+
+        document.getElementById('csv-detected-summary').innerText = `Planilha carregada com ${parsedCsvRows.length} linhas. Confirme as colunas abaixo:`;
+        document.getElementById('csv-mapping-panel').style.display = 'block';
+      };
+
+      reader.readAsText(file, 'UTF-8');
+    }
+
+    function confirmCSVImport() {
+      const phoneIdx = parseInt(document.getElementById('csv-phone-col').value);
+      const nameIdx = parseInt(document.getElementById('csv-name-col').value);
+
+      csvData = [];
+      parsedCsvRows.forEach(row => {
+        const phoneRaw = row[phoneIdx] ? row[phoneIdx].replace(/\D/g, '') : '';
+        const nameRaw = nameIdx !== -1 && row[nameIdx] ? row[nameIdx] : 'Cliente';
+
+        if (phoneRaw.length >= 8) {
+          csvData.push({ nome: nameRaw, telefone: phoneRaw });
+        }
+      });
+
+      document.getElementById('csv-mapping-panel').style.display = 'none';
+      document.getElementById('csv-import-status').innerText = `✅ Importação concluída! ${csvData.length} contatos válidos mapeados.`;
+    }
+
+    function cancelCSVImport() {
+      document.getElementById('csv-mapping-panel').style.display = 'none';
+    }
+
+    /* Sincronização Dinâmica de Templates da META */
+    async function syncTemplatesWithMeta() {
+      const msgEl = document.getElementById('sync-status-msg');
+      if (msgEl) msgEl.innerText = 'Sincronizando com a Meta...';
+
+      try {
+        const res = await fetch('/api/templates');
+        const data = await res.json();
+
+        if (data.success && data.templates) {
+          metaTemplatesList = data.templates;
+          localStorage.setItem('aurium_templates', JSON.stringify(data.templates));
+          renderTemplatesTable(data.templates);
+          updateCampTemplateDropdown(data.templates);
+          if (msgEl) msgEl.innerText = 'Sincronizado agora com a Meta';
+        } else {
+          if (msgEl) msgEl.innerText = 'Erro na sincronização';
+        }
+      } catch (err) {
+        if (msgEl) msgEl.innerText = 'Falha ao ligar à API Meta';
+      }
+    }
+
+    function renderCachedTemplates() {
+      const cached = localStorage.getItem('aurium_templates');
+      if (cached) {
+        try {
+          metaTemplatesList = JSON.parse(cached);
+          renderTemplatesTable(metaTemplatesList);
+          updateCampTemplateDropdown(metaTemplatesList);
+        } catch (e) {}
+      }
+    }
+
+    function renderTemplatesTable(templates) {
+      const listEl = document.getElementById('tpl-list');
+      if (!templates || templates.length === 0) {
+        listEl.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;">Nenhum template encontrado na conta Meta.</td></tr>';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      templates.forEach(tpl => {
+        const statusClass = tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected';
+        listEl.innerHTML += `
+          <tr>
+            <td><strong>${tpl.name}</strong></td>
+            <td>${tpl.category}</td>
+            <td>${tpl.language}</td>
+            <td><span class="status-badge ${statusClass}">${tpl.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function updateCampTemplateDropdown(templates) {
+      const select = document.getElementById('camp-template-select');
+      if (!select) return;
+
+      select.innerHTML = '<option value="">— Selecione um template aprovado —</option>';
+      const approved = templates.filter(t => t.status === 'APPROVED');
+
+      if (approved.length === 0) {
+        select.innerHTML = '<option value="">Nenhum template APROVADO disponível ainda</option>';
+        return;
+      }
+
+      approved.forEach(tpl => {
+        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language})</option>`;
+      });
+    }
+
+    function onTemplateSelectChange() {
+      const selectedName = document.getElementById('camp-template-select').value;
+      const previewBody = document.getElementById('camp-preview-body');
+      const previewFooter = document.getElementById('camp-preview-footer');
+
+      const tpl = metaTemplatesList.find(t => t.name === selectedName);
+      if (tpl && tpl.components) {
+        const bodyComp = tpl.components.find(c => c.type === 'BODY');
+        const footerComp = tpl.components.find(c => c.type === 'FOOTER');
+
+        previewBody.innerText = bodyComp ? bodyComp.text : 'Sem texto disponível';
+        previewFooter.innerText = footerComp ? footerComp.text : '';
+      } else {
+        previewBody.innerText = 'Selecione um template aprovado da Meta para visualizar a prévia aqui...';
+        previewFooter.innerText = '';
       }
     }
 
@@ -372,77 +607,40 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ to: targetPhone, message: messageText })
         });
-
         const result = await response.json();
-        if (!result.success) {
-          alert('Erro ao enviar mensagem: ' + result.error);
-        }
+        if (!result.success) alert('Erro ao enviar: ' + result.error);
       } catch (error) {
-        alert('Erro ao conectar ao servidor backend.');
+        alert('Erro de conexão ao servidor.');
       }
-    }
-
-    function handleCSVUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split('\n');
-        csvData = [];
-
-        lines.forEach((line, index) => {
-          const cols = line.split(',');
-          if (cols.length >= 2 && index > 0) {
-            const nome = cols[0].trim();
-            const telefone = cols[1].trim();
-            if (nome && telefone) {
-              csvData.push({ nome, telefone });
-            }
-          }
-        });
-
-        document.getElementById('csv-preview').innerText = `Planilha carregada com sucesso! ${csvData.length} contactos prontos para envio.`;
-      };
-      reader.readAsText(file);
     }
 
     async function startBulkSend() {
-      const templateText = document.getElementById('bulk-message').value;
+      const selectedTemplate = document.getElementById('camp-template-select').value;
       const logDiv = document.getElementById('bulk-log');
 
       if (csvData.length === 0) {
-        alert('Carregue um ficheiro CSV primeiro.');
+        alert('Carregue e confirme a importação de uma planilha CSV primeiro.');
         return;
       }
 
-      if (!templateText) {
-        alert('Digite o texto da mensagem.');
-        return;
-      }
-
-      logDiv.innerHTML = 'Iniciando disparos...<br>';
+      logDiv.innerHTML = 'Iniciando disparos em massa...<br>';
 
       for (let i = 0; i < csvData.length; i++) {
         const contact = csvData[i];
-        const personalizedMsg = templateText.replace(/\{\{1\}\}/g, contact.nome);
-
         try {
           const res = await fetch('/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ to: contact.telefone, message: personalizedMsg })
+            body: JSON.stringify({ to: contact.telefone, message: `Olá ${contact.nome}, disparo via AuriumHub PRO.` })
           });
           const result = await res.json();
-
           if (result.success) {
             logDiv.innerHTML += `✅ Enviado para ${contact.nome} (${contact.telefone})<br>`;
           } else {
             logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${result.error}<br>`;
           }
         } catch (err) {
-          logDiv.innerHTML += `❌ Erro ao enviar para ${contact.nome}<br>`;
+          logDiv.innerHTML += `❌ Erro para ${contact.nome}<br>`;
         }
       }
     }
@@ -460,7 +658,6 @@
 
       if (matches.length > 0) {
         samplesContainer.style.display = 'block';
-        
         const existingValues = {};
         document.querySelectorAll('.sample-field').forEach(input => {
           existingValues[input.dataset.var] = input.value;
@@ -472,7 +669,7 @@
           samplesInputs.innerHTML += `
             <div class="sample-item">
               <label>${varTag}</label>
-              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="ex: amostra para ${varTag} (ex: João, 1234)">
+              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="Amostra para ${varTag} (ex: João)">
             </div>
           `;
         });
@@ -512,7 +709,7 @@
       });
 
       if (missingSample) {
-        alert('Por favor, informe um valor de amostra para cada variável!');
+        alert('Por favor, informe uma amostra para cada variável!');
         return;
       }
 
@@ -525,8 +722,8 @@
         const data = await res.json();
 
         if (data.success) {
-          alert('Template enviado para aprovação na Meta com sucesso!');
-          fetchTemplates();
+          alert('Template enviado para aprovação na Meta!');
+          syncTemplatesWithMeta();
         } else {
           alert('Erro ao criar template: ' + data.error);
         }
@@ -535,59 +732,6 @@
       }
     }
 
-    // Renderiza templates em cache no localStorage
-    function renderCachedTemplates() {
-      const cached = localStorage.getItem('aurium_templates');
-      if (!cached) return;
-
-      try {
-        const templates = JSON.parse(cached);
-        renderTemplatesTable(templates);
-      } catch (e) {
-        console.error('Erro ao ler templates do cache local.');
-      }
-    }
-
-    function renderTemplatesTable(templates) {
-      const listEl = document.getElementById('tpl-list');
-      if (!templates || templates.length === 0) {
-        listEl.innerHTML = '<tr><td colspan="4">Nenhum template registrado ainda.</td></tr>';
-        return;
-      }
-
-      listEl.innerHTML = '';
-      templates.forEach(tpl => {
-        listEl.innerHTML += `
-          <tr>
-            <td><strong>${tpl.name}</strong></td>
-            <td>${tpl.category}</td>
-            <td>${tpl.language}</td>
-            <td><span class="status-badge ${tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected'}">${tpl.status}</span></td>
-          </tr>
-        `;
-      });
-    }
-
-    // Busca templates na Meta e grava a resposta permanentemente no localStorage
-    async function fetchTemplates() {
-      try {
-        const res = await fetch('/api/templates');
-        const data = await res.json();
-
-        if (data.success && data.templates) {
-          localStorage.setItem('aurium_templates', JSON.stringify(data.templates));
-          renderTemplatesTable(data.templates);
-        } else if (!localStorage.getItem('aurium_templates')) {
-          document.getElementById('tpl-list').innerHTML = `<tr><td colspan="4" style="color:#ea8686;">${data.error || 'Não foi possível carregar.'}</td></tr>`;
-        }
-      } catch (err) {
-        if (!localStorage.getItem('aurium_templates')) {
-          document.getElementById('tpl-list').innerHTML = '<tr><td colspan="4" style="color:#ea8686;">Erro ao conectar com a API da Meta.</td></tr>';
-        }
-      }
-    }
-
-    // Inicialização automática ao carregar a página
     initApp();
   </script>
 </body>
