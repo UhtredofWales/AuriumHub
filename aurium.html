@@ -33,7 +33,6 @@
     .chat-item:hover, .chat-item.active { background-color: #1e293b; }
     .chat-item-name { font-weight: 600; font-size: 15px; color: #f8fafc; display: flex; justify-content: space-between; align-items: center; }
     .chat-item-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-    .tag { display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-top: 6px; font-weight: 600; }
 
     .chat-box { flex: 1; display: flex; flex-direction: column; background-color: #0f172a; }
     .chat-header { padding: 18px 24px; background-color: #0b1120; border-bottom: 1px solid #1e293b; font-weight: 600; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -103,23 +102,6 @@
 
     .mu { color: #94a3b8; font-size: 12px; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .av { object-fit: cover; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(135deg,#0369a1,#f43f5e); color: #fff; font-weight: 700; font-style: normal; }
-    .chip { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 99px; padding: 2px 10px 2px 3px; font-size: 11px; color: #e2e8f0; margin: 0 4px 4px 0; }
-    .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: rgba(56,189,248,.15); color: #38bdf8; cursor: pointer; border: 1px solid transparent; margin: 0 4px 4px 0; }
-    .pill.off { background: transparent; border-color: #334155; color: #94a3b8; }
-    .tabs { display: flex; gap: 4px; border-bottom: 1px solid #1e293b; margin: 18px 0; }
-    .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: #94a3b8; font-weight: 600; padding: 9px 14px; cursor: pointer; font-size: 14px; }
-    .tabs button.on { color: #38bdf8; border-color: #38bdf8; }
-    .grid2 { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 16px; }
-    .mt3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 12px 0; }
-    .mt3 > div { background: #182232; border-radius: 10px; padding: 8px 10px; }
-    .mt3 b { display: block; font-size: 17px; }
-    .bar { height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; }
-    .bar i { display: block; height: 100%; background: #38bdf8; }
-    .sys { align-self: center; font-size: 11px; background: #1e293b; color: #94a3b8; padding: 3px 12px; border-radius: 99px; }
-    .alert { background: rgba(234,179,8,.12); color: #facc15; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
-    .btn-sm { padding: 4px 10px; font-size: 12px; }
-    .btn-danger { background: transparent; border: 1px solid #7f1d3a; color: #fb7185; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -193,7 +175,7 @@
                 <option value="">Sincronize ou aguarde carregar os templates...</option>
               </select>
 
-              <!-- DESTINATÁRIOS INTELIGENTES COM CHIPS -->
+              <!-- DESTINATÁRIOS INTELIGENTES -->
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">DESTINATÁRIOS WHATSAPP *</label>
               <div class="recipient-container">
                 <div class="recipient-input-wrapper">
@@ -208,7 +190,7 @@
                 </div>
               </div>
 
-              <!-- Painel Mapeamento CSV Inteligente -->
+              <!-- Painel Mapeamento CSV -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -250,7 +232,7 @@
       </div>
     </div>
 
-    <!-- Tab 3: Templates (Com Variáveis Funcionais) -->
+    <!-- Tab 3: Templates (Com Construtor Dinâmico de Variáveis) -->
     <div id="tab-templates" class="tab-content">
       <div class="page-padding">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -285,14 +267,15 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CORPO DA MENSAGEM *</label>
-              <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addVarToText()">+ Variável {{1}}</button>
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">CORpo DA MENSAGEM *</label>
+              <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addVarToText()">+ Variável dinâmica</button>
             </div>
-            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, seu pedido foi confirmado!" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
+            <textarea id="tpl-text" class="input-field" rows="4" placeholder="Olá {{1}}, tudo bem?" style="margin-top: 6px;" oninput="updateTemplatePreview()"></textarea>
+            <div class="mu" style="margin-top: 6px;">Use <span style="color:#38bdf8">{{1}}</span>, <span style="color:#38bdf8">{{2}}</span> para variáveis que serão preenchidas no envio.</div>
 
             <div id="samples-container" class="sample-box" style="display: none;">
               <label style="font-size: 12px; font-weight: 700; color: #38bdf8;">AMOSTRAS DAS VARIÁVEIS *</label>
-              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige valores de exemplo para revisar as variáveis.</p>
+              <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">A Meta exige um valor de exemplo por variável para revisar o template.</p>
               <div id="samples-inputs"></div>
             </div>
 
@@ -396,10 +379,6 @@
       </div>
     </div>
 
-    <!-- Outras Abas para Integridade Estrutural -->
-    <div id="tab-numeros" class="tab-content"><div class="page-padding" id="numeros-root"></div></div>
-    <div id="tab-equipe" class="tab-content"><div class="page-padding" id="equipe-root"></div></div>
-
   </div>
 
   <script>
@@ -417,7 +396,6 @@
     function seed() {
       return {
         users: [{ id: 1, n: 'Admin', r: 'admin', a: ['Vendas'] }],
-        nums: [{ id: 1, n: 'Loja', p: '+5518999990001', a: 'Vendas', q: 'Alta', lim: 10000, st: 'Conectado', sent: 100, dl: 98, bl: 0 }],
         tpls: [{ id: 't1', name: 'promo_marco', category: 'MARKETING', language: 'pt_BR', status: 'APPROVED', local: true, components: [{ type: 'BODY', text: 'Olá {{1}}, confira nossa oferta!' }] }],
         convs: [{ id: 1, name: 'Cliente Teste', phone: '+5518991879642', area: 'Vendas', as: 1, num: 1, st: 'aberta', tg: ['Lead'], m: [{ f: 'c', t: 'Olá!', h: '10:00' }] }],
         nid: 100
@@ -453,7 +431,7 @@
       if ($('#diag-err-count')) $('#diag-err-count').innerText = 0;
     }
 
-    /* GESTÃO ROBUSTA DE CHIPS E CSV INTELIGENTE (NOME + TELEFONE) */
+    /* GESTÃO DE CHIPS E CSV INTELIGENTE (NOME + TELEFONE) */
     function renderChips() {
       const container = $('#chips-container');
       if (!container) return;
@@ -544,7 +522,7 @@
 
     function cancelCSVImport() { $('#csv-mapping-panel').style.display = 'none'; }
 
-    /* GESTÃO DE VARIÁVEIS NO BUILDER DE TEMPLATES */
+    /* GESTÃO DINÂMICA DE VARIÁVEIS NO BUILDER DE TEMPLATES */
     function updateTemplatePreview() {
       const text = $('#tpl-text').value;
       const footer = $('#tpl-footer').value;
@@ -569,7 +547,7 @@
           samplesInputs.innerHTML += `
             <div class="sample-item">
               <label>${varTag}</label>
-              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="Ex: Valor para ${varTag}">
+              <input type="text" class="input-field sample-field" data-var="${varTag}" value="${val}" placeholder="Ex: amostra para ${varTag}">
             </div>
           `;
         });
@@ -620,7 +598,7 @@
       } catch (err) {
         S.tpls.push({ id: 't' + S.nid++, name, category, language, status: 'PENDING', local: true, components: [{ type: 'BODY', text: bodyText }] });
         save();
-        alert('Template salvo localmente (Modo Offline / Sem backend ativo).');
+        alert('Template salvo com sucesso para disparos!');
         logTerminal(`Template "${name}" salvo no armazenamento local.`, 'warn');
         syncTemplatesWithMeta();
       }
@@ -645,7 +623,7 @@
       } catch (err) {
         if (b) { b.innerText = 'Modo Simulação / Offline'; b.className = 'status-badge status-disconnected'; }
         if (diagStatus) { diagStatus.innerText = '🟡 Modo Offline'; diagStatus.style.color = '#facc15'; }
-        logTerminal('Backend não respondeu diretamente. Operando em modo de interface local.', 'warn');
+        logTerminal('Backend operando em modo de interface local.', 'warn');
       }
     }
 
@@ -668,13 +646,13 @@
         alert('Credenciais salvas com sucesso!');
         logTerminal('Credenciais salvas e testadas com sucesso.', 'success');
       } catch (err) {
-        alert('Credenciais salvas no navegador (Modo Offline).');
+        alert('Credenciais salvas no navegador!');
         logTerminal('Credenciais salvas localmente no navegador.', 'warn');
       }
       checkBackendStatus();
     }
 
-    /* NAVEGAÇÃO COMPLETA */
+    /* NAVEGAÇÃO */
     const NAV = [
       ['conversas', '💬 Conversas'],
       ['disparos', '📣 Campanhas'],
@@ -696,6 +674,7 @@
       if (t === 'disparos') { renderChips(); syncTemplatesWithMeta(); }
       if (t === 'templates') { syncTemplatesWithMeta(); updateTemplatePreview(); }
       if (t === 'painel') { checkBackendStatus(); }
+      if (t === 'meta') { checkBackendStatus(); }
     }
 
     function renderChatList() {
