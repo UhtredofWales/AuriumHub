@@ -156,6 +156,11 @@
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TÍTULO DA CAMPANHA *</label>
               <input type="text" id="camp-title" class="input-field" placeholder="Ex: Black Friday 2026" style="margin-bottom: 16px;">
 
+              <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">NÚMERO REMETENTE (WABA DE CAMPANHAS) *</label>
+              <select id="camp-sender-select" class="input-field" style="margin-bottom: 16px;">
+                <option value="">Carregando números da WABA Meta...</option>
+              </select>
+
               <label style="font-size: 12px; font-weight: 700; color: #94a3b8;">TEMPLATE (WABA DE CAMPANHAS) *</label>
               <select id="camp-template-select" class="input-field" style="margin-bottom: 16px;" onchange="onTemplateSelectChange()">
                 <option value="">Carregando templates da Meta...</option>
@@ -172,7 +177,7 @@
                 </label>
               </div>
 
-              <!-- Painel Inteligente de Mapeamento de Colunas CSV (igual à imagem) -->
+              <!-- Painel Inteligente de Mapeamento de Colunas CSV -->
               <div id="csv-mapping-panel" class="csv-import-box" style="display: none;">
                 <div id="csv-detected-summary" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 14px;"></div>
                 
@@ -340,6 +345,7 @@
 
       if (tabName === 'templates' || tabName === 'disparos') {
         syncTemplatesWithMeta();
+        fetchWabaPhoneNumbers();
       }
     }
 
@@ -360,6 +366,25 @@
 
       renderCachedTemplates();
       syncTemplatesWithMeta();
+      fetchWabaPhoneNumbers();
+    }
+
+    async function fetchWabaPhoneNumbers() {
+      const senderSelect = document.getElementById('camp-sender-select');
+      if (!senderSelect) return;
+
+      try {
+        const res = await fetch('/api/status');
+        const statusData = await res.json();
+
+        if (statusData.phoneId) {
+          senderSelect.innerHTML = `
+            <option value="${statusData.phoneId}">Número Ativo Meta (${statusData.phoneId}) • WABA (template)</option>
+          `;
+        }
+      } catch (err) {
+        console.error('Erro ao buscar números da WABA.');
+      }
     }
 
     async function syncBackendCredentials(wabaId, phoneId, token) {
@@ -380,10 +405,6 @@
       try {
         const res = await fetch('/api/status');
         const data = await res.json();
-
-        if (data.wabaId && !document.getElementById('cfg-waba').value) document.getElementById('cfg-waba').value = data.wabaId;
-        if (data.phoneId && !document.getElementById('cfg-phoneid').value) document.getElementById('cfg-phoneid').value = data.phoneId;
-        if (data.token && !document.getElementById('cfg-token').value) document.getElementById('cfg-token').value = data.token;
 
         if (data.connected) {
           statusBadge.innerText = 'Conectado à Meta';
@@ -408,21 +429,20 @@
       localStorage.setItem('aurium_token', token);
 
       try {
-        const res = await fetch('/api/credentials', {
+        await fetch('/api/credentials', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ wabaId, phoneId, token })
         });
-        const data = await res.json();
         alert('Credenciais salvas permanentemente!');
         checkBackendStatus();
         syncTemplatesWithMeta();
+        fetchWabaPhoneNumbers();
       } catch (err) {
         alert('Erro ao salvar no servidor.');
       }
     }
 
-    /* Leitura Inteligente do CSV com Painel de Mapeamento de Colunas */
     function handleCSVUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -453,7 +473,6 @@
         let sampleDetectedNumber = '';
 
         parsedCsvHeaders.forEach((header, idx) => {
-          // Procura amostra na primeira linha
           const sampleVal = parsedCsvRows[0] && parsedCsvRows[0][idx] ? parsedCsvRows[0][idx] : '';
           const isPhone = header.toLowerCase().match(/phone|telef|celular|num|fone/) || sampleVal.replace(/\D/g, '').length >= 8;
           
@@ -497,7 +516,6 @@
       document.getElementById('csv-mapping-panel').style.display = 'none';
     }
 
-    /* Sincronização Dinâmica de Templates da META */
     async function syncTemplatesWithMeta() {
       const msgEl = document.getElementById('sync-status-msg');
       if (msgEl) msgEl.innerText = 'Sincronizando com a Meta...';
@@ -513,10 +531,10 @@
           updateCampTemplateDropdown(data.templates);
           if (msgEl) msgEl.innerText = 'Sincronizado agora com a Meta';
         } else {
-          if (msgEl) msgEl.innerText = 'Erro na sincronização';
+          if (msgEl) msgEl.innerText = 'Aguardando atualização da Meta';
         }
       } catch (err) {
-        if (msgEl) msgEl.innerText = 'Falha ao ligar à API Meta';
+        if (msgEl) msgEl.innerText = 'Falha ao conectar com a API Meta';
       }
     }
 
@@ -540,13 +558,16 @@
 
       listEl.innerHTML = '';
       templates.forEach(tpl => {
-        const statusClass = tpl.status === 'APPROVED' ? 'status-connected' : 'status-disconnected';
+        const isApproved = tpl.status === 'APPROVED';
+        const statusClass = isApproved ? 'status-connected' : 'status-disconnected';
+        const badgeLabel = isApproved ? 'APPROVED' : 'PENDING (Em análise Meta)';
+
         listEl.innerHTML += `
           <tr>
             <td><strong>${tpl.name}</strong></td>
             <td>${tpl.category}</td>
             <td>${tpl.language}</td>
-            <td><span class="status-badge ${statusClass}">${tpl.status}</span></td>
+            <td><span class="status-badge ${statusClass}">${badgeLabel}</span></td>
           </tr>
         `;
       });
@@ -556,16 +577,10 @@
       const select = document.getElementById('camp-template-select');
       if (!select) return;
 
-      select.innerHTML = '<option value="">— Selecione um template aprovado —</option>';
-      const approved = templates.filter(t => t.status === 'APPROVED');
-
-      if (approved.length === 0) {
-        select.innerHTML = '<option value="">Nenhum template APROVADO disponível ainda</option>';
-        return;
-      }
-
-      approved.forEach(tpl => {
-        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language})</option>`;
+      select.innerHTML = '<option value="">— Selecione um template da Meta —</option>';
+      templates.forEach(tpl => {
+        const tagStatus = tpl.status === 'APPROVED' ? '✅ APPROVED' : '⏳ PENDING';
+        select.innerHTML += `<option value="${tpl.name}">${tpl.name} (${tpl.language}) — ${tagStatus}</option>`;
       });
     }
 
@@ -582,7 +597,7 @@
         previewBody.innerText = bodyComp ? bodyComp.text : 'Sem texto disponível';
         previewFooter.innerText = footerComp ? footerComp.text : '';
       } else {
-        previewBody.innerText = 'Selecione um template aprovado da Meta para visualizar a prévia aqui...';
+        previewBody.innerText = 'Selecione um template para visualizar a prévia aqui...';
         previewFooter.innerText = '';
       }
     }
@@ -623,7 +638,7 @@
         return;
       }
 
-      logDiv.innerHTML = 'Iniciando disparos em massa...<br>';
+      logDiv.innerHTML = 'Iniciando disparos em massa via Meta Cloud API...<br>';
 
       for (let i = 0; i < csvData.length; i++) {
         const contact = csvData[i];
@@ -631,16 +646,21 @@
           const res = await fetch('/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ to: contact.telefone, message: `Olá ${contact.nome}, disparo via AuriumHub PRO.` })
+            body: JSON.stringify({
+              to: contact.telefone,
+              templateName: selectedTemplate || null,
+              message: `Olá ${contact.nome}, mensagem via AuriumHub.`
+            })
           });
           const result = await res.json();
+
           if (result.success) {
-            logDiv.innerHTML += `✅ Enviado para ${contact.nome} (${contact.telefone})<br>`;
+            logDiv.innerHTML += `✅ Enviado com sucesso para ${contact.nome} (${contact.telefone})<br>`;
           } else {
             logDiv.innerHTML += `❌ Falha para ${contact.nome}: ${result.error}<br>`;
           }
         } catch (err) {
-          logDiv.innerHTML += `❌ Erro para ${contact.nome}<br>`;
+          logDiv.innerHTML += `❌ Erro de conexão para ${contact.nome}<br>`;
         }
       }
     }
